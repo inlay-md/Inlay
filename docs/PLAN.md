@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline (slice 1) and Read view runtime (slice 2), lazy Shiki/KaTeX/Mermaid (slice 3), rendered-content fixtures with offline CDN rewriting and the browser security probe (slice 4) landed. Swift trust banner, network toggle and file watching (slice 5) landed. Remaining: final verification, handover update, PR. Two license exceptions pending the product owner (ADR-0019).
+**Status:** M1 complete on branch `m1-read-view` (2026-11-05): PR to `main` awaiting the product owner's "go". Two license exceptions pending (ADR-0019). Next: M2 on branch `m2-source-split`.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
