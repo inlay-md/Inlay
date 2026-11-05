@@ -30,6 +30,7 @@
     "@lezer/markdown": "1.4.3",
     "@milkdown/crepe": "7.23.0",
     "@milkdown/kit": "7.23.0",
+    "katex": "0.19.1",
     "mdast-util-to-markdown": "2.2.2",
     "remark-frontmatter": "5.0.0",
     "remark-gfm": "4.0.1",
