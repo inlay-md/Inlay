@@ -1,0 +1,21 @@
+{
+  "$comment": "ADR-0015. allowlist applies to shipped code (prod npm deps, Swift packages, fonts); denyPattern fails anywhere in the tree. Exceptions need the product owner's approval and are listed with a reason.",
+  "allowlist": [
+    "MIT",
+    "ISC",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BSD-3-Clause-Clear",
+    "Apache-2.0",
+    "0BSD"
+  ],
+  "exceptions": [
+    {
+      "scope": "fonts",
+      "license": "OFL-1.1",
+      "approvedBy": "product owner",
+      "date": "2026-11-05",
+      "reason": "SIL Open Font License accepted for font files only (KaTeX fonts)."
+    }
+  ]
+}

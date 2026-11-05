@@ -1,0 +1,4 @@
+{
+  "$comment": "Font files shipped inside the app or extension. Checked against the allowlist plus the fonts-scope exceptions.",
+  "fonts": []
+}

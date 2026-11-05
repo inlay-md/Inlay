@@ -1,0 +1,4 @@
+{
+  "$comment": "Every Swift package pinned in a Package.resolved must have an entry here. License is checked against the shipped allowlist.",
+  "packages": []
+}
