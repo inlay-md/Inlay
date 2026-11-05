@@ -204,3 +204,118 @@ test.describe('WYSIWYG mode', () => {
     expect(after.islands).toBe(0);
   });
 });
+
+test.describe('Islands', () => {
+  test('HTML and SVG islands render a sanitized preview; scripts stay inert', async ({ page }) => {
+    await page.goto(edit('inline-svg.md'));
+    await ready(page);
+    const island = page.locator('.inlay-island[data-kind="svg"]').first();
+    await expect(island).toBeVisible();
+    await expect(island.locator('.inlay-island-kind')).toHaveText('SVG');
+    await expect(island.locator('.inlay-island-body svg').first()).toBeVisible();
+    await expect(island.locator('.inlay-island-meta')).toContainText('kept byte for byte');
+
+    await page.goto(edit('chart-chartjs.md'));
+    await ready(page);
+    const script = page.locator('.inlay-island[data-kind="script"]').first();
+    await expect(script).toBeVisible();
+    await expect(script.locator('.inlay-island-kind')).toHaveText('Script');
+    await expect(script.locator('.inlay-island-meta')).toContainText(
+      'chart.js from the bundled copy',
+    );
+    await expect(script.locator('.inlay-island-read')).toBeVisible();
+    expect(await page.locator('.inlay-wysiwyg script').count()).toBe(0);
+    await script.locator('.inlay-island-read').click();
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          (window.inlayMockHost?.calls ?? [])
+            .filter((c) => c.method === 'requestMode')
+            .map((c) => c.args[0]),
+        ),
+      )
+      .toEqual(['read']);
+  });
+
+  test('front matter, comments and directives are cards showing their source', async ({ page }) => {
+    await page.goto(edit('front-matter.md'));
+    await ready(page);
+    const fm = page.locator('.inlay-island[data-kind="frontmatter"]');
+    await expect(fm.locator('.inlay-island-kind')).toHaveText('Front matter');
+    await expect(fm.locator('.inlay-island-source')).toContainText('title: Front matter fixture');
+    await page.goto(edit('directives.md'));
+    await ready(page);
+    await expect(
+      page.locator('.inlay-island[data-kind="directive"]').first().locator('.inlay-island-source'),
+    ).toContainText(':::note');
+    await page.goto(edit('html-comments.md'));
+    await ready(page);
+    await expect(page.locator('.inlay-island[data-kind="comment"]').first()).toBeVisible();
+    await expect(page.locator('.inlay-inline-island-chip').first()).toHaveText(
+      '<!-- inline comment -->',
+    );
+  });
+
+  test('editing an island in place changes only its bytes', async ({ page }) => {
+    await page.goto(edit('front-matter.md'));
+    await ready(page);
+    const before = (await content(page)) ?? '';
+    const fm = page.locator('.inlay-island[data-kind="frontmatter"]');
+    await fm.locator('.inlay-island-body').click();
+    await expect(fm.locator('.inlay-in-place .cm-content')).toBeVisible();
+    // The in-place editor holds the exact source; append a key to the last YAML line.
+    await page.keyboard.press('ControlOrMeta+End');
+    await page.keyboard.press('ArrowUp');
+    await page.keyboard.press('End');
+    await page.keyboard.type('\nedited: true');
+    const after = (await content(page)) ?? '';
+    expect(after).toBe(
+      before.replace('date: 2026-11-05\n---', 'date: 2026-11-05\nedited: true\n---'),
+    );
+    await expect.poll(() => dirtyCalls(page)).toEqual([true]);
+    // Escape leaves the editor and keeps the island selected; the card shows the new source.
+    await page.keyboard.press('Escape');
+    await expect(fm.locator('.inlay-in-place .cm-content')).toBeHidden();
+    await expect(fm.locator('.inlay-island-source')).toContainText('edited: true');
+    await expect(fm).toHaveClass(/ProseMirror-selectednode/);
+    // Enter re-opens it.
+    await page.keyboard.press('Enter');
+    await expect(fm.locator('.inlay-in-place .cm-content')).toBeVisible();
+  });
+
+  test('an inline island edits in place and math renders with KaTeX', async ({ page }) => {
+    await page.goto(edit('html-comments.md'));
+    await ready(page);
+    const before = (await content(page)) ?? '';
+    const chip = page.locator('.inlay-inline-island-chip', { hasText: 'inline comment' });
+    await chip.click();
+    const cm = page.locator('.inlay-inline-island .inlay-in-place .cm-content');
+    await expect(cm).toBeVisible();
+    await page.keyboard.press('End');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.type(' edited');
+    const after = (await content(page)) ?? '';
+    expect(after).toBe(before.replace('<!-- inline comment -->', '<!-- inline comment edited -->'));
+    await page.keyboard.press('Escape');
+    await expect(cm).toBeHidden();
+
+    await page.goto(edit('math.md'));
+    await ready(page);
+    await expect(page.locator('.inlay-math-inline .katex').first()).toBeVisible();
+    await expect(page.locator('.inlay-math-block .katex-display').first()).toBeVisible();
+    const mathBefore = (await content(page)) ?? '';
+    await page.locator('.inlay-math-block').first().click();
+    await expect(
+      page.locator('.inlay-math-block .inlay-in-place .cm-content').first(),
+    ).toBeVisible();
+    await page.keyboard.press('ControlOrMeta+End');
+    await page.keyboard.type(' + 1');
+    const mathAfter = (await content(page)) ?? '';
+    const formula = '\\int_0^\\infty e^{-x^2}\\,dx = \\frac{\\sqrt{\\pi}}{2}';
+    // `$$` in a replacement string means one `$`: use a replacer function.
+    expect(mathAfter).toBe(mathBefore.replace(`${formula}\n$$`, () => `${formula} + 1\n$$`));
+  });
+});

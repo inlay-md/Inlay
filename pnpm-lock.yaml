@@ -252,6 +252,9 @@ importers:
       '@milkdown/kit':
         specifier: 7.23.0
         version: 7.23.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(typescript@7.0.2)
+      katex:
+        specifier: 0.19.1
+        version: 0.19.1
       mdast-util-to-markdown:
         specifier: 2.2.2
         version: 2.2.2

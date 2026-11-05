@@ -113,14 +113,85 @@
   border: 1px solid var(--inlay-ed-border);
   border-left: 3px solid var(--inlay-ed-brass);
   border-radius: 6px;
-  background: var(--inlay-ed-code-bg);
+  background: var(--inlay-ed-bg);
   font-size: 13px;
+}
+
+.inlay-wysiwyg .inlay-island.ProseMirror-selectednode,
+.inlay-wysiwyg .inlay-math-block.ProseMirror-selectednode,
+.inlay-wysiwyg .inlay-inline-island.ProseMirror-selectednode {
+  outline: 2px solid var(--inlay-ed-verdigris);
+  outline-offset: 1px;
+}
+
+.inlay-wysiwyg .inlay-island-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--inlay-ed-border);
+  background: var(--inlay-ed-line);
+  border-radius: 0 6px 0 0;
+  font-size: 11.5px;
+  color: var(--inlay-ed-muted);
+  user-select: none;
+}
+
+.inlay-wysiwyg .inlay-island-kind {
+  font-weight: 600;
+  color: var(--inlay-ed-brass);
+  letter-spacing: 0.02em;
+}
+
+.inlay-wysiwyg .inlay-island-meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inlay-wysiwyg .inlay-island-toggle,
+.inlay-wysiwyg .inlay-island-read {
+  flex: 0 0 auto;
+  border: 1px solid var(--inlay-ed-border);
+  border-radius: 4px;
+  background: var(--inlay-ed-bg);
+  color: var(--inlay-ed-fg);
+  font: inherit;
+  font-size: 11px;
+  padding: 1px 8px;
+  cursor: pointer;
+}
+
+.inlay-wysiwyg .inlay-island-toggle:hover,
+.inlay-wysiwyg .inlay-island-read:hover {
+  border-color: var(--inlay-ed-verdigris);
+  color: var(--inlay-ed-verdigris);
+}
+
+.inlay-wysiwyg .inlay-island-toggle[hidden],
+.inlay-wysiwyg .inlay-island-read[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-island-body {
+  padding: 10px 14px;
+  cursor: text;
+  overflow: auto;
+}
+
+.inlay-wysiwyg .inlay-island[data-view="preview"] > .inlay-island-body {
+  font-size: 16px;
+  color: var(--inlay-ed-fg);
+}
+
+.inlay-wysiwyg .inlay-island[data-view="preview"] > .inlay-island-body svg {
+  max-width: 100%;
 }
 
 .inlay-wysiwyg .inlay-island-source {
   margin: 0;
-  padding: 10px 14px;
-  overflow: auto;
   font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
   font-size: 12.5px;
   line-height: 1.6;
@@ -128,7 +199,29 @@
   color: var(--inlay-ed-fg);
 }
 
+.inlay-wysiwyg .inlay-in-place {
+  border-top: 1px dashed var(--inlay-ed-border);
+}
+
+.inlay-wysiwyg .inlay-in-place .cm-editor {
+  font-size: 12.5px;
+}
+
+.inlay-wysiwyg .inlay-in-place .cm-editor.cm-focused {
+  outline: none;
+}
+
+.inlay-wysiwyg .inlay-island.inlay-editing {
+  border-left-color: var(--inlay-ed-verdigris);
+}
+
+/* Inline islands: a chip showing the raw tag, edited in a small in-place editor. */
 .inlay-wysiwyg .inlay-inline-island {
+  display: inline;
+  vertical-align: baseline;
+}
+
+.inlay-wysiwyg .inlay-inline-island-chip {
   padding: 0 4px;
   border-radius: 3px;
   background: var(--inlay-ed-code-bg);
@@ -136,26 +229,54 @@
   font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
   font-size: 0.85em;
   color: var(--inlay-ed-muted);
+  cursor: text;
 }
 
+.inlay-wysiwyg .inlay-inline-island-chip[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-inline-island .inlay-in-place {
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 12em;
+  max-width: 100%;
+  border: 1px solid var(--inlay-ed-verdigris);
+  border-radius: 4px;
+  background: var(--inlay-ed-bg);
+}
+
+.inlay-wysiwyg .inlay-inline-island .inlay-in-place .cm-editor {
+  font-size: 12px;
+}
+
+/* Math: KaTeX in place, source editor on click. */
 .inlay-wysiwyg .inlay-math-block {
   margin: 1em 0;
   padding: 8px 14px;
   border-left: 3px solid var(--inlay-ed-brass);
   background: var(--inlay-ed-code-bg);
   border-radius: 6px;
+  cursor: text;
 }
 
-.inlay-wysiwyg .inlay-math-block pre {
+.inlay-wysiwyg .inlay-math-preview {
+  overflow-x: auto;
+}
+
+.inlay-wysiwyg .inlay-math-source {
   margin: 0;
   font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
   font-size: 12.5px;
+  color: var(--inlay-ed-muted);
+}
+
+.inlay-wysiwyg .inlay-math-preview[hidden] {
+  display: none;
 }
 
 .inlay-wysiwyg .inlay-math-inline {
-  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
-  font-size: 0.9em;
-  color: var(--inlay-ed-string);
+  color: var(--inlay-ed-fg);
 }
 
 .inlay-wysiwyg .inlay-definition {

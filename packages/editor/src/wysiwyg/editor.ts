@@ -19,8 +19,11 @@ import type { EditorView } from '@milkdown/kit/prose/view';
 import { CONTENT_DEBOUNCE_MS, POSITION_DEBOUNCE_MS } from '../editor.ts';
 import { inlayTheme } from '../theme.ts';
 import type { LoadInfo, ModeEditor } from '../types.ts';
+import { openSelectedEditable } from './in-place.ts';
+import { createIslandViews } from './island-view.ts';
 import { inlayListItemView } from './list-item-view.ts';
 import { type IslandSwap, type LoadedDocument, type LoadStats, loadDocument } from './loader.ts';
+import { mathBlockView, mathInlineView } from './math-view.ts';
 import { applyInlayPlugins } from './schema.ts';
 import { lineAt, offsetOfLine, type Segment, type SpliceResult, spliceDocument } from './splice.ts';
 import './theme.css';
@@ -89,6 +92,9 @@ export async function createWysiwygEditor(o: WysiwygEditorOptions): Promise<Wysi
       [Crepe.Feature.Latex]: false,
       // A Vue app per list item is too slow for 10k lines; `list-item-view.ts` renders plain DOM.
       [Crepe.Feature.ListItem]: false,
+      // A Vue app per table costs ~1.4 ms each (158 tables in the 10k-line fixture); plain
+      // prosemirror-tables rendering keeps cell editing and Tab navigation. Row/column handles: later.
+      [Crepe.Feature.Table]: false,
     },
     featureConfigs: {
       // The virtual cursor hides the native caret; Home/End and IME behave better with the real one.
@@ -102,17 +108,26 @@ export async function createWysiwygEditor(o: WysiwygEditorOptions): Promise<Wysi
   // debounces updates by 200 ms; a plain view plugin reports changes directly.
   void crepe.editor.remove(listener);
   crepe.editor.use(inlayListItemView);
+  crepe.editor.use(createIslandViews(host).flat());
+  crepe.editor.use([mathBlockView, mathInlineView].flat());
   crepe.editor.use(
     $prose(
       () =>
         new Plugin({
-          view: () => ({
-            update: (v, prev) => {
-              if (v.state.doc !== prev.doc) onDocChanged();
-              if (v.state.doc !== prev.doc || !v.state.selection.eq(prev.selection))
-                schedulePosition();
-            },
-          }),
+          props: {
+            // Enter on a selected island or math block opens its in-place source editor.
+            handleKeyDown: (v, event) => event.key === 'Enter' && openSelectedEditable(v),
+          },
+          view: () => {
+            performance.mark('inlay-wysiwyg-view-mounted');
+            return {
+              update: (v, prev) => {
+                if (v.state.doc !== prev.doc) onDocChanged();
+                if (v.state.doc !== prev.doc || !v.state.selection.eq(prev.selection))
+                  schedulePosition();
+              },
+            };
+          },
         }),
     ),
   );
@@ -210,9 +225,11 @@ export async function createWysiwygEditor(o: WysiwygEditorOptions): Promise<Wysi
     }
   };
 
+  // A hidden page (a test host, a background window) throttles timers to once a second, which
+  // would stretch fifty chunks to a minute; nobody is watching then, so it verifies in one go.
   const verifyChunk = () => {
     verifyTimer = null;
-    const swaps = current.verify(VERIFY_BUDGET_MS);
+    const swaps = current.verify(document.hidden ? undefined : VERIFY_BUDGET_MS);
     applySwaps(swaps);
     if (current.stats.pending > 0) {
       verifyTimer = setTimeout(verifyChunk, 0);
