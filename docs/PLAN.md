@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 merged into `main` (2026-11-05, #3). One license exception pending: elkjs/EPL-2.0 (ADR-0020); Unlicense accepted (ADR-0026). Next: M2 on branch `m2-source-split`.
+**Status:** M1 merged into `main` (2026-11-05, #3). No license exceptions pending: Unlicense allowed (ADR-0026), elkjs/EPL-2.0 approved per package (ADR-0027). Next: M2 on branch `m2-source-split`.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -25,7 +25,7 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 
 ## M1 — Read view (branch `m1-read-view`)
 - [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0020, ADR-0021)
-- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (elkjs/EPL-2.0 pending, ADR-0020; Unlicense accepted, ADR-0026)
+- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (Unlicense allowed, ADR-0026; elkjs/EPL-2.0 approved per package, ADR-0027)
 - [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0022)
 - [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0023), KaTeX CSS + woff2 fonts from the vendor bundle
 - [x] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, per-response nonce), read WKWebView isolation, external links, `.md` links open as documents, quarantine → static + native trust banner (trust store keyed by path + xattr), "Allow network" toggle (per file, remembered), file change → debounced refresh via NSFilePresenter + vnode watcher (ADR-0024, ADR-0025)

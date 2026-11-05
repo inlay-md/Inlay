@@ -79,3 +79,6 @@ The "Trust This Document" banner is an AppKit view stacked above the webview, so
 
 ## ADR-0026 — Unlicense added to the shipped-code allowlist (2026-11-05, product owner)
 The product owner accepted the Unlicense (an OSI-approved public-domain dedication with a fallback grant and no obligations) for shipped code, resolving the pending exception of ADR-0020 for `robust-predicates` inside `d3.min.js`. It is now on the allowlist next to MIT/BSD/Apache-2.0/ISC, so future Unlicense dependencies pass the check silently and appear only in THIRD_PARTY_NOTICES. This amends the brief's dependency rule; the `elkjs` (EPL-2.0) exception stays pending.
+
+## ADR-0027 — EPL-2.0 accepted for the vendored Mermaid bundle only (2026-11-05, product owner)
+`elkjs` (EPL-2.0 OR GPL-3.0-or-later, taken under EPL-2.0) is compiled unmodified into `mermaid.min.js` 12.x. The product owner accepted it as a named, per-package exception rather than adding EPL-2.0 to the allowlist: EPL is a weak file-level copyleft, and shipping the unmodified bundle with its notice in THIRD_PARTY_NOTICES meets its terms, but any new EPL dependency should be looked at on its own. If Inlay ever modifies ELK or Mermaid's bundle, revisit this entry.
