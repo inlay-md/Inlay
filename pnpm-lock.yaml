@@ -234,6 +234,9 @@ importers:
       '@inlay-md/host-api':
         specifier: workspace:*
         version: link:../host-api
+      '@inlay-md/md-render':
+        specifier: workspace:*
+        version: link:../md-render
       '@lezer/common':
         specifier: 1.2.3
         version: 1.2.3
@@ -249,16 +252,34 @@ importers:
       '@milkdown/kit':
         specifier: 7.23.0
         version: 7.23.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(typescript@7.0.2)
+      mdast-util-to-markdown:
+        specifier: 2.2.2
+        version: 2.2.2
+      remark-frontmatter:
+        specifier: 5.0.0
+        version: 5.0.0
+      remark-gfm:
+        specifier: 4.0.1
+        version: 4.0.1
+      remark-math:
+        specifier: 6.0.0
+        version: 6.0.0
+      remark-parse:
+        specifier: 11.0.0
+        version: 11.0.0
       remark-stringify:
         specifier: 11.0.0
         version: 11.0.0
+      unified:
+        specifier: 11.0.5
+        version: 11.0.5
     devDependencies:
       '@inlay-md/fixtures':
         specifier: workspace:*
         version: link:../../fixtures
-      '@inlay-md/md-render':
-        specifier: workspace:*
-        version: link:../md-render
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
