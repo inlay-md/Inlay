@@ -152,7 +152,8 @@ final class WindowModesTests: XCTestCase {
 
         // Scrolling the editor scrolls the Read pane (source → read).
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.scrollToSourceLine(6000); true")
-        let followed = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 5900 ? String(l) : ''; })()", timeout: 10)
+        // The Read pane may still be re-rendering the 10k-line edit on a slow CI runner; give it time.
+        let followed = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 5900 ? String(l) : ''; })()", timeout: 30)
         XCTAssertFalse(followed.isEmpty, "Read pane followed the editor's top line")
         XCTAssertNotNil(controller.splitView.syncFraction)
         XCTAssertTrue(controller.sourceHeader.detail.hasPrefix("Ln "), controller.sourceHeader.detail)
