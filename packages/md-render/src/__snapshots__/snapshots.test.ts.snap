@@ -1,5 +1,320 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`fixture snapshots > cdn-passthrough.md [full] 1`] = `
+"<h1 data-source-line="1-1">CDN URLs that are not rewritten</h1>
+<p data-source-line="3-3">An older major of a known library stays on the CDN (the bundled copy is a different major):</p>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<p data-source-line="7-7">A library Inlay does not bundle also stays on the CDN (allowed by the policy, needs network):</p>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
+<link data-source-line="10-10" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+<p data-source-line="12-15" id="passthrough">Rendered.</p>
+<script>
+  document.getElementById('passthrough').dataset.lodash = typeof _ === 'function' ? 'loaded' : 'missing';
+</script>"
+`;
+
+exports[`fixture snapshots > cdn-passthrough.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 16,
+  "rewrittenUrls": 0,
+  "title": "CDN URLs that are not rewritten",
+}
+`;
+
+exports[`fixture snapshots > cdn-passthrough.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">CDN URLs that are not rewritten</h1>
+<p data-source-line="3-3">An older major of a known library stays on the CDN (the bundled copy is a different major):</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="7-7">A library Inlay does not bundle also stays on the CDN (allowed by the policy, needs network):</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+
+<p data-source-line="12-15" id="passthrough">Rendered.</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > cdn-passthrough.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 16,
+  "rewrittenUrls": 0,
+  "title": "CDN URLs that are not rewritten",
+}
+`;
+
+exports[`fixture snapshots > cdn-passthrough.md [static] 1`] = `
+"<h1 data-source-line="1-1">CDN URLs that are not rewritten</h1>
+<p data-source-line="3-3">An older major of a known library stays on the CDN (the bundled copy is a different major):</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="7-7">A library Inlay does not bundle also stays on the CDN (allowed by the policy, needs network):</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+
+<p data-source-line="12-15" id="passthrough">Rendered.</p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > cdn-passthrough.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 16,
+  "rewrittenUrls": 0,
+  "title": "CDN URLs that are not rewritten",
+}
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [full] 1`] = `
+"<h1 data-source-line="1-1">Chart.js from jsDelivr</h1>
+<p data-source-line="3-3">The script below points at the CDN; Inlay serves its bundled copy so the chart renders offline.</p>
+<p data-source-line="5-5"><canvas id="sales" width="480" height="240"></canvas></p>
+<script src="mdview://doc/__inlay/vendor/chart.js/chart.umd.js" data-inlay-vendor="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
+<script>
+  const canvas = document.getElementById('sales');
+  canvas.dataset.chartjs = typeof Chart === 'function' ? 'loaded' : 'missing';
+  if (typeof Chart === 'function') {
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [{ label: 'Sales', data: [12, 19, 7, 15], backgroundColor: '#0a84ff' }],
+      },
+      options: { animation: false, responsive: false },
+    });
+    canvas.dataset.rendered = 'true';
+  }
+</script>
+<p data-source-line="24-24">Text after the chart.</p>"
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 25,
+  "rewrittenUrls": 1,
+  "title": "Chart.js from jsDelivr",
+}
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Chart.js from jsDelivr</h1>
+<p data-source-line="3-3">The script below points at the CDN; Inlay serves its bundled copy so the chart renders offline.</p>
+<p data-source-line="5-5"><canvas id="sales" width="480" height="240"></canvas></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="24-24">Text after the chart.</p>"
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 25,
+  "rewrittenUrls": 0,
+  "title": "Chart.js from jsDelivr",
+}
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [static] 1`] = `
+"<h1 data-source-line="1-1">Chart.js from jsDelivr</h1>
+<p data-source-line="3-3">The script below points at the CDN; Inlay serves its bundled copy so the chart renders offline.</p>
+<p data-source-line="5-5"><canvas id="sales" width="480" height="240"></canvas></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="24-24">Text after the chart.</p>"
+`;
+
+exports[`fixture snapshots > chart-chartjs.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 25,
+  "rewrittenUrls": 0,
+  "title": "Chart.js from jsDelivr",
+}
+`;
+
+exports[`fixture snapshots > chart-d3.md [full] 1`] = `
+"<h1 data-source-line="1-1">D3 from unpkg</h1>
+<p data-source-line="3-3"><svg id="bars" width="300" height="120"></svg></p>
+<script src="mdview://doc/__inlay/vendor/d3/d3.min.js" data-inlay-vendor="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script>
+  const svg = document.getElementById('bars');
+  svg.dataset.d3 = typeof d3 === 'object' ? 'loaded' : 'missing';
+  if (typeof d3 === 'object') {
+    const data = [4, 8, 15, 16, 23];
+    d3.select(svg)
+      .selectAll('rect')
+      .data(data)
+      .join('rect')
+      .attr('x', (d, i) => i * 50 + 10)
+      .attr('y', (d) => 120 - d * 4)
+      .attr('width', 40)
+      .attr('height', (d) => d * 4)
+      .attr('fill', 'steelblue');
+    svg.dataset.rendered = 'true';
+  }
+</script>"
+`;
+
+exports[`fixture snapshots > chart-d3.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 23,
+  "rewrittenUrls": 1,
+  "title": "D3 from unpkg",
+}
+`;
+
+exports[`fixture snapshots > chart-d3.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">D3 from unpkg</h1>
+<p data-source-line="3-3"><svg id="bars" width="300" height="120"></svg></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > chart-d3.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 23,
+  "rewrittenUrls": 0,
+  "title": "D3 from unpkg",
+}
+`;
+
+exports[`fixture snapshots > chart-d3.md [static] 1`] = `
+"<h1 data-source-line="1-1">D3 from unpkg</h1>
+<p data-source-line="3-3"><svg id="bars" width="300" height="120"></svg></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > chart-d3.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 23,
+  "rewrittenUrls": 0,
+  "title": "D3 from unpkg",
+}
+`;
+
+exports[`fixture snapshots > chart-echarts.md [full] 1`] = `
+"<h1 data-source-line="1-1">ECharts from cdnjs</h1>
+<div data-source-line="3-3" id="echart" style="width: 480px; height: 260px;"></div>
+<script src="mdview://doc/__inlay/vendor/echarts/echarts.min.js" data-inlay-vendor="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
+<script>
+  const el = document.getElementById('echart');
+  el.dataset.echarts = typeof echarts === 'object' ? 'loaded' : 'missing';
+  if (typeof echarts === 'object') {
+    const chart = echarts.init(el, null, { renderer: 'svg' });
+    chart.setOption({
+      animation: false,
+      xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+      yAxis: { type: 'value' },
+      series: [{ type: 'line', data: [5, 20, 36, 10, 10] }],
+    });
+    el.dataset.rendered = 'true';
+  }
+</script>"
+`;
+
+exports[`fixture snapshots > chart-echarts.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 20,
+  "rewrittenUrls": 1,
+  "title": "ECharts from cdnjs",
+}
+`;
+
+exports[`fixture snapshots > chart-echarts.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">ECharts from cdnjs</h1>
+<div data-source-line="3-3" id="echart" style="width: 480px; height: 260px;"></div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > chart-echarts.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 20,
+  "rewrittenUrls": 0,
+  "title": "ECharts from cdnjs",
+}
+`;
+
+exports[`fixture snapshots > chart-echarts.md [static] 1`] = `
+"<h1 data-source-line="1-1">ECharts from cdnjs</h1>
+<div data-source-line="3-3" id="echart" style="width: 480px; height: 260px;"></div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > chart-echarts.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 20,
+  "rewrittenUrls": 0,
+  "title": "ECharts from cdnjs",
+}
+`;
+
 exports[`fixture snapshots > crlf.md [full] 1`] = `
 "<h1 data-source-line="1-1">CRLF file</h1>
 <p data-source-line="3-3">Every line ends with CRLF, including the last.</p>
@@ -192,6 +507,76 @@ exports[`fixture snapshots > empty.md [static] 2`] = `
   "lineCount": 0,
   "rewrittenUrls": 0,
   "title": null,
+}
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [full] 1`] = `
+"<h1 data-source-line="1-1">Network access toggle</h1>
+<p data-source-line="3-3">Documents cannot reach the network unless "Allow Network for This Document" is on.</p>
+<p data-source-line="5-5"><output id="fetch-remote">pending</output> / <output id="fetch-local">pending</output></p>
+<script>
+  const report = (id, promise) =>
+    promise
+      .then((r) => { document.getElementById(id).textContent = \`allowed:\${r.status}\`; })
+      .catch((e) => { document.getElementById(id).textContent = \`blocked:\${e.name}\`; });
+  report('fetch-remote', fetch('https://example.com/'));
+  report('fetch-local', fetch('assets/sample.svg'));
+</script>"
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": "Network access toggle",
+}
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Network access toggle</h1>
+<p data-source-line="3-3">Documents cannot reach the network unless "Allow Network for This Document" is on.</p>
+<p data-source-line="5-5"><output id="fetch-remote">pending</output> / <output id="fetch-local">pending</output></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": "Network access toggle",
+}
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [static] 1`] = `
+"<h1 data-source-line="1-1">Network access toggle</h1>
+<p data-source-line="3-3">Documents cannot reach the network unless "Allow Network for This Document" is on.</p>
+<p data-source-line="5-5"><output id="fetch-remote">pending</output> / <output id="fetch-local">pending</output></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > fetch-toggle.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": "Network access toggle",
 }
 `;
 
@@ -780,6 +1165,252 @@ exports[`fixture snapshots > html-comments.md [static] 2`] = `
   "lineCount": 14,
   "rewrittenUrls": 0,
   "title": "HTML comments",
+}
+`;
+
+exports[`fixture snapshots > inline-svg.md [full] 1`] = `
+"<h1 data-source-line="1-1">Inline SVG</h1>
+<p data-source-line="3-3">A block-level SVG with a gradient, its own <code>&#x3C;style></code> and an animation:</p>
+<svg data-source-line="5-18" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100" role="img" aria-label="Inlay logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#0a84ff"></stop>
+      <stop offset="1" stop-color="#ff9f0a"></stop>
+    </linearGradient>
+    <style>.label { font: 14px sans-serif; fill: white; }</style>
+  </defs>
+  <rect x="10" y="10" width="180" height="80" rx="12" fill="url(#g)"></rect>
+  <circle cx="50" cy="50" r="20" fill="white" opacity="0.9">
+    <animate attributeName="r" values="20;24;20" dur="2s" repeatCount="indefinite"></animate>
+  </circle>
+  <text x="90" y="56" class="label">Inlay</text>
+</svg>
+<p data-source-line="20-20">An inline <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="tomato"></circle></svg> icon inside a sentence, and a second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > inline-svg.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 21,
+  "rewrittenUrls": 0,
+  "title": "Inline SVG",
+}
+`;
+
+exports[`fixture snapshots > inline-svg.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Inline SVG</h1>
+<p data-source-line="3-3">A block-level SVG with a gradient, its own <code>&#x3C;style></code> and an animation:</p>
+<svg data-source-line="5-18" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100" role="img" aria-label="Inlay logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#0a84ff"></stop>
+      <stop offset="1" stop-color="#ff9f0a"></stop>
+    </linearGradient>
+    
+  </defs>
+  <rect x="10" y="10" width="180" height="80" rx="12" fill="url(#g)"></rect>
+  <circle cx="50" cy="50" r="20" fill="white" opacity="0.9">
+    <animate attributeName="r" values="20;24;20" dur="2s" repeatCount="indefinite"></animate>
+  </circle>
+  <text x="90" y="56" class="label">Inlay</text>
+</svg>
+<p data-source-line="20-20">An inline <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="tomato"></circle></svg> icon inside a sentence, and a second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > inline-svg.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 21,
+  "rewrittenUrls": 0,
+  "title": "Inline SVG",
+}
+`;
+
+exports[`fixture snapshots > inline-svg.md [static] 1`] = `
+"<h1 data-source-line="1-1">Inline SVG</h1>
+<p data-source-line="3-3">A block-level SVG with a gradient, its own <code>&#x3C;style></code> and an animation:</p>
+<svg data-source-line="5-18" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100" role="img" aria-label="Inlay logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#0a84ff"></stop>
+      <stop offset="1" stop-color="#ff9f0a"></stop>
+    </linearGradient>
+    <style>.label { font: 14px sans-serif; fill: white; }</style>
+  </defs>
+  <rect x="10" y="10" width="180" height="80" rx="12" fill="url(#g)"></rect>
+  <circle cx="50" cy="50" r="20" fill="white" opacity="0.9">
+    <animate attributeName="r" values="20;24;20" dur="2s" repeatCount="indefinite"></animate>
+  </circle>
+  <text x="90" y="56" class="label">Inlay</text>
+</svg>
+<p data-source-line="20-20">An inline <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="tomato"></circle></svg> icon inside a sentence, and a second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > inline-svg.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 21,
+  "rewrittenUrls": 0,
+  "title": "Inline SVG",
+}
+`;
+
+exports[`fixture snapshots > katex-autorender.md [full] 1`] = `
+"<h1 data-source-line="1-1">KaTeX auto-render from the CDN</h1>
+<p data-source-line="3-3">Documents that bring their own KaTeX keep working offline because the URLs are rewritten to the bundled copy.</p>
+<link data-source-line="5-7" rel="stylesheet" href="mdview://doc/__inlay/vendor/katex/katex.min.css" data-inlay-vendor="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="mdview://doc/__inlay/vendor/katex/katex.min.js" data-inlay-vendor="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="mdview://doc/__inlay/vendor/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.getElementById(&#x27;autorender&#x27;), { delimiters: [{ left: &#x27;\\\\(&#x27;, right: &#x27;\\\\)&#x27;, display: false }] }); document.getElementById(&#x27;autorender&#x27;).dataset.rendered = &#x27;true&#x27;;" data-inlay-vendor="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<div data-source-line="9-9" id="autorender">Auto-rendered: \\(a^2 + b^2 = c^2\\) and \\(\\sqrt{2}\\).</div>
+<p data-source-line="11-11">Native math still renders too: <span class="inlay-math inlay-math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>≈</mo><mn>3.14159</mn></mrow><annotation encoding="application/x-tex">\\pi \\approx 3.14159</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4831em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3.14159</span></span></span></span></span>.</p>"
+`;
+
+exports[`fixture snapshots > katex-autorender.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 12,
+  "rewrittenUrls": 3,
+  "title": "KaTeX auto-render from the CDN",
+}
+`;
+
+exports[`fixture snapshots > katex-autorender.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">KaTeX auto-render from the CDN</h1>
+<p data-source-line="3-3">Documents that bring their own KaTeX keep working offline because the URLs are rewritten to the bundled copy.</p>
+
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div data-source-line="9-9" id="autorender">Auto-rendered: \\(a^2 + b^2 = c^2\\) and \\(\\sqrt{2}\\).</div>
+<p data-source-line="11-11">Native math still renders too: <span class="inlay-math inlay-math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>≈</mo><mn>3.14159</mn></mrow><annotation encoding="application/x-tex">\\pi \\approx 3.14159</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4831em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3.14159</span></span></span></span></span>.</p>"
+`;
+
+exports[`fixture snapshots > katex-autorender.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 12,
+  "rewrittenUrls": 0,
+  "title": "KaTeX auto-render from the CDN",
+}
+`;
+
+exports[`fixture snapshots > katex-autorender.md [static] 1`] = `
+"<h1 data-source-line="1-1">KaTeX auto-render from the CDN</h1>
+<p data-source-line="3-3">Documents that bring their own KaTeX keep working offline because the URLs are rewritten to the bundled copy.</p>
+
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<div data-source-line="9-9" id="autorender">Auto-rendered: \\(a^2 + b^2 = c^2\\) and \\(\\sqrt{2}\\).</div>
+<p data-source-line="11-11">Native math still renders too: <span class="inlay-math inlay-math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>≈</mo><mn>3.14159</mn></mrow><annotation encoding="application/x-tex">\\pi \\approx 3.14159</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4831em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">π</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3.14159</span></span></span></span></span>.</p>"
+`;
+
+exports[`fixture snapshots > katex-autorender.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 12,
+  "rewrittenUrls": 0,
+  "title": "KaTeX auto-render from the CDN",
+}
+`;
+
+exports[`fixture snapshots > local-images.md [full] 1`] = `
+"<h1 data-source-line="1-1">Local images relative to the file</h1>
+<p data-source-line="3-3"><img src="assets/sample.svg" alt="In a subfolder"></p>
+<p data-source-line="5-5"><img src="./assets/pixel.png" alt="With ./ prefix"></p>
+<p data-source-line="7-7"><img src="assets/with%20space.svg" alt="Encoded space"></p>
+<p data-source-line="9-9">The next two must not load: one escapes the document folder, one is an absolute path.</p>
+<img data-source-line="11-12" id="outside" src="../assets/outside.svg" alt="outside">
+<img id="absolute" src="/etc/hosts" alt="absolute">"
+`;
+
+exports[`fixture snapshots > local-images.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Local images relative to the file",
+}
+`;
+
+exports[`fixture snapshots > local-images.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Local images relative to the file</h1>
+<p data-source-line="3-3"><img src="assets/sample.svg" alt="In a subfolder"></p>
+<p data-source-line="5-5"><img src="./assets/pixel.png" alt="With ./ prefix"></p>
+<p data-source-line="7-7"><img src="assets/with%20space.svg" alt="Encoded space"></p>
+<p data-source-line="9-9">The next two must not load: one escapes the document folder, one is an absolute path.</p>
+<img data-source-line="11-12" id="outside" src="../assets/outside.svg" alt="outside">
+<img id="absolute" src="/etc/hosts" alt="absolute">"
+`;
+
+exports[`fixture snapshots > local-images.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Local images relative to the file",
+}
+`;
+
+exports[`fixture snapshots > local-images.md [static] 1`] = `
+"<h1 data-source-line="1-1">Local images relative to the file</h1>
+<p data-source-line="3-3"><img src="assets/sample.svg" alt="In a subfolder"></p>
+<p data-source-line="5-5"><img src="./assets/pixel.png" alt="With ./ prefix"></p>
+<p data-source-line="7-7"><img src="assets/with%20space.svg" alt="Encoded space"></p>
+<p data-source-line="9-9">The next two must not load: one escapes the document folder, one is an absolute path.</p>
+<img data-source-line="11-12" id="outside" src="../assets/outside.svg" alt="outside">
+<img id="absolute" src="/etc/hosts" alt="absolute">"
+`;
+
+exports[`fixture snapshots > local-images.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Local images relative to the file",
 }
 `;
 
@@ -1406,6 +2037,151 @@ exports[`fixture snapshots > perf-10k-lines.md [static] 2`] = `
 }
 `;
 
+exports[`fixture snapshots > security-probe.md [full] 1`] = `
+"<h1 data-source-line="1-1">Security probe</h1>
+<p data-source-line="3-3">This document tries to reach native code, the network and other origins. Every attempt must be blocked; the results are written as JSON below for the automated tests.</p>
+<pre data-source-line="5-5" id="probe-results">running…</pre>
+<img data-source-line="6-7" id="probe-img-traversal" src="../../etc/hosts" alt="" width="1" height="1">
+<form id="probe-form" action="https://example.com/submit" method="post" target="_self"><input type="hidden" name="x" value="1"></form>
+<script>
+(() => {
+  const results = {};
+  const violations = [];
+  document.addEventListener('securitypolicyviolation', (e) => {
+    violations.push(\`\${e.violatedDirective.split(' ')[0]} \${e.blockedURI}\`);
+  });
+  const settle = (name, promise) =>
+    Promise.resolve()
+      .then(() => promise)
+      .then((v) => { results[name] = \`allowed:\${String(v).slice(0, 60)}\`; })
+      .catch((e) => { results[name] = \`blocked:\${e && e.name ? e.name : String(e)}\`; });
+
+  // 1. Native bridge.
+  results['native-bridge'] =
+    typeof window.webkit === 'undefined' || typeof window.webkit.messageHandlers === 'undefined'
+      ? 'blocked:no-bridge' : 'allowed:webkit.messageHandlers';
+  // 2. eval / Function.
+  try { results['eval'] = \`allowed:\${eval('1+1')}\`; } catch (e) { results['eval'] = \`blocked:\${e.name}\`; }
+  try { results['function-ctor'] = \`allowed:\${new Function('return 2')()}\`; } catch (e) { results['function-ctor'] = \`blocked:\${e.name}\`; }
+  // 3. Network.
+  const pending = [
+    settle('fetch-remote', fetch('https://example.com/')),
+    settle('fetch-same-origin', fetch('assets/sample.svg')),
+    settle('fetch-traversal', fetch('../../package.json')),
+    settle('xhr-remote', new Promise((resolve, reject) => {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://example.com/');
+        xhr.onload = () => resolve(xhr.status);
+        xhr.onerror = () => reject(new Error('NetworkError'));
+        xhr.send();
+      } catch (e) { reject(e); }
+    })),
+    settle('websocket', new Promise((resolve, reject) => {
+      try {
+        const ws = new WebSocket('wss://example.com/');
+        ws.onopen = () => resolve('open');
+        ws.onerror = () => reject(new Error('WebSocketError'));
+      } catch (e) { reject(e); }
+    })),
+  ];
+  // sendBeacon reports "queued" before CSP rejects the request; the violation event decides.
+  try { results['beacon'] = navigator.sendBeacon('https://example.com/beacon', 'x') ? 'pending' : 'blocked:refused'; } catch (e) { results['beacon'] = \`blocked:\${e.name}\`; }
+  // 4. Frames and popups (popups are refused natively by the app; browsers may open one).
+  const frame = document.createElement('iframe');
+  frame.src = 'https://example.com/';
+  frame.width = '1'; frame.height = '1';
+  document.body.append(frame);
+  try { results['window-open'] = window.open('https://example.com/', '_blank') ? 'allowed:window' : 'blocked:null'; } catch (e) { results['window-open'] = \`blocked:\${e.name}\`; }
+  // 5. Form submission to another origin.
+  try { document.getElementById('probe-form').submit(); results['form-submit'] = 'pending'; } catch (e) { results['form-submit'] = \`blocked:\${e.name}\`; }
+  // 6. Image traversal.
+  const img = document.getElementById('probe-img-traversal');
+  pending.push(new Promise((resolve) => {
+    const done = (v) => { results['img-traversal'] = v; resolve(); };
+    if (img.complete) done(img.naturalWidth > 0 ? 'allowed:loaded' : 'blocked:error');
+    img.onload = () => done(img.naturalWidth > 0 ? 'allowed:loaded' : 'blocked:error');
+    img.onerror = () => done('blocked:error');
+  }));
+
+  const finish = () => {
+    if (results['beacon'] === 'pending') {
+      results['beacon'] = violations.some((v) => v === 'connect-src https://example.com/beacon') ? 'blocked:csp' : 'allowed:no-violation';
+    }
+    if (results['form-submit'] === 'pending') {
+      results['form-submit'] = violations.some((v) => v.startsWith('form-action')) ? 'blocked:csp' : 'allowed:no-violation';
+    }
+    results['iframe'] = violations.some((v) => v.startsWith('frame-src') || v.startsWith('child-src')) ? 'blocked:csp' : 'allowed:no-violation';
+    const pre = document.getElementById('probe-results');
+    pre.textContent = JSON.stringify({ results, violations }, null, 2);
+    pre.dataset.complete = 'true';
+  };
+  Promise.allSettled(pending).then(() => setTimeout(finish, 300));
+  setTimeout(finish, 4000);
+})();
+</script>"
+`;
+
+exports[`fixture snapshots > security-probe.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 86,
+  "rewrittenUrls": 0,
+  "title": "Security probe",
+}
+`;
+
+exports[`fixture snapshots > security-probe.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Security probe</h1>
+<p data-source-line="3-3">This document tries to reach native code, the network and other origins. Every attempt must be blocked; the results are written as JSON below for the automated tests.</p>
+<pre data-source-line="5-5" id="probe-results">running…</pre>
+<img data-source-line="6-7" id="probe-img-traversal" src="../../etc/hosts" alt="" width="1" height="1">
+<input type="hidden" name="x" value="1">
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > security-probe.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 86,
+  "rewrittenUrls": 0,
+  "title": "Security probe",
+}
+`;
+
+exports[`fixture snapshots > security-probe.md [static] 1`] = `
+"<h1 data-source-line="1-1">Security probe</h1>
+<p data-source-line="3-3">This document tries to reach native code, the network and other origins. Every attempt must be blocked; the results are written as JSON below for the automated tests.</p>
+<pre data-source-line="5-5" id="probe-results">running…</pre>
+<img data-source-line="6-7" id="probe-img-traversal" src="../../etc/hosts" alt="" width="1" height="1">
+<input type="hidden" name="x" value="1">
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>"
+`;
+
+exports[`fixture snapshots > security-probe.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 86,
+  "rewrittenUrls": 0,
+  "title": "Security probe",
+}
+`;
+
 exports[`fixture snapshots > setext-and-styles.md [full] 1`] = `
 "<h1 data-source-line="1-2">Setext heading level one</h1>
 <h2 data-source-line="4-5">Setext heading level two</h2>
@@ -1556,6 +2332,154 @@ exports[`fixture snapshots > setext-and-styles.md [static] 2`] = `
   "lineCount": 41,
   "rewrittenUrls": 0,
   "title": "Setext heading level one",
+}
+`;
+
+exports[`fixture snapshots > style-block.md [full] 1`] = `
+"<h1 data-source-line="1-1">Document-level style block</h1>
+<style>
+  :root { --accent: rgb(255, 99, 71); }
+  h2 { color: var(--accent); }
+  .note { border-left: 4px solid var(--accent); padding-left: 1rem; }
+  .note strong { text-transform: uppercase; }
+</style>
+<h2 data-source-line="10-10">Styled heading</h2>
+<div data-source-line="12-12" class="note">
+<p data-source-line="14-14">A <strong>note</strong> block whose Markdown is still rendered inside raw HTML.</p>
+</div>
+<p data-source-line="18-18">Plain paragraph after the note.</p>"
+`;
+
+exports[`fixture snapshots > style-block.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Document-level style block",
+}
+`;
+
+exports[`fixture snapshots > style-block.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Document-level style block</h1>
+
+<h2 data-source-line="10-10">Styled heading</h2>
+<div data-source-line="12-12" class="note">
+<p data-source-line="14-14">A <strong>note</strong> block whose Markdown is still rendered inside raw HTML.</p>
+</div>
+<p data-source-line="18-18">Plain paragraph after the note.</p>"
+`;
+
+exports[`fixture snapshots > style-block.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Document-level style block",
+}
+`;
+
+exports[`fixture snapshots > style-block.md [static] 1`] = `
+"<h1 data-source-line="1-1">Document-level style block</h1>
+<style>
+  :root { --accent: rgb(255, 99, 71); }
+  h2 { color: var(--accent); }
+  .note { border-left: 4px solid var(--accent); padding-left: 1rem; }
+  .note strong { text-transform: uppercase; }
+</style>
+<h2 data-source-line="10-10">Styled heading</h2>
+<div data-source-line="12-12" class="note">
+<p data-source-line="14-14">A <strong>note</strong> block whose Markdown is still rendered inside raw HTML.</p>
+</div>
+<p data-source-line="18-18">Plain paragraph after the note.</p>"
+`;
+
+exports[`fixture snapshots > style-block.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Document-level style block",
+}
+`;
+
+exports[`fixture snapshots > svg-image.md [full] 1`] = `
+"<h1 data-source-line="1-1">SVG and raster images</h1>
+<p data-source-line="3-3">Markdown image syntax: <img src="./assets/sample.svg" alt="Sample SVG"></p>
+<p data-source-line="5-5">HTML image with a size: <img id="sized" src="assets/sample.svg" width="64" height="64" alt="Sized sample"></p>
+<p data-source-line="7-7">A PNG: <img src="assets/pixel.png" alt="Checkerboard"></p>
+<p data-source-line="9-9">A file name with a space: <img src="assets/with%20space.svg" alt="Spaced"></p>"
+`;
+
+exports[`fixture snapshots > svg-image.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 10,
+  "rewrittenUrls": 0,
+  "title": "SVG and raster images",
+}
+`;
+
+exports[`fixture snapshots > svg-image.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">SVG and raster images</h1>
+<p data-source-line="3-3">Markdown image syntax: <img src="./assets/sample.svg" alt="Sample SVG"></p>
+<p data-source-line="5-5">HTML image with a size: <img id="sized" src="assets/sample.svg" width="64" height="64" alt="Sized sample"></p>
+<p data-source-line="7-7">A PNG: <img src="assets/pixel.png" alt="Checkerboard"></p>
+<p data-source-line="9-9">A file name with a space: <img src="assets/with%20space.svg" alt="Spaced"></p>"
+`;
+
+exports[`fixture snapshots > svg-image.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 10,
+  "rewrittenUrls": 0,
+  "title": "SVG and raster images",
+}
+`;
+
+exports[`fixture snapshots > svg-image.md [static] 1`] = `
+"<h1 data-source-line="1-1">SVG and raster images</h1>
+<p data-source-line="3-3">Markdown image syntax: <img src="./assets/sample.svg" alt="Sample SVG"></p>
+<p data-source-line="5-5">HTML image with a size: <img id="sized" src="assets/sample.svg" width="64" height="64" alt="Sized sample"></p>
+<p data-source-line="7-7">A PNG: <img src="assets/pixel.png" alt="Checkerboard"></p>
+<p data-source-line="9-9">A file name with a space: <img src="assets/with%20space.svg" alt="Spaced"></p>"
+`;
+
+exports[`fixture snapshots > svg-image.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 10,
+  "rewrittenUrls": 0,
+  "title": "SVG and raster images",
 }
 `;
 
@@ -1865,5 +2789,205 @@ exports[`fixture snapshots > utf8-bom.md [static] 2`] = `
   "lineCount": 4,
   "rewrittenUrls": 0,
   "title": "UTF-8 BOM",
+}
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [full] 1`] = `
+"<h1 data-source-line="1-1">Web page semantics</h1>
+<p data-source-line="3-3">Scripts run in document order with access to the whole page, <code>document.currentScript</code> works, and load events fire.</p>
+<p data-source-line="5-9"><output id="order"></output>
+<output id="current-script"></output>
+<output id="dom-ready"></output>
+<output id="loaded"></output>
+<output id="style-applied"></output></p>
+<script>
+  window.__inlayOrder = ['a'];
+  document.getElementById('current-script').textContent = document.currentScript ? 'yes' : 'no';
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dom-ready').textContent = 'yes';
+  });
+  window.addEventListener('load', () => {
+    document.getElementById('loaded').textContent = 'yes';
+    document.getElementById('style-applied').textContent = getComputedStyle(document.getElementById('order')).fontWeight;
+  });
+</script>
+<style>output#order { font-weight: 700; }</style>
+<script>
+  window.__inlayOrder.push('b');
+  document.getElementById('order').textContent = window.__inlayOrder.join(',');
+</script>
+<p data-source-line="30-30">A paragraph with a <a href="https://inlay.live">link to the Inlay site</a> that opens in the default browser.</p>"
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Web page semantics",
+}
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Web page semantics</h1>
+<p data-source-line="3-3">Scripts run in document order with access to the whole page, <code>document.currentScript</code> works, and load events fire.</p>
+<p data-source-line="5-9"><output id="order"></output>
+<output id="current-script"></output>
+<output id="dom-ready"></output>
+<output id="loaded"></output>
+<output id="style-applied"></output></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="30-30">A paragraph with a <a href="https://inlay.live">link to the Inlay site</a> that opens in the default browser.</p>"
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Web page semantics",
+}
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [static] 1`] = `
+"<h1 data-source-line="1-1">Web page semantics</h1>
+<p data-source-line="3-3">Scripts run in document order with access to the whole page, <code>document.currentScript</code> works, and load events fire.</p>
+<p data-source-line="5-9"><output id="order"></output>
+<output id="current-script"></output>
+<output id="dom-ready"></output>
+<output id="loaded"></output>
+<output id="style-applied"></output></p>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<style>output#order { font-weight: 700; }</style>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="30-30">A paragraph with a <a href="https://inlay.live">link to the Inlay site</a> that opens in the default browser.</p>"
+`;
+
+exports[`fixture snapshots > web-page-semantics.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Web page semantics",
+}
+`;
+
+exports[`fixture snapshots > widget-interactive.md [full] 1`] = `
+"<h1 data-source-line="1-1">Interactive widget</h1>
+<p data-source-line="3-3">Buttons and a slider wired with plain DOM scripting.</p>
+<div data-source-line="5-11" id="widget" class="widget">
+  <button id="inc" type="button">+1</button>
+  <button id="dec" type="button">−1</button>
+  <output id="count" for="inc dec">0</output>
+  <label>Scale <input id="scale" type="range" min="1" max="10" value="3"></label>
+  <output id="scaled">3</output>
+</div>
+<style>
+  .widget { display: flex; gap: 0.75rem; align-items: center; padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px; }
+  .widget output { min-width: 2ch; text-align: center; font-weight: 600; }
+</style>
+<script>
+  let count = 0;
+  const show = () => {
+    document.getElementById('count').textContent = String(count);
+    document.getElementById('scaled').textContent = String(count * Number(document.getElementById('scale').value));
+  };
+  document.getElementById('inc').addEventListener('click', () => { count += 1; show(); });
+  document.getElementById('dec').addEventListener('click', () => { count -= 1; show(); });
+  document.getElementById('scale').addEventListener('input', show);
+  document.getElementById('widget').dataset.ready = 'true';
+</script>
+<p data-source-line="30-30">Markdown continues after the widget with <strong>emphasis</strong>.</p>"
+`;
+
+exports[`fixture snapshots > widget-interactive.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Interactive widget",
+}
+`;
+
+exports[`fixture snapshots > widget-interactive.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Interactive widget</h1>
+<p data-source-line="3-3">Buttons and a slider wired with plain DOM scripting.</p>
+<div data-source-line="5-11" id="widget" class="widget">
+  <button id="inc">+1</button>
+  <button id="dec">−1</button>
+  <output id="count" for="inc dec">0</output>
+  <label>Scale <input id="scale" type="range" min="1" max="10" value="3"></label>
+  <output id="scaled">3</output>
+</div>
+
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="30-30">Markdown continues after the widget with <strong>emphasis</strong>.</p>"
+`;
+
+exports[`fixture snapshots > widget-interactive.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Interactive widget",
+}
+`;
+
+exports[`fixture snapshots > widget-interactive.md [static] 1`] = `
+"<h1 data-source-line="1-1">Interactive widget</h1>
+<p data-source-line="3-3">Buttons and a slider wired with plain DOM scripting.</p>
+<div data-source-line="5-11" id="widget" class="widget">
+  <button id="inc">+1</button>
+  <button id="dec">−1</button>
+  <output id="count" for="inc dec">0</output>
+  <label>Scale <input id="scale" type="range" min="1" max="10" value="3"></label>
+  <output id="scaled">3</output>
+</div>
+<style>
+  .widget { display: flex; gap: 0.75rem; align-items: center; padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px; }
+  .widget output { min-width: 2ch; text-align: center; font-weight: 600; }
+</style>
+<div class="inlay-script-placeholder" role="note">Interactive content: open in Inlay</div>
+<p data-source-line="30-30">Markdown continues after the widget with <strong>emphasis</strong>.</p>"
+`;
+
+exports[`fixture snapshots > widget-interactive.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": true,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Interactive widget",
 }
 `;

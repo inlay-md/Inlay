@@ -99,17 +99,31 @@ export interface ParsedCdnUrl {
   path: string;
 }
 
+/**
+ * Minimal http(s) URL split (scheme, host, path). JavaScriptCore has no `URL`
+ * constructor, so the vendor rewriter must not depend on one (ADR-0006).
+ */
+export function splitHttpUrl(url: string): { host: string; path: string } | null {
+  const m = /^https?:\/\/([^/?#]+)([^?#]*)/i.exec(url.trim());
+  if (!m?.[1]) return null;
+  const host = m[1].toLowerCase().replace(/:\d+$/, '');
+  return { host, path: m[2] ?? '' };
+}
+
+function decodeSegment(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
 /** Parses a URL on one of the three allow-listed CDNs; null for anything else. */
 export function parseCdnUrl(url: string): ParsedCdnUrl | null {
-  let u: URL;
-  try {
-    u = new URL(url);
-  } catch {
-    return null;
-  }
-  if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
-  const host = u.hostname.toLowerCase();
-  const segments = u.pathname.split('/').filter(Boolean).map(decodeURIComponent);
+  const split = splitHttpUrl(url);
+  if (!split) return null;
+  const { host } = split;
+  const segments = split.path.split('/').filter(Boolean).map(decodeSegment);
   if (host === 'cdnjs.cloudflare.com') {
     // /ajax/libs/<lib>/<version>/<path>
     if (segments[0] !== 'ajax' || segments[1] !== 'libs' || !segments[2] || !segments[3])

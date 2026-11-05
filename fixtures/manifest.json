@@ -19,6 +19,19 @@
     { "file": "perf-10k-lines.md", "category": "performance", "eol": "lf", "minLines": 10000, "features": ["headings", "paragraphs", "lists", "code-fence", "table", "blockquote", "math"], "generated": true },
     { "file": "math.md", "category": "rendered", "eol": "lf", "features": ["math", "inline-math", "display-math", "katex-error", "escaped-dollar"] },
     { "file": "mermaid.md", "category": "rendered", "eol": "lf", "features": ["mermaid", "mermaid-error"] },
-    { "file": "highlighting.md", "category": "rendered", "eol": "lf", "features": ["code-fence", "highlighting", "unknown-language", "language-alias"] }
+    { "file": "highlighting.md", "category": "rendered", "eol": "lf", "features": ["code-fence", "highlighting", "unknown-language", "language-alias"] },
+    { "file": "chart-chartjs.md", "category": "rendered", "eol": "lf", "features": ["script", "cdn-script", "chart.js", "canvas", "integrity"], "islands": true },
+    { "file": "chart-echarts.md", "category": "rendered", "eol": "lf", "features": ["script", "cdn-script", "echarts"], "islands": true },
+    { "file": "chart-d3.md", "category": "rendered", "eol": "lf", "features": ["script", "cdn-script", "d3", "inline-svg"], "islands": true },
+    { "file": "cdn-passthrough.md", "category": "rendered", "eol": "lf", "features": ["script", "cdn-script", "cdn-older-major", "cdn-unknown-library", "cdn-stylesheet"], "islands": true },
+    { "file": "widget-interactive.md", "category": "rendered", "eol": "lf", "features": ["script", "style", "widget", "buttons", "slider"], "islands": true },
+    { "file": "inline-svg.md", "category": "rendered", "eol": "lf", "features": ["inline-svg", "svg-style", "svg-animate", "gradient"], "islands": true },
+    { "file": "svg-image.md", "category": "rendered", "eol": "lf", "features": ["image", "svg-img", "png", "encoded-path", "inline-html"], "islands": true },
+    { "file": "style-block.md", "category": "rendered", "eol": "lf", "features": ["style", "html-block", "markdown-in-html"], "islands": true },
+    { "file": "local-images.md", "category": "rendered", "eol": "lf", "features": ["image", "png", "encoded-path", "traversal", "absolute-path"], "islands": true },
+    { "file": "web-page-semantics.md", "category": "rendered", "eol": "lf", "features": ["script", "style", "script-order", "dom-events", "external-link"], "islands": true },
+    { "file": "fetch-toggle.md", "category": "rendered", "eol": "lf", "features": ["script", "fetch", "allow-network"], "islands": true },
+    { "file": "katex-autorender.md", "category": "rendered", "eol": "lf", "features": ["math", "cdn-script", "cdn-stylesheet", "katex", "onload-handler"], "islands": true },
+    { "file": "security-probe.md", "category": "rendered", "eol": "lf", "features": ["script", "security-probe", "fetch", "iframe", "form", "traversal"], "islands": true }
   ]
 }

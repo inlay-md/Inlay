@@ -98,6 +98,13 @@ describe('vendor URL rewriting (ADR-0008)', () => {
       path: 'd3.min.js',
     });
     expect(parseCdnUrl('not a url')).toBeNull();
+    expect(parseCdnUrl('https://cdn.jsdelivr.net:443/npm/d3@7?x=1#y')).toEqual({
+      host: 'jsdelivr',
+      library: 'd3',
+      version: '7',
+      path: '',
+    });
+    expect(parseCdnUrl('ftp://cdn.jsdelivr.net/npm/d3')).toBeNull();
     expect(requestedMajor(null)).toBeNull();
     expect(requestedMajor('latest')).toBeNull();
     expect(requestedMajor('^4.2')).toBe(4);

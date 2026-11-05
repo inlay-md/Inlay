@@ -3,12 +3,58 @@
 // Deterministically (re)generates the binary-ish fixtures that cannot be
 // authored safely by hand: mixed line endings, BOM, undecodable bytes and the
 // 10k-line performance file. Run: node fixtures/scripts/generate.mjs
-import { writeFileSync } from 'node:fs';
+import { copyFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { deflateSync } from 'node:zlib';
 
 const out = join(dirname(fileURLToPath(import.meta.url)), '..', 'md');
 const enc = new TextEncoder();
+
+// --- assets/pixel.png: 16×16 PNG with a 2-colour checkerboard (no image library needed) ---
+{
+  const crcTable = new Int32Array(256).map((_, n) => {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    return c;
+  });
+  const crc32 = (buf) => {
+    let c = -1;
+    for (const b of buf) c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8);
+    return (c ^ -1) >>> 0;
+  };
+  const chunk = (type, data) => {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    const body = Buffer.concat([Buffer.from(type, 'ascii'), data]);
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(crc32(body));
+    return Buffer.concat([len, body, crc]);
+  };
+  const size = 16;
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(size, 0);
+  ihdr.writeUInt32BE(size, 4);
+  ihdr[8] = 8; // bit depth
+  ihdr[9] = 2; // colour type: RGB
+  const raw = [];
+  for (let y = 0; y < size; y++) {
+    raw.push(0); // filter: none
+    for (let x = 0; x < size; x++) {
+      const on = (Math.floor(x / 4) + Math.floor(y / 4)) % 2 === 0;
+      raw.push(on ? 0x0a : 0xff, on ? 0x84 : 0x9f, on ? 0xff : 0x0a);
+    }
+  }
+  const png = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', deflateSync(Buffer.from(raw), { level: 9 })),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+  writeFileSync(join(out, 'assets', 'pixel.png'), png);
+  // A copy whose name needs percent-encoding in URLs.
+  copyFileSync(join(out, 'assets', 'sample.svg'), join(out, 'assets', 'with space.svg'));
+}
 
 // --- mixed-line-endings.md: CRLF majority, a few LF, one lone CR ---
 {

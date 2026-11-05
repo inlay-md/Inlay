@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline (slice 1) and Read view runtime (slice 2), lazy Shiki/KaTeX/Mermaid (slice 3) landed. Two license exceptions pending the product owner (ADR-0019).
+**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline (slice 1) and Read view runtime (slice 2), lazy Shiki/KaTeX/Mermaid (slice 3), rendered-content fixtures with offline CDN rewriting and the browser security probe (slice 4) landed. Next: Swift trust banner, network toggle, file watching (slice 5). Two license exceptions pending the product owner (ADR-0019).
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -25,12 +25,12 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 
 ## M1 — Read view (branch `m1-read-view`)
 - [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0019, ADR-0020)
-- [ ] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX) copied at build time with version manifest; license check + notices
+- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (two exceptions pending, ADR-0019)
 - [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0021)
 - [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0022), KaTeX CSS + woff2 fonts from the vendor bundle
 - [ ] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, nonce), read WKWebView isolation, external links, quarantine → static + native trust banner (trust store), "Allow network" toggle (per file), file change → debounced refresh
 - [ ] `isTrustedOrigin` used by all message listeners; runtime audited for `https:` assumptions
-- [ ] Fixtures: Chart.js/ECharts/D3 via real CDN URLs (+ older-major pin), widget, inline svg, svg img, style block, math, Mermaid, highlighting, local images, web-page-semantics, non-rewritable CDN script, fetch toggle, `../assets` (blocked), security probe
+- [x] Fixtures: Chart.js/ECharts/D3 via real CDN URLs (+ older-major pin), widget, inline svg, svg img, style block, math, Mermaid, highlighting, local images, web-page-semantics, non-rewritable CDN script, fetch toggle, `../assets` (blocked), security probe, KaTeX auto-render from CDN
 - [ ] Tests: Vitest snapshots + rewriter table; Playwright (route-intercepted CDNs, probe, dark mode, perf budget); XCTest app tests (probe via real scheme handler, traversal 403, external link, refresh, quarantine)
 - Done when: fixtures render in Playwright (Chromium + WebKit) and in the app; probe proves no native/network reach per ADR-0007; charts render offline; quarantine flow works without modifying the file.
 

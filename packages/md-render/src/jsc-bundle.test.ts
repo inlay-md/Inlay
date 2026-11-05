@@ -34,6 +34,12 @@ describe('JavaScriptCore bundle', () => {
   it('is a self-contained IIFE exposing render, version, themeCSS and languages', () => {
     expect(code).toMatch(/^var InlayRender = \(\(\) => \{/m);
     expect(code).not.toMatch(/\b(navigator|localStorage|sessionStorage)\./);
+    // The bare context has no URL constructor either; rewriting must still work (ADR-0006).
+    const rewritten = api.render('<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>\n', {
+      vendorBaseURL: 'cid:v/',
+    });
+    expect(rewritten.html).toContain('src="cid:v/d3/d3.min.js"');
+    expect(rewritten.meta['rewrittenUrls']).toBe(1);
     expect(typeof api.version).toBe('string');
     expect(api.themeCSS).toContain('--inlay-bg');
     expect(api.languages).toContain('swift');
