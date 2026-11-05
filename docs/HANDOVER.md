@@ -4,8 +4,8 @@ Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress a
 
 ## State on 2026-11-05 (end of M1)
 
-- `main` holds M0. Branch `m1-read-view` holds M1 in five slices (md-render pipeline, Read view runtime, lazy Shiki/KaTeX/Mermaid, rendered-content fixtures with offline CDN rewriting, Swift trust/network/file watching) and is proposed as a PR to `main`; merge after the product owner's "go".
-- Two license exceptions are **pending the product owner** (ADR-0020): `robust-predicates` (Unlicense, inside d3.min.js) and `elkjs` (EPL-2.0, inside mermaid.min.js). `pnpm licenses:check` passes but prints them until they are accepted (set `"status"` to approved in `scripts/license-policy.json`) or the library stops being vendored.
+- `main` holds M0 and M1 (#3, squash-merged; five slices: md-render pipeline, Read view runtime, lazy Shiki/KaTeX/Mermaid, rendered-content fixtures with offline CDN rewriting, Swift trust/network/file watching).
+- One license exception is **pending the product owner** (ADR-0020): `elkjs` (EPL-2.0, inside mermaid.min.js). Unlicense was accepted globally (ADR-0026). `pnpm licenses:check` passes but prints it until it is accepted (set `"status"` to approved in `scripts/license-policy.json`) or Mermaid is rebuilt without ELK.
 - Local toolchain: Node 26, pnpm 12.16, Xcode 27.2, XcodeGen 2.46, Playwright Chromium + WebKit installed.
 - M2 (Source + Split) starts on branch `m2-source-split` after "go".
 

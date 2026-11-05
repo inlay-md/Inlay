@@ -7,7 +7,8 @@
     "BSD-3-Clause",
     "BSD-3-Clause-Clear",
     "Apache-2.0",
-    "0BSD"
+    "0BSD",
+    "Unlicense"
   ],
   "exceptions": [
     {
@@ -16,14 +17,6 @@
       "approvedBy": "product owner",
       "date": "2026-11-05",
       "reason": "SIL Open Font License accepted for font files only (KaTeX fonts)."
-    },
-    {
-      "scope": "shipped",
-      "name": "robust-predicates",
-      "license": "Unlicense",
-      "status": "pending",
-      "date": "2026-11-05",
-      "reason": "Public-domain dedication (Unlicense) for geometric predicates compiled into d3.min.js via d3-delaunay/delaunator. Vendored for offline D3 documents (ADR-0008). Needs the product owner's decision: accept Unlicense for shipped code, or stop vendoring D3."
     },
     {
       "scope": "shipped",
