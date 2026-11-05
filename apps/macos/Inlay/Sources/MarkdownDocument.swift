@@ -3,6 +3,20 @@ import AppKit
 import InlayCore
 import UniformTypeIdentifiers
 
+/// Lets exactly one of several racing tasks win (see `MarkdownDocument.withTimeout`).
+final class ResumeOnce: @unchecked Sendable {
+    private let lock = NSLock()
+    private var claimed = false
+
+    func claim() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        if claimed { return false }
+        claimed = true
+        return true
+    }
+}
+
 /// NSDocument for Markdown files. The bytes read from disk (`fileData`) are the source of
 /// truth for change detection; `text` is the live document: the decoded file until the editor
 /// edits it, then whatever the editor last handed over. Saves pull the live text from the
@@ -145,18 +159,63 @@ final class MarkdownDocument: NSDocument, EditorHostDelegate {
         }
     }
 
-    /// Every save path (Save, Save As, Save To, autosave, Duplicate, Versions) funnels through here:
-    /// first the live text, then NSDocument writes `data(ofType:)`.
+    /// Every save path (Save, Save As, Save To, autosave, Duplicate, Versions) funnels through here
+    /// and NSDocument writes `data(ofType:)` = the live text as last pulled. The pull itself happens
+    /// in the user-facing entry points below, *before* NSDocument begins its file access: calling
+    /// `super` from a later turn here deadlocks the activity queue (ADR-0030), so this override only
+    /// does bookkeeping. Autosave therefore writes the mirror, at most ~0.5 s behind the editor.
     override func save(to url: URL, ofType typeName: String, for saveOperation: NSDocument.SaveOperationType, completionHandler: @escaping @Sendable (Error?) -> Void) {
-        Task { @MainActor in
-            let live = await self.pullLiveContent()
-            self.lastSaveUsedMirror = !live && self.decodable && self.liveContentSource != nil
-            super.save(to: url, ofType: typeName, for: saveOperation) { error in
-                MainActor.assumeIsolated {
-                    if error == nil { self.didSave(saveOperation) }
-                    completionHandler(error)
-                }
+        super.save(to: url, ofType: typeName, for: saveOperation) { error in
+            MainActor.assumeIsolated {
+                if error == nil { self.didSave(saveOperation) }
+                completionHandler(error)
             }
+        }
+    }
+
+    /// Before a user-initiated save: pull the live text; remember when the editor did not answer so the
+    /// window can warn that the mirror was written (ADR-0005).
+    private func pullBeforeUserSave() async {
+        let pulled = await pullLiveContent()
+        lastSaveUsedMirror = !pulled && decodable && liveContentSource != nil
+    }
+
+    /// User-initiated saves pull the live text first (outside any NSDocument file access), then proceed.
+    override func save(_ sender: Any?) {
+        Task { @MainActor in
+            await self.pullBeforeUserSave()
+            super.save(sender)
+        }
+    }
+
+    override func saveAs(_ sender: Any?) {
+        Task { @MainActor in
+            await self.pullBeforeUserSave()
+            super.saveAs(sender)
+        }
+    }
+
+    override func saveTo(_ sender: Any?) {
+        Task { @MainActor in
+            await self.pullBeforeUserSave()
+            super.saveTo(sender)
+        }
+    }
+
+    /// Duplicate writes the current contents through `writeSafely`; the live text is pulled first.
+    override func duplicate(_ sender: Any?) {
+        Task { @MainActor in
+            await self.pullBeforeUserSave()
+            super.duplicate(sender)
+        }
+    }
+
+    /// Closing may save: pull first so the "Save changes?" path writes the live text.
+    override func canClose(withDelegate delegate: Any, shouldClose shouldCloseSelector: Selector?, contextInfo: UnsafeMutableRawPointer?) {
+        nonisolated(unsafe) let context = contextInfo
+        Task { @MainActor in
+            await self.pullBeforeUserSave()
+            super.canClose(withDelegate: delegate, shouldClose: shouldCloseSelector, contextInfo: context)
         }
     }
 
@@ -169,20 +228,29 @@ final class MarkdownDocument: NSDocument, EditorHostDelegate {
         default:
             break
         }
-        if lastSaveUsedMirror { onSavedFromMirror?() }
+        if lastSaveUsedMirror {
+            lastSaveUsedMirror = false
+            onSavedFromMirror?()
+        }
         onSaved?(operation)
     }
 
+    struct TimeoutError: Error {}
+
+    /// Races `operation` against a timer without waiting for the loser: a task group would block
+    /// until every child finished, and a bridge call to a dead web process may never finish.
     static func withTimeout<T: Sendable>(_ timeout: Duration, _ operation: @escaping @Sendable () async throws -> T) async throws -> T {
-        try await withThrowingTaskGroup(of: T.self) { group in
-            group.addTask { try await operation() }
-            group.addTask {
-                try await Task.sleep(for: timeout)
-                throw CancellationError()
+        let once = ResumeOnce()
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<T, Error>) in
+            Task {
+                let result: Result<T, Error>
+                do { result = .success(try await operation()) } catch { result = .failure(error) }
+                if once.claim() { continuation.resume(with: result) }
             }
-            guard let first = try await group.next() else { throw CancellationError() }
-            group.cancelAll()
-            return first
+            Task {
+                try? await Task.sleep(for: timeout)
+                if once.claim() { continuation.resume(throwing: TimeoutError()) }
+            }
         }
     }
 

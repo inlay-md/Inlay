@@ -36,6 +36,25 @@ final class EditorDocumentTests: XCTestCase {
         }
     }
 
+    /// Polls until the file at `url` satisfies `predicate` (saves triggered through the action methods complete asynchronously).
+    @MainActor private func waitForDisk(_ url: URL, timeout: TimeInterval = 10, _ predicate: (Data) -> Bool) async throws -> Data {
+        let deadline = Date().addingTimeInterval(timeout)
+        var data = (try? Data(contentsOf: url)) ?? Data()
+        while !predicate(data) && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+            data = (try? Data(contentsOf: url)) ?? Data()
+        }
+        return data
+    }
+
+    @MainActor private func waitForMirror(_ doc: MarkdownDocument, prefix: String) async throws {
+        let deadline = Date().addingTimeInterval(5)
+        while !doc.text.hasPrefix(prefix) && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        XCTAssertTrue(doc.text.hasPrefix(prefix), "the mirror caught up: \(doc.text.prefix(20))")
+    }
+
     @MainActor func testEveryFixtureSavesByteIdenticalThroughTheLiveEditor() async throws {
         for file in try TestSupport.fixtureFiles() {
             let original = try Data(contentsOf: file)
@@ -67,12 +86,13 @@ final class EditorDocumentTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(200))
         XCTAssertTrue(doc.isDocumentEdited, "setDirty(true) reached NSDocument")
 
-        try await save(doc, to: url, operation: .saveOperation)
-        let saved = try Data(contentsOf: url)
+        // The real Save action: pulls the live text (the mirror may not have caught up), then writes.
+        doc.save(nil)
         let marker = Data("Most lines end with CRLF.".utf8)
         let range = try XCTUnwrap(original.range(of: marker))
         var expected = original
         expected.insert(contentsOf: Data("Ẹdited ".utf8), at: range.lowerBound)
+        let saved = try await waitForDisk(url) { $0 == expected }
         XCTAssertEqual(saved, expected, "only the inserted bytes differ; CRLF, LF and CR all survive")
         XCTAssertEqual(doc.fileData, saved, "the document knows what it wrote")
         XCTAssertFalse(doc.reloadIfChangedOnDisk(), "our own save is not an external change")
@@ -102,12 +122,14 @@ final class EditorDocumentTests: XCTestCase {
         var warned = false
         doc.onSavedFromMirror = { warned = true }
         doc.liveContentSource = { throw EditorWebView.EditorError.notResponsive }
-        let out = FileManager.default.temporaryDirectory.appendingPathComponent("inlay-\(UUID().uuidString).md")
-        defer { try? FileManager.default.removeItem(at: out) }
-        try await save(doc, to: out)
-        XCTAssertTrue(doc.lastSaveUsedMirror)
-        XCTAssertTrue(warned)
-        XCTAssertEqual(try Data(contentsOf: out), try Data(contentsOf: url), "the mirror is the last known text")
+        doc.updateChangeCount(.changeDone)
+        let original = try Data(contentsOf: url)
+        try Data("stale".utf8).write(to: url) // so the save visibly writes
+        doc.save(nil)
+        let saved = try await waitForDisk(url) { $0 == original }
+        XCTAssertEqual(saved, original, "the mirror is the last known text")
+        XCTAssertTrue(warned, "the window is told the save came from the mirror")
+        XCTAssertFalse(doc.lastSaveUsedMirror, "flag consumed by the warning")
     }
 
     @MainActor func testAutosaveSaveAsAndRevertGoThroughTheLiveEditor() async throws {
@@ -116,10 +138,10 @@ final class EditorDocumentTests: XCTestCase {
         defer { doc.close() }
         _ = try await editor.evaluateJavaScript("(() => { const v = window.inlayEditor.view; v.dispatch({ changes: { from: 0, insert: 'AUTOSAVED ' } }); return true; })()")
         _ = try await TestSupport.poll(editor, "window.inlayEditor.isDirty() ? 'yes' : ''")
-        try await Task.sleep(for: .milliseconds(200))
+        try await waitForMirror(doc, prefix: "AUTOSAVED ")
         XCTAssertTrue(doc.isDocumentEdited)
 
-        // Autosave in place writes the live text; the editor's clean baseline moves only on Save / Save As.
+        // Autosave in place writes the mirror (≤ 0.5 s behind); the editor's clean baseline moves only on Save / Save As.
         try await save(doc, to: url, operation: .autosaveInPlaceOperation)
         XCTAssertTrue(String(decoding: try Data(contentsOf: url), as: UTF8.self).hasPrefix("AUTOSAVED # GFM basics"))
         XCTAssertEqual(doc.fileData, try Data(contentsOf: url), "the document knows the bytes it autosaved")
@@ -209,5 +231,43 @@ final class EditorDocumentTests: XCTestCase {
         XCTAssertEqual(MarkdownDocument.detectEol("a\r\nb\nc\r\n"), "\r\n")
         XCTAssertEqual(MarkdownDocument.detectEol("a\rb\rc"), "\r")
         XCTAssertEqual(MarkdownDocument.detectEol("plain"), "\n")
+    }
+
+    @MainActor func testDuplicateAndAutosaveCarryTheLiveEditorText() async throws {
+        let url = try temporaryCopy(of: "crlf.md")
+        let (doc, editor) = try await openInEditor(url)
+        defer { doc.close() }
+        _ = try await editor.evaluateJavaScript("(() => { window.inlayEditor.view.dispatch({ changes: { from: 0, insert: 'DUP ' } }); return true; })()")
+        _ = try await TestSupport.poll(editor, "window.inlayEditor.isDirty() ? 'yes' : ''")
+        try await Task.sleep(for: .milliseconds(200))
+        XCTAssertFalse(doc.text.hasPrefix("DUP "), "the mirror has not caught up yet; the pull must")
+
+        let before = Set(NSDocumentController.shared.documents.map { ObjectIdentifier($0) })
+        doc.duplicate(nil)
+        let deadline = Date().addingTimeInterval(10)
+        var copy: MarkdownDocument?
+        while copy == nil && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+            copy = NSDocumentController.shared.documents.first { !before.contains(ObjectIdentifier($0)) } as? MarkdownDocument
+        }
+        let duplicate = try XCTUnwrap(copy, "Duplicate produced a new document")
+        defer { duplicate.close() }
+        XCTAssertNil(duplicate.fileURL, "a duplicate is a new untitled document")
+        XCTAssertTrue(duplicate.text.hasPrefix("DUP # CRLF file"), "the duplicate holds the live editor text: \(duplicate.text.prefix(30))")
+        XCTAssertEqual(MarkdownDocument.detectEol(duplicate.text), "\r\n")
+        XCTAssertEqual(try Data(contentsOf: url), try Data(contentsOf: TestSupport.fixturesDir.appendingPathComponent("crlf.md")), "the original file is untouched")
+
+        // The real autosave entry point goes through the save funnel and writes the live text in place.
+        _ = try await editor.evaluateJavaScript("(() => { window.inlayEditor.view.dispatch({ changes: { from: 0, insert: 'AUTO ' } }); return true; })()")
+        try await waitForMirror(doc, prefix: "AUTO DUP ")
+        try await MarkdownDocument.withTimeout(.seconds(10)) { @MainActor in
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                doc.autosave(withImplicitCancellability: false) { error in
+                    if let error { continuation.resume(throwing: error) } else { continuation.resume() }
+                }
+            }
+        }
+        XCTAssertTrue(String(decoding: try Data(contentsOf: url), as: UTF8.self).hasPrefix("AUTO DUP # CRLF file"))
+        XCTAssertEqual(doc.fileData, try Data(contentsOf: url))
     }
 }

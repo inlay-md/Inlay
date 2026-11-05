@@ -1,6 +1,21 @@
-# Handover: resuming Inlay at the start of M2 (Source + Split)
+# Handover: Inlay after M2 (Source + Split), before M3
 
-Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M2 task list), `docs/DECISIONS.md` (ADR-0001…0027), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M3 task list), `docs/DECISIONS.md` (ADR-0001…0031), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+
+## State on 2026-11-06 (M2 on branch `m2-source-split`, PR open)
+
+- M2 adds `packages/editor` (document model, CodeMirror Source mode page), the `WebKitHost` adapter, the Swift `EditorBridge`/`EditorWebView`, saving through the real NSDocument, the conflict banner and Split mode. Architecture: ADR-0028 (mixed EOL), ADR-0029 (editor page + bridge protocol), ADR-0030 (save entry points, mirror, conflicts), ADR-0031 (modes, Split sync).
+- Tests: `pnpm test:unit` (405), `pnpm test:e2e` (56 across Chromium + WebKit; `e2e/editor.spec.ts` runs against a second preview server on port 4174), `pnpm mac:test` (38 XCTest cases incl. `EditorDocumentTests`, `WindowModesTests`).
+- Manual: `docs/IME-CHECKLIST.md` has not been run yet on a release build.
+
+## Gotchas learned in M2
+
+- Foundation's `URL.path` drops a trailing slash: `mdview://x/__inlay/editor/` became `/__inlay/editor` and fell through to the asset route. Route on `MDViewSchemeHandler.routePath(of:)` (URLComponents), never `url.path`.
+- Never `await` inside `NSDocument.save(to:ofType:for:completionHandler:)` and call `super` later: NSDocument runs it inside its file-access queue and the deferred `super` deadlocks (autosave, Duplicate). Pull the live text in the action methods (`save(_:)`, `duplicate(_:)`, `canClose…`) before calling super; `save(to:)` stays synchronous.
+- `withThrowingTaskGroup` waits for every child on exit, so a "timeout" built on it hangs when the losing child never finishes (a bridge call to a dead web process). `MarkdownDocument.withTimeout` races with a continuation + `ResumeOnce`.
+- CodeMirror: `state.doc.toString()` joins with "\n"; use `state.sliceDoc()` to get the document's own line separator. Editor offsets count each line break as 1 regardless of separator length (`offsetToStringIndex`).
+- XCTest + WKWebView: hidden webviews load fine; `xcodebuild test` output through a pipe is buffered, so a hung test shows nothing until it finishes — `sample <pid>` on the test host shows where it waits, `CGWindowListCopyWindowInfo` lists its windows (screencapture of test-host windows is refused).
+- XcodeGen must be re-run after adding a Swift file (`pnpm mac:generate`), or the build fails with "cannot find X in scope".
 
 ## State on 2026-11-05 (M1 merged)
 
