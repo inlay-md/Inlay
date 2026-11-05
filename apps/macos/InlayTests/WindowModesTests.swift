@@ -28,8 +28,14 @@ final class WindowModesTests: XCTestCase {
         return (doc, controller)
     }
 
-    @MainActor private func settle() async throws {
-        try await Task.sleep(for: .milliseconds(400))
+    /// Mode switches finish asynchronously (positions are pulled from the webviews first).
+    @MainActor private func settle(_ controller: DocumentWindowController, mode: ViewMode) async throws {
+        let deadline = Date().addingTimeInterval(10)
+        while controller.mode != mode && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        XCTAssertEqual(controller.mode, mode)
+        try await Task.sleep(for: .milliseconds(200))
     }
 
     @MainActor func testModesShowTheRightPanesAndRemember() async throws {
@@ -43,8 +49,7 @@ final class WindowModesTests: XCTestCase {
         XCTAssertGreaterThan(controller.readView.frame.width, 900, "the Read pane fills the window")
 
         controller.setMode(.source)
-        try await settle()
-        XCTAssertEqual(controller.mode, .source)
+        try await settle(controller, mode: .source)
         XCTAssertFalse(controller.sourceItem.isCollapsed)
         XCTAssertTrue(controller.readItem.isCollapsed)
         controller.window?.layoutIfNeeded()
@@ -52,7 +57,7 @@ final class WindowModesTests: XCTestCase {
         XCTAssertEqual(UserDefaults.standard.string(forKey: ViewMode.defaultsKey), "source")
 
         controller.setMode(.split)
-        try await settle()
+        try await settle(controller, mode: .split)
         XCTAssertFalse(controller.sourceItem.isCollapsed)
         XCTAssertFalse(controller.readItem.isCollapsed)
         controller.window?.layoutIfNeeded()
@@ -67,8 +72,7 @@ final class WindowModesTests: XCTestCase {
         XCTAssertTrue(controller.validateMenuItem(item))
         XCTAssertEqual(item.state, .on)
         controller.showReadMode(nil)
-        try await settle()
-        XCTAssertEqual(controller.mode, .read)
+        try await settle(controller, mode: .read)
         UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
     }
 
@@ -76,18 +80,20 @@ final class WindowModesTests: XCTestCase {
         let (doc, controller) = try await open(try temporaryCopy(of: "perf-10k-lines.md"))
         defer { doc.close() }
         controller.setMode(.source)
-        try await settle()
+        try await settle(controller, mode: .source)
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.setCursorSourceLine(4000); window.inlayEditor.scrollToSourceLine(4000); true")
-        try await settle()
-        let editorLine = await controller.editorView.position()?.line ?? 0
-        XCTAssertGreaterThanOrEqual(editorLine, 3990)
+        // CodeMirror applies the scroll on its next measure cycle; the CI runner takes a while to get there.
+        let editorLine = try await TestSupport.poll(controller.editorView, "(() => { const l = window.inlayEditor.getPosition().line; return l >= 3990 ? String(l) : ''; })()", timeout: 15)
+        XCTAssertFalse(editorLine.isEmpty, "editor scrolled to line 4000")
 
         controller.setMode(.read)
         let readLine = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 3900 ? String(l) : ''; })()")
         XCTAssertFalse(readLine.isEmpty, "Read view scrolled to the editor's line")
 
         _ = try await controller.readView.evaluateJavaScript("window.inlayReadView.scrollToSourceLine(8000)")
-        try await settle()
+        let readAt = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 7900 ? String(l) : ''; })()")
+        XCTAssertFalse(readAt.isEmpty, "Read view scrolled to line 8000")
+        try await settle(controller, mode: .read)
         controller.setMode(.source)
         let back = try await TestSupport.poll(controller.editorView, "(() => { const p = window.inlayEditor.getPosition(); return p.cursorLine > 7900 ? String(p.cursorLine) : ''; })()")
         XCTAssertFalse(back.isEmpty, "editor cursor moved to the Read view's line")
@@ -98,7 +104,7 @@ final class WindowModesTests: XCTestCase {
         let (doc, controller) = try await open(try temporaryCopy(of: "perf-10k-lines.md"))
         defer { doc.close() }
         controller.setMode(.split)
-        try await settle()
+        try await settle(controller, mode: .split)
         // An edit at the top reaches the Read pane through the debounced live-content pull.
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.view.dispatch({ changes: { from: 0, insert: '# Live heading\\n\\n' } }); true")
         let heading = try await TestSupport.poll(controller.readView, "document.querySelector('#inlay-root h1') && document.querySelector('#inlay-root h1').textContent === 'Live heading' ? 'yes' : ''", timeout: 10)
@@ -122,8 +128,13 @@ final class WindowModesTests: XCTestCase {
         XCTAssertTrue(controller.conflictBanner.isHidden)
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.view.dispatch({ changes: { from: 0, insert: 'MINE ' } }); true")
         _ = try await TestSupport.poll(controller.editorView, "window.inlayEditor.isDirty() ? 'yes' : ''")
-        try await settle()
+        // The change count and the mirror both arrive over the bridge (debounced); wait for them.
+        let editedDeadline = Date().addingTimeInterval(5)
+        while !(doc.isDocumentEdited && doc.text.hasPrefix("MINE ")) && Date() < editedDeadline {
+            try await Task.sleep(for: .milliseconds(50))
+        }
         XCTAssertTrue(doc.isDocumentEdited)
+        XCTAssertTrue(doc.text.hasPrefix("MINE "), "the mirror caught up")
 
         try Data("# Theirs\n".utf8).write(to: url)
         let deadline = Date().addingTimeInterval(5)
