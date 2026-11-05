@@ -1,4 +1,11 @@
 {
   "$comment": "Font files shipped inside the app or extension. Checked against the allowlist plus the fonts-scope exceptions.",
-  "fonts": []
+  "fonts": [
+    {
+      "name": "KaTeX fonts (KaTeX_AMS, Caligraphic, Fraktur, Main, Math, SansSerif, Script, Size1-4, Typewriter)",
+      "license": "OFL-1.1",
+      "source": "https://github.com/KaTeX/KaTeX/tree/main/fonts (derived from Computer Modern / AMS fonts under the SIL Open Font License 1.1)",
+      "files": "packages/read-view/public/vendor/katex/fonts/*.woff2"
+    }
+  ]
 }

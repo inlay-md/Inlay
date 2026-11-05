@@ -8,9 +8,18 @@ import { licenseString } from './spdx.mjs';
 
 export const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
+/** Declared-license corrections for packages whose package.json lacks a usable license field (scripts/license-policy.json). */
+function licenseOverrides() {
+  try {
+    return readJson('scripts/license-policy.json').licenseOverrides ?? [];
+  } catch {
+    return [];
+  }
+}
+
 /** @returns {Array<{name:string, versions:string[], license:string, paths:string[], homepage?:string, author?:string}>} */
 export function npmPackages({ prod }) {
-  const args = ['licenses', 'list', '--json', '--long'];
+  const args = ['licenses', 'list', '--json', '--long', '-r'];
   if (prod) args.push('--prod');
   let out;
   try {
@@ -37,6 +46,13 @@ export function npmPackages({ prod }) {
         } catch {
           /* keep pnpm's value */
         }
+      }
+      if (license === 'UNKNOWN') {
+        const override = licenseOverrides().find(
+          (o) =>
+            o.name === p.name && (!o.version || (p.versions ?? [p.version]).includes(o.version)),
+        );
+        if (override) license = override.license;
       }
       list.push({
         name: p.name,

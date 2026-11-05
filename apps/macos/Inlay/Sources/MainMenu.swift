@@ -60,7 +60,9 @@ enum MainMenu {
             item.isEnabled = title == "Read"
         }
         view.addItem(.separator())
-        view.addItem(withTitle: "Allow Network for This Document", action: nil, keyEquivalent: "")
+        view.addItem(withTitle: "Allow Network for This Document", action: #selector(DocumentWindowController.toggleAllowNetwork(_:)), keyEquivalent: "")
+        view.addItem(withTitle: "Trust This Document", action: #selector(DocumentWindowController.trustDocument(_:)), keyEquivalent: "")
+        view.addItem(withTitle: "Refresh", action: #selector(DocumentWindowController.refreshReadView(_:)), keyEquivalent: "r")
         view.addItem(.separator())
         view.addItem(withTitle: "Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f").keyEquivalentModifierMask = [.command, .control]
         main.addItem(submenu(view, title: "View"))

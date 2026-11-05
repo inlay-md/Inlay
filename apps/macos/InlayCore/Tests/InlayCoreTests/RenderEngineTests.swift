@@ -7,20 +7,27 @@ final class RenderEngineTests: XCTestCase {
     func testBundledEngineRendersMarkdown() throws {
         let engine = try RenderEngine.bundled()
         XCTAssertFalse(engine.version.isEmpty)
-        let result = try engine.render("# Xin chào\n\nTiếng Việt 🙂 <b>x</b>\n")
+        let result = try engine.render("# Xin chào\n\nTiếng Việt 🙂 <b>x</b>\n\n```swift\nlet a = 1\n```\n")
         XCTAssertEqual(result.meta.title, "Xin chào")
-        XCTAssertEqual(result.meta.lineCount, 4)
-        XCTAssertTrue(result.html.contains("Tiếng Việt 🙂 &lt;b&gt;x&lt;/b&gt;"))
+        XCTAssertEqual(result.meta.lineCount, 8)
+        XCTAssertTrue(result.html.contains("<h1 data-source-line=\"1-1\">Xin chào</h1>"))
+        XCTAssertTrue(result.html.contains("Tiếng Việt 🙂 <b>x</b>"))
+        XCTAssertTrue(result.html.contains("class=\"shiki"), "code is highlighted synchronously in the JSC build")
         XCTAssertFalse(result.meta.hasScripts)
+        XCTAssertEqual(result.meta.codeLanguages, ["swift"])
     }
 
     func testOptionsReachTheBundle() throws {
         let engine = try RenderEngine.bundled()
         var options = RenderOptions()
         options.mode = .static
-        let result = try engine.render("<script>1</script>", options: options)
-        XCTAssertTrue(result.html.contains("data-render-mode=\"static\""))
+        let result = try engine.render("<script>1</script>\n\n<div onclick=\"x()\">ok</div>\n", options: options)
+        XCTAssertFalse(result.html.contains("<script"), "static mode strips scripts")
+        XCTAssertTrue(result.html.contains("inlay-script-placeholder"))
+        XCTAssertFalse(result.html.contains("onclick"))
         XCTAssertTrue(result.meta.hasScripts)
+        let full = try engine.render("<script>1</script>\n")
+        XCTAssertTrue(full.html.contains("<script>1</script>"))
     }
 
     func testEmptyDocument() throws {
