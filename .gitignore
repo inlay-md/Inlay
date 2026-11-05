@@ -1,0 +1,32 @@
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.vite/
+playwright-report/
+test-results/
+blob-report/
+
+# Generated web assets copied into the app
+apps/macos/Inlay/Resources/web/
+apps/macos/InlayQuickLook/Resources/web/
+fixtures/lib/
+
+# Xcode / XcodeGen
+apps/macos/*.xcodeproj
+apps/macos/*.xcworkspace
+apps/macos/DerivedData/
+apps/macos/build/
+*.xcuserstate
+xcuserdata/
+.swiftpm/
+.build/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.log
