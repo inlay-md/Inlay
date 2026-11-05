@@ -1,6 +1,6 @@
 # Inlay — plan and progress
 
-Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read this file first, then `CLAUDE.md`.
+Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
 **Status:** M0 complete; CI green on `main` (2026-11-05). Quick Look spike verdict in ADR-0018. Next: M1 on branch `m1-read-view` after "go".
 
