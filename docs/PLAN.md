@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline (slice 1) and Read view runtime (slice 2), lazy Shiki/KaTeX/Mermaid (slice 3), rendered-content fixtures with offline CDN rewriting and the browser security probe (slice 4) landed. Next: Swift trust banner, network toggle, file watching (slice 5). Two license exceptions pending the product owner (ADR-0019).
+**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline (slice 1) and Read view runtime (slice 2), lazy Shiki/KaTeX/Mermaid (slice 3), rendered-content fixtures with offline CDN rewriting and the browser security probe (slice 4) landed. Swift trust banner, network toggle and file watching (slice 5) landed. Remaining: final verification, handover update, PR. Two license exceptions pending the product owner (ADR-0019).
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -28,10 +28,10 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (two exceptions pending, ADR-0019)
 - [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0021)
 - [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0022), KaTeX CSS + woff2 fonts from the vendor bundle
-- [ ] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, nonce), read WKWebView isolation, external links, quarantine → static + native trust banner (trust store), "Allow network" toggle (per file), file change → debounced refresh
-- [ ] `isTrustedOrigin` used by all message listeners; runtime audited for `https:` assumptions
+- [x] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, per-response nonce), read WKWebView isolation, external links, `.md` links open as documents, quarantine → static + native trust banner (trust store keyed by path + xattr), "Allow network" toggle (per file, remembered), file change → debounced refresh via NSFilePresenter + vnode watcher (ADR-0023, ADR-0024)
+- [x] `isTrustedOrigin` used by all message listeners (none exist yet; a Vitest audit enforces it); runtime audited for `https:`/scheme assumptions by the same test
 - [x] Fixtures: Chart.js/ECharts/D3 via real CDN URLs (+ older-major pin), widget, inline svg, svg img, style block, math, Mermaid, highlighting, local images, web-page-semantics, non-rewritable CDN script, fetch toggle, `../assets` (blocked), security probe, KaTeX auto-render from CDN
-- [ ] Tests: Vitest snapshots + rewriter table; Playwright (route-intercepted CDNs, probe, dark mode, perf budget); XCTest app tests (probe via real scheme handler, traversal 403, external link, refresh, quarantine)
+- [x] Tests: Vitest snapshots + rewriter table + JSC parity; Playwright (route-intercepted CDNs, probe, dark mode, perf budget, scroll restore); XCTest app tests (probe via real scheme handler, traversal 403, navigation policy, uncoordinated/atomic refresh, quarantine → trust, network toggle, vendored chart, lazy grammars)
 - Done when: fixtures render in Playwright (Chromium + WebKit) and in the app; probe proves no native/network reach per ADR-0007; charts render offline; quarantine flow works without modifying the file.
 
 ## M2 — Source + Split (branch `m2-source-split`)

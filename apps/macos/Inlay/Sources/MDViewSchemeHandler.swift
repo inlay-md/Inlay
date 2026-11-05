@@ -88,7 +88,10 @@ final class MDViewSchemeHandler: NSObject, WKURLSchemeHandler {
         } else {
             html = embed + template
         }
-        var headers = htmlHeaders(csp: Self.contentSecurityPolicy(trusted: !context.quarantined, allowNetwork: context.allowNetwork))
+        // Untrusted documents get a nonce-only script policy; the nonce is fresh per response and never
+        // written into the page, so no inline script can carry it (our runtime loads from mdview:).
+        let nonce = Self.makeNonce()
+        var headers = htmlHeaders(csp: Self.contentSecurityPolicy(trusted: !context.quarantined, allowNetwork: context.allowNetwork, nonce: nonce))
         headers["Cache-Control"] = "no-store"
         return Response(status: 200, headers: headers, body: Data(html.utf8))
     }
@@ -130,6 +133,12 @@ final class MDViewSchemeHandler: NSObject, WKURLSchemeHandler {
             "X-Content-Type-Options": "nosniff",
             "Referrer-Policy": "no-referrer",
         ]
+    }
+
+    static func makeNonce() -> String {
+        var bytes = [UInt8](repeating: 0, count: 16)
+        for i in bytes.indices { bytes[i] = UInt8.random(in: 0...255) }
+        return Data(bytes).base64EncodedString()
     }
 
     /// ADR-0007. `trusted` is false for quarantined documents that the user has not trusted yet:
