@@ -1,0 +1,21 @@
+{
+  "$comment": "Every fixture under fixtures/md must be listed. Traits are asserted by fixtures/manifest.test.ts and used by round-trip and rendering tests.",
+  "fixtures": [
+    { "file": "gfm-basics.md", "category": "structure", "eol": "lf", "features": ["headings", "emphasis", "links", "autolink", "blockquote", "task-list", "table", "code-fence", "indented-code", "image", "hard-break", "thematic-break"] },
+    { "file": "nested-lists.md", "category": "structure", "eol": "lf", "features": ["ordered-list", "bullet-list", "nested-list", "loose-list", "code-in-list", "task-list", "list-start"] },
+    { "file": "tables.md", "category": "structure", "eol": "lf", "features": ["table", "table-alignment", "html-in-cells", "inline-svg", "escaped-pipe"], "islands": true },
+    { "file": "front-matter.md", "category": "structure", "eol": "lf", "features": ["front-matter"], "islands": true },
+    { "file": "footnotes-and-references.md", "category": "structure", "eol": "lf", "features": ["footnotes", "reference-links", "reference-image", "autolink"] },
+    { "file": "html-comments.md", "category": "structure", "eol": "lf", "features": ["html-comment", "inline-html"], "islands": true },
+    { "file": "directives.md", "category": "structure", "eol": "lf", "features": ["directives", "containers"], "islands": true },
+    { "file": "setext-and-styles.md", "category": "structure", "eol": "lf", "trailingNewline": false, "features": ["setext-heading", "closing-hashes", "bullet-styles", "paren-ordered", "underscore-emphasis", "tilde-fence", "nested-fence", "escapes", "thematic-break-styles"] },
+    { "file": "trailing-whitespace.md", "category": "text", "eol": "lf", "trailingNewline": false, "features": ["trailing-spaces", "hard-break", "tabs", "whitespace-only-line"] },
+    { "file": "unicode-text.md", "category": "text", "eol": "lf", "features": ["vietnamese", "cjk", "emoji", "astral-plane", "combining-marks", "rtl", "table"] },
+    { "file": "mixed-line-endings.md", "category": "text", "eol": "mixed", "features": ["crlf", "lf", "cr", "code-fence", "bullet-list"], "generated": true },
+    { "file": "crlf.md", "category": "text", "eol": "crlf", "features": ["crlf", "table"], "generated": true },
+    { "file": "utf8-bom.md", "category": "text", "eol": "lf", "bom": true, "features": ["bom"], "generated": true },
+    { "file": "undecodable.md", "category": "text", "eol": "lf", "utf8": false, "render": false, "features": ["invalid-utf8"], "generated": true },
+    { "file": "empty.md", "category": "text", "eol": "lf", "trailingNewline": false, "features": ["empty"] },
+    { "file": "perf-10k-lines.md", "category": "performance", "eol": "lf", "minLines": 10000, "features": ["headings", "paragraphs", "lists", "code-fence", "table", "blockquote", "math"], "generated": true }
+  ]
+}

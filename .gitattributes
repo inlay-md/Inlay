@@ -1,0 +1,3 @@
+fixtures/md/** -text diff
+fixtures/assets/** -text
+*.png binary

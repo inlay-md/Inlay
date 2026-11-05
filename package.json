@@ -16,7 +16,7 @@
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "typecheck": "pnpm -r --filter './packages/*' run typecheck",
+    "typecheck": "pnpm -r run typecheck",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "spdx:check": "node scripts/check-spdx.mjs",
