@@ -80,8 +80,8 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
         let scheme = url.scheme?.lowercased() ?? ""
         if scheme == MDViewSchemeHandler.scheme {
             guard url.host == docId else { return .cancel }
-            let path = url.path
-            if path.isEmpty || path == "/" || path == "/index.html" || path.hasPrefix(MDViewSchemeHandler.reservedPrefix) { return .allow }
+            let path = MDViewSchemeHandler.routePath(of: url)
+            if path == "/" || path == "/index.html" || path.hasPrefix(MDViewSchemeHandler.reservedPrefix) { return .allow }
             // A relative link to another Markdown file opens it as its own document.
             let ext = url.pathExtension.lowercased()
             if isMainFrame, ext == "md" || ext == "markdown" { return .openMarkdown }

@@ -38,8 +38,9 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - [x] Document model in `packages/editor`: decode (`bom`, dominant `eol`), `getText()` byte identity for every fixture; mixed-EOL prototype decided first (`lineSeparator` = dominant EOL, ADR-0028); editor↔source line map
 - [x] CodeMirror Source mode page: explicit setup (special chars, search, history, Markdown + nested HTML/code languages, front-matter parser), brand theme, `window.inlayEditor` API (content, positions, dirty), dev server with fixtures, Playwright in Chromium + WebKit (ADR-0029)
 - [x] `WebKitHost` adapter (`{method,args}` reply protocol, `inlayWebKitHost` callbacks, `documentSaved`/`reportPosition`; audited as the only `window.webkit` user)
-- [ ] Swift bridge (`WKScriptMessageHandlerWithReply`) on the editor webview only; `/__inlay/editor/` route and CSP in the scheme handler
-- [ ] NSDocument: read `Data`, save override pulling live content (+ crash mirror), autosave in place, revert, Versions, Duplicate, tabs, Open Recent, dirty tracking, change detection (NSFilePresenter) → auto-reload / conflict banner
+- [x] Swift bridge (`EditorBridge`, the one `WKScriptMessageHandlerWithReply`, on `EditorWebView` only; the Read webview still has none, asserted); `/__inlay/editor/` route with a strict CSP in the scheme handler; `SettingsStore`
+- [x] NSDocument: save override pulling live content with the 3 s mirror fallback and warning, `autosavesInPlace`, revert and Versions through `fileChanged`, dirty tracking from the editor, own writes recognised, conflict state with reload / keep (ADR-0030); XCTest: every fixture byte-identical through the live editor, an edit changes only its bytes, autosave / Save As / revert, conflict
+- [ ] Window: conflict banner UI, Duplicate / Rename / Move / Versions menu items, tabs and Open Recent verified
 - [ ] Split mode: editor + read webviews, debounced re-render, source→read scroll sync, mode switching with position
 - [ ] Menus and shortcuts
 - Done when: open→save byte-identical for every fixture via real NSDocument (XCTest); edits confined; all save paths covered; conflict banner; 10k lines < 1 s; manual IME checklist in Source.

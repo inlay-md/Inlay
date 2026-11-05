@@ -5,12 +5,15 @@ import AppKit
 /// The banner is native so document content can never imitate or hide it.
 final class DocumentWindowController: NSWindowController, NSMenuItemValidation {
     let readView: ReadWebView
+    /// Source mode (M2). Created with the window; shown by the mode switcher.
+    let editorView: EditorWebView
     private let banner = TrustBannerView()
     private let stack = NSStackView()
     private var appearanceObservation: NSKeyValueObservation?
 
     init(document: MarkdownDocument) {
         readView = ReadWebView(docId: document.docId)
+        editorView = EditorWebView(docId: document.docId, delegate: document)
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 960, height: 720),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
@@ -26,7 +29,10 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation {
         stack.distribution = .fill
         stack.addArrangedSubview(banner)
         stack.addArrangedSubview(readView)
+        stack.addArrangedSubview(editorView)
+        editorView.isHidden = true
         readView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        editorView.setContentHuggingPriority(.defaultLow, for: .vertical)
         banner.setContentHuggingPriority(.required, for: .vertical)
         window.contentView = stack
         window.center()
@@ -44,7 +50,18 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation {
     var markdownDocument: MarkdownDocument? { document as? MarkdownDocument }
 
     private func wire(_ document: MarkdownDocument) {
-        document.onContentChanged = { [weak self] in self?.readView.refreshDocument() }
+        document.liveContentSource = { [weak self] in
+            guard let self else { throw EditorWebView.EditorError.notResponsive }
+            return try await self.editorView.requestContent()
+        }
+        document.onContentChanged = { [weak self] in
+            self?.readView.refreshDocument()
+            self?.editorView.emit("fileChanged", payload: ["path": document.fileURL?.path ?? ""])
+        }
+        document.onSaved = { [weak self] operation in
+            guard operation == .saveOperation || operation == .saveAsOperation else { return }
+            self?.editorView.emit("documentSaved", payload: ["path": document.fileURL?.path as Any])
+        }
         document.onPolicyChanged = { [weak self] in
             self?.updateBanner()
             self?.readView.reload()
@@ -56,6 +73,7 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation {
         didSet {
             if let doc = document as? MarkdownDocument { wire(doc) }
             readView.loadDocument()
+            editorView.loadEditor()
         }
     }
 
