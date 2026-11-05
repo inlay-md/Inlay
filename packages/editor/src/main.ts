@@ -53,11 +53,14 @@ async function boot(): Promise<void> {
   const theme = params.get('theme');
   const parent = document.getElementById('inlay-editor');
   if (!parent) throw new Error('editor mount point missing');
+  // `?safetyLines=` lowers the large-document threshold so tests can exercise the banner.
+  const safetyLines = Number(params.get('safetyLines'));
   const api = await createEditorPage({
     parent,
     host,
     doc,
     theme: theme === 'dark' || theme === 'light' ? theme : 'system',
+    ...(safetyLines > 0 ? { safetyNet: { lines: safetyLines, bytes: 5 * 1024 * 1024 } } : {}),
   });
   api.focus();
 }

@@ -19,6 +19,7 @@ import type { EditorView } from '@milkdown/kit/prose/view';
 import { CONTENT_DEBOUNCE_MS, POSITION_DEBOUNCE_MS } from '../editor.ts';
 import { inlayTheme } from '../theme.ts';
 import type { LoadInfo, ModeEditor } from '../types.ts';
+import { guardInputRules } from './composition.ts';
 import { openSelectedEditable } from './in-place.ts';
 import { createIslandViews } from './island-view.ts';
 import { inlayListItemView } from './list-item-view.ts';
@@ -138,7 +139,7 @@ export async function createWysiwygEditor(o: WysiwygEditorOptions): Promise<Wysi
       transformer = new BlockTransformer(ctx);
       loaded = loadDocument(transformer, o.doc.text, o.doc.eol, { verify: 'deferred' });
       performance.mark('inlay-wysiwyg-load-end');
-      return { ...options, doc: loaded.doc };
+      return { ...options, doc: loaded.doc, plugins: guardInputRules(options.plugins ?? []) };
     });
   });
   crepe.setReadonly(o.doc.readOnly);
