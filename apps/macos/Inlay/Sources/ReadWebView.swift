@@ -16,6 +16,8 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
     }
     /// Count of refused popups (window.open), for tests.
     private(set) var refusedPopups = 0
+    /// The page finished loading (first load or a refresh reload): Split sync re-applies its line.
+    var onPageLoaded: (() -> Void)?
 
     init(docId: String) {
         self.docId = docId
@@ -49,6 +51,11 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
         evaluateJavaScript("window.inlayReadView ? (window.inlayReadView.refresh(), true) : false") { [weak self] result, error in
             if error != nil || (result as? Bool) != true { self?.reload() }
         }
+    }
+
+    /// Scrolls the rendered document so `line` (1-based source line) sits at the top (Split sync, mode switching).
+    func scrollToSourceLine(_ line: Int) {
+        evaluateJavaScript("window.inlayReadView && window.inlayReadView.scrollToSourceLine(\(line))") { _, _ in }
     }
 
     func setTheme(_ theme: String) {
@@ -108,6 +115,10 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
             }
             return .cancel
         }
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        onPageLoaded?()
     }
 
     // MARK: WKUIDelegate
