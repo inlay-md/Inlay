@@ -54,7 +54,6 @@ final class PaneHeaderView: NSView {
         addSubview(row)
         addSubview(border)
         NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: 30),
             row.leadingAnchor.constraint(equalTo: leadingAnchor),
             row.trailingAnchor.constraint(equalTo: trailingAnchor),
             row.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -69,6 +68,61 @@ final class PaneHeaderView: NSView {
     required init?(coder: NSCoder) { fatalError("not supported") }
 }
 
+/// A split-view pane: an optional header above a webview (Auto Layout; the header collapses to 0 pt
+/// when hidden). Hosted by `PaneViewController` inside an `NSSplitViewController`.
+final class PaneView: NSView {
+    let header: PaneHeaderView
+    let content: NSView
+    private var headerHeight: NSLayoutConstraint!
+
+    init(header: PaneHeaderView, content: NSView) {
+        self.header = header
+        self.content = content
+        super.init(frame: .zero)
+        header.translatesAutoresizingMaskIntoConstraints = false
+        content.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(header)
+        addSubview(content)
+        headerHeight = header.heightAnchor.constraint(equalToConstant: 30)
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: topAnchor),
+            header.leadingAnchor.constraint(equalTo: leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: trailingAnchor),
+            headerHeight,
+            content.topAnchor.constraint(equalTo: header.bottomAnchor),
+            content.leadingAnchor.constraint(equalTo: leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: trailingAnchor),
+            content.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("not supported") }
+
+    var showsHeader: Bool = true {
+        didSet {
+            header.isHidden = !showsHeader
+            headerHeight.constant = showsHeader ? 30 : 0
+        }
+    }
+}
+
+final class PaneViewController: NSViewController {
+    let pane: PaneView
+
+    init(pane: PaneView) {
+        self.pane = pane
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("not supported") }
+
+    override func loadView() {
+        view = pane
+    }
+}
+
 /// Split divider that carries the scroll-sync marker: a short verdigris tick at the relative
 /// position of the editor's top line, so the eye can find where the two panes meet.
 final class SyncSplitView: NSSplitView {
@@ -77,16 +131,28 @@ final class SyncSplitView: NSSplitView {
         didSet { if syncFraction != oldValue { needsDisplay = true } }
     }
 
+    /// Centre the divider on the next layout pass that has a width (set when Split mode is entered).
+    var centreDividerOnLayout = false
+
     override var dividerThickness: CGFloat { 1 }
+
+    override func layout() {
+        super.layout()
+        if centreDividerOnLayout, bounds.width > 0, arrangedSubviews.filter({ !$0.isHidden }).count > 1 {
+            centreDividerOnLayout = false
+            setPosition(floor(bounds.width / 2), ofDividerAt: 0)
+        }
+    }
 
     override func drawDivider(in rect: NSRect) {
         NSColor.separatorColor.setFill()
         rect.fill()
         guard let fraction = syncFraction, arrangedSubviews.filter({ !$0.isHidden }).count > 1 else { return }
         let height: CGFloat = 22
-        let y = rect.minY + (rect.height - height) * CGFloat(max(0, min(1, fraction)))
-        // Flipped coordinates: fraction 0 is the top.
-        let top = isFlipped ? y : rect.maxY - height - (rect.height - height) * CGFloat(max(0, min(1, fraction)))
+        let span = max(0, rect.height - height)
+        let offset = span * CGFloat(max(0, min(1, fraction)))
+        // Fraction 0 is the top of the document.
+        let top = isFlipped ? rect.minY + offset : rect.maxY - height - offset
         let marker = NSRect(x: rect.midX - 1.5, y: top, width: 3, height: height)
         InlayColor.verdigris.setFill()
         NSBezierPath(roundedRect: marker, xRadius: 1.5, yRadius: 1.5).fill()

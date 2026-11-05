@@ -15,6 +15,7 @@ Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress a
 - `withThrowingTaskGroup` waits for every child on exit, so a "timeout" built on it hangs when the losing child never finishes (a bridge call to a dead web process). `MarkdownDocument.withTimeout` races with a continuation + `ResumeOnce`.
 - CodeMirror: `state.doc.toString()` joins with "\n"; use `state.sliceDoc()` to get the document's own line separator. Editor offsets count each line break as 1 regardless of separator length (`offsetToStringIndex`).
 - XCTest + WKWebView: hidden webviews load fine; `xcodebuild test` output through a pipe is buffered, so a hung test shows nothing until it finishes — `sample <pid>` on the test host shows where it waits, `CGWindowListCopyWindowInfo` lists its windows (screencapture of test-host windows is refused).
+- Don't put an `NSSplitView` (or a view with a fitting size) into the window's vertical `NSStackView` and expect `alignment = .width` to stretch it: it got its fitting width and sat at the trailing edge. The document window pins `NSSplitViewController.view` with explicit constraints; only the banners live in a stack view.
 - XcodeGen must be re-run after adding a Swift file (`pnpm mac:generate`), or the build fails with "cannot find X in scope".
 
 ## State on 2026-11-05 (M1 merged)
