@@ -16,6 +16,9 @@
     { "file": "utf8-bom.md", "category": "text", "eol": "lf", "bom": true, "features": ["bom"], "generated": true },
     { "file": "undecodable.md", "category": "text", "eol": "lf", "utf8": false, "render": false, "features": ["invalid-utf8"], "generated": true },
     { "file": "empty.md", "category": "text", "eol": "lf", "trailingNewline": false, "features": ["empty"] },
-    { "file": "perf-10k-lines.md", "category": "performance", "eol": "lf", "minLines": 10000, "features": ["headings", "paragraphs", "lists", "code-fence", "table", "blockquote", "math"], "generated": true }
+    { "file": "perf-10k-lines.md", "category": "performance", "eol": "lf", "minLines": 10000, "features": ["headings", "paragraphs", "lists", "code-fence", "table", "blockquote", "math"], "generated": true },
+    { "file": "math.md", "category": "rendered", "eol": "lf", "features": ["math", "inline-math", "display-math", "katex-error", "escaped-dollar"] },
+    { "file": "mermaid.md", "category": "rendered", "eol": "lf", "features": ["mermaid", "mermaid-error"] },
+    { "file": "highlighting.md", "category": "rendered", "eol": "lf", "features": ["code-fence", "highlighting", "unknown-language", "language-alias"] }
   ]
 }

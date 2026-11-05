@@ -12,6 +12,8 @@
  */
 import { type Host, MockHost } from '@inlay-md/host-api';
 import { MD_RENDER_VERSION, type RenderOptions, render } from '@inlay-md/md-render';
+import { upgradeCodeBlocks } from './highlight-lazy.ts';
+import { renderMermaid } from './mermaid-lazy.ts';
 import { composePage, devBarHtml } from './page.ts';
 import {
   getPosition,
@@ -83,10 +85,21 @@ export async function boot(
   document.write(page);
   document.close();
 
+  let resolveReady: () => void = () => {};
+  const ready = new Promise<void>((resolve) => {
+    resolveReady = resolve;
+  });
+  const rerenderMermaid = () => {
+    if (!meta.hasMermaid || doc.quarantined) return;
+    void renderMermaid(document, runtimeBase).then((n) => {
+      api.stats.mermaid = n;
+    });
+  };
   const api: ReadViewApi = {
     version: MD_RENDER_VERSION,
     docId: doc.docId,
     stats: { renderMs, lineCount: meta.lineCount, highlighted: 0, mermaid: 0 },
+    ready,
     refresh() {
       savePosition(doc.docId, { line: getPosition().line, scrollY: window.scrollY });
       location.reload();
@@ -96,11 +109,32 @@ export async function boot(
     setTheme(next) {
       if (next === 'system') delete document.documentElement.dataset.theme;
       else document.documentElement.dataset.theme = next;
+      rerenderMermaid();
     },
   };
   window.inlayReadView = api;
 
   await new Promise<void>((resolve) => whenParsed(resolve));
+
+  // Lazy work after first paint: grammars for the languages used, then Mermaid.
+  const lazy = (async () => {
+    try {
+      api.stats.highlighted = await upgradeCodeBlocks(document, meta.codeLanguages);
+    } catch (error) {
+      console.warn('inlay: highlighting failed', error);
+    }
+    if (meta.hasMermaid && !doc.quarantined) {
+      try {
+        api.stats.mermaid = await renderMermaid(document, runtimeBase);
+      } catch (error) {
+        console.warn('inlay: mermaid failed', error);
+      }
+    }
+  })();
+  void lazy.finally(resolveReady);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!document.documentElement.dataset.theme) rerenderMermaid();
+  });
 
   const saved = loadPosition(doc.docId);
   if (saved) restorePosition(saved);

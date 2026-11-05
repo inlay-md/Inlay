@@ -66,8 +66,9 @@ export function renderableFixtures(): string[] {
 export function embedSource(template: string, payload: EmbeddedSource): string {
   const json = JSON.stringify(payload).replace(/<\//g, '<\\/');
   const embed = `<script type="application/json" id="inlay-source">${json}</script>`;
+  // A replacer function: a replacement *string* would interpret `$$`, `` $` `` and `$'` inside the JSON.
   return template.includes('<body>')
-    ? template.replace('<body>', `<body>${embed}`)
+    ? template.replace('<body>', () => `<body>${embed}`)
     : embed + template;
 }
 

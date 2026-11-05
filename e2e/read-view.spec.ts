@@ -15,7 +15,8 @@ declare global {
       getPosition(): { line: number; scrollY: number };
       scrollToSourceLine(line: number): boolean;
       setTheme(theme: 'light' | 'dark' | 'system'): void;
-      stats: { renderMs: number; lineCount: number };
+      stats: { renderMs: number; lineCount: number; highlighted: number; mermaid: number };
+      ready: Promise<void>;
     };
   }
 }
@@ -144,5 +145,80 @@ test.describe('Read view runtime', () => {
     const stats = await page.evaluate(() => window.inlayReadView?.stats);
     expect(stats.lineCount).toBeGreaterThanOrEqual(10_000);
     expect(stats.renderMs, `md-render took ${stats.renderMs.toFixed(0)} ms`).toBeLessThan(1500);
+  });
+
+  test('code blocks are highlighted lazily with dual-theme colours; unknown languages stay plain', async ({
+    page,
+  }) => {
+    const cdnRequests: string[] = [];
+    await page.route(
+      /https:\/\/(cdn\.jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com)\//,
+      (route) => {
+        cdnRequests.push(route.request().url());
+        return route.abort();
+      },
+    );
+    await page.goto(view('highlighting.md'));
+    await rendered(page);
+    await page.evaluate(() => window.inlayReadView?.ready);
+    const stats = await page.evaluate(() => window.inlayReadView?.stats);
+    expect(stats.highlighted).toBe(12);
+    await expect(page.locator('pre.shiki')).toHaveCount(12);
+    await expect(
+      page.locator('pre.shiki[data-lang="golang"] span[style*="--shiki-light"]').first(),
+    ).toBeAttached();
+    await expect(page.locator('pre.shiki[data-source-line="3-9"]')).toHaveCount(1);
+    await expect(page.locator('pre:not(.shiki) > code.language-foo-unknown')).toHaveCount(1);
+    await expect(page.locator('pre:not(.shiki) > code:not([class])')).toHaveCount(1);
+    const color = await page
+      .locator('pre.shiki[data-lang="ts"] span.line span')
+      .first()
+      .evaluate((e) => getComputedStyle(e).color);
+    expect(color).not.toBe('rgb(29, 29, 31)');
+    expect(cdnRequests).toEqual([]);
+  });
+
+  test('math renders with KaTeX and the vendored fonts', async ({ page }) => {
+    await page.goto(view('math.md'));
+    await rendered(page);
+    await expect(page.locator('.inlay-math-inline .katex')).toHaveCount(3);
+    await expect(page.locator('.inlay-math-display .katex-display')).toHaveCount(2);
+    await expect(page.locator('.katex-error')).toHaveCount(1);
+    await expect(page.locator('#inlay-root')).toContainText('A price of $5 is not math');
+    await expect(page.locator('pre code')).toContainText('$$ inside a code block stays literal $$');
+    const stylesheet = page.locator('link[rel="stylesheet"][href$="vendor/katex/katex.min.css"]');
+    await expect(stylesheet).toHaveCount(1);
+    const fontLoaded = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return document.fonts.check('16px KaTeX_Main');
+    });
+    expect(fontLoaded).toBe(true);
+  });
+
+  test('Mermaid diagrams render client-side from the vendored bundle and follow the theme', async ({
+    page,
+  }) => {
+    const cdnRequests: string[] = [];
+    await page.route(
+      /https:\/\/(cdn\.jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com)\//,
+      (route) => {
+        cdnRequests.push(route.request().url());
+        return route.abort();
+      },
+    );
+    await page.goto(view('mermaid.md'));
+    await rendered(page);
+    await page.evaluate(() => window.inlayReadView?.ready);
+    const stats = await page.evaluate(() => window.inlayReadView?.stats);
+    expect(stats.mermaid).toBe(3);
+    await expect(page.locator('pre.mermaid > svg')).toHaveCount(3);
+    await expect(page.locator('pre.mermaid .inlay-mermaid-error')).toHaveCount(1);
+    await expect(page.locator('pre.mermaid .inlay-mermaid-error')).toContainText('Mermaid:');
+    const mermaidScript = page.locator('script[src$="vendor/mermaid/mermaid.min.js"]');
+    await expect(mermaidScript).toHaveCount(1);
+    expect(cdnRequests).toEqual([]);
+    // Re-render on theme change keeps the diagrams.
+    await page.evaluate(() => window.inlayReadView?.setTheme('dark'));
+    await expect.poll(() => page.locator('pre.mermaid > svg').count()).toBe(3);
   });
 });

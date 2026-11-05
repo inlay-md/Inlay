@@ -39,6 +39,8 @@ export interface ReadViewApi {
   setTheme(theme: 'light' | 'dark' | 'system'): void;
   /** Rendering statistics for tests and the dev bar. */
   stats: { renderMs: number; lineCount: number; highlighted: number; mermaid: number };
+  /** Resolves when lazy work (highlighting, Mermaid) for the current render has finished. */
+  ready: Promise<void>;
 }
 
 declare global {
