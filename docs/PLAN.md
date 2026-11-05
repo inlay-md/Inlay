@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 merged into `main` (2026-11-05, #3). No license exceptions pending: Unlicense allowed (ADR-0026), elkjs/EPL-2.0 approved per package (ADR-0027). Next: M2 on branch `m2-source-split`.
+**Status:** M1 merged into `main` (2026-11-05, #3). M2 in progress on branch `m2-source-split` (started 2026-11-05).
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -35,7 +35,8 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - Done when: fixtures render in Playwright (Chromium + WebKit) and in the app; probe proves no native/network reach per ADR-0007; charts render offline; quarantine flow works without modifying the file.
 
 ## M2 — Source + Split (branch `m2-source-split`)
-- [ ] Document model: decode (`bom`, dominant `eol`), `getText()` byte identity; CodeMirror Source mode; mixed-EOL prototype (`lineSeparator` vs per-line EOL table) decided first
+- [x] Document model in `packages/editor`: decode (`bom`, dominant `eol`), `getText()` byte identity for every fixture; mixed-EOL prototype decided first (`lineSeparator` = dominant EOL, ADR-0028); editor↔source line map
+- [ ] CodeMirror Source mode page (editor shell, theme, pane header, `window.inlayEditor` API, dev server with fixtures, Playwright)
 - [ ] `WebKitHost` adapter + Swift bridge (`WKScriptMessageHandlerWithReply`)
 - [ ] NSDocument: read `Data`, save override pulling live content (+ crash mirror), autosave in place, revert, Versions, Duplicate, tabs, Open Recent, dirty tracking, change detection (NSFilePresenter) → auto-reload / conflict banner
 - [ ] Split mode: editor + read webviews, debounced re-render, source→read scroll sync, mode switching with position
