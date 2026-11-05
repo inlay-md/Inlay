@@ -1,0 +1,158 @@
+# XcodeGen project definition. Never hand-edit the generated .xcodeproj; edit this file and run `pnpm mac:generate`.
+name: Inlay
+options:
+  bundleIdPrefix: live.inlay
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+    GENERATE_INFOPLIST_FILE: NO
+  configs:
+    Debug:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      ONLY_ACTIVE_ARCH: YES
+packages:
+  InlayCore:
+    path: InlayCore
+targets:
+  Inlay:
+    type: application
+    platform: macOS
+    sources:
+      - path: Inlay/Sources
+      - path: Inlay/Resources/generated
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: InlayCore
+      - target: InlayQuickLook
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: live.inlay.Inlay
+        PRODUCT_NAME: Inlay
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    entitlements:
+      path: Inlay/Inlay.entitlements
+      properties:
+        com.apple.security.cs.allow-unsigned-executable-memory: false
+    info:
+      path: Inlay/Info.plist
+      properties:
+        CFBundleName: Inlay
+        CFBundleDisplayName: Inlay
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundlePackageType: APPL
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.productivity
+        NSPrincipalClass: NSApplication
+        NSHumanReadableCopyright: Copyright © 2026 Tran Minh Cuong and the Inlay contributors. Licensed under Apache-2.0.
+        NSSupportsAutomaticTermination: false
+        NSSupportsSuddenTermination: false
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Markdown Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Owner
+            LSItemContentTypes:
+              - net.daringfireball.markdown
+              - public.markdown
+            NSDocumentClass: $(PRODUCT_MODULE_NAME).MarkdownDocument
+        UTImportedTypeDeclarations:
+          - UTTypeIdentifier: net.daringfireball.markdown
+            UTTypeDescription: Markdown Document
+            UTTypeConformsTo:
+              - public.plain-text
+            UTTypeTagSpecification:
+              public.filename-extension: [md, markdown, mdown, mkd]
+              public.mime-type: [text/markdown]
+    preBuildScripts:
+      - name: Check web bundle
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ ! -f "$SRCROOT/Inlay/Resources/generated/web/read-view/index.html" ] || [ ! -f "$SRCROOT/InlayCore/Sources/InlayCore/Resources/md-render.jsc.js" ]; then
+            echo "error: web bundles missing. Run scripts/build-web.sh (or pnpm mac:build) first." >&2
+            exit 1
+          fi
+  InlayQuickLook:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: InlayQuickLook/Sources
+    dependencies:
+      - package: InlayCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: live.inlay.Inlay.QuickLook
+        PRODUCT_NAME: InlayQuickLook
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+        SKIP_INSTALL: YES
+    entitlements:
+      path: InlayQuickLook/InlayQuickLook.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-only: true
+    info:
+      path: InlayQuickLook/Info.plist
+      properties:
+        CFBundleName: InlayQuickLook
+        CFBundleDisplayName: Inlay Quick Look
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundlePackageType: XPC!
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        NSHumanReadableCopyright: Copyright © 2026 Tran Minh Cuong and the Inlay contributors. Licensed under Apache-2.0.
+        NSExtension:
+          NSExtensionAttributes:
+            QLIsDataBasedPreview: true
+            QLSupportsSearchableItems: false
+            QLSupportedContentTypes:
+              - net.daringfireball.markdown
+              - public.markdown
+          NSExtensionPointIdentifier: com.apple.quicklook.preview
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PreviewProvider
+  InlayTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: InlayTests
+    dependencies:
+      - target: Inlay
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: live.inlay.Inlay.Tests
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Inlay:
+    build:
+      targets:
+        Inlay: all
+        InlayQuickLook: all
+        InlayTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - InlayTests
+        - package: InlayCore/InlayCoreTests

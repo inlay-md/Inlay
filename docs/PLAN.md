@@ -13,8 +13,8 @@ Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The 
 - [x] Fixtures v1 (Markdown only) + `manifest.json` + manifest/trait tests: GFM, nested lists, tables (alignment, HTML in cells), front matter, footnotes, reference links, HTML comments, directives, mixed EOL, trailing whitespace, Vietnamese/CJK/emoji, BOM, undecodable bytes, 10k-line perf file
 - [x] `packages/md-render` stub with both builds (Vite ESM + esbuild IIFE exposing `render`)
 - [x] `packages/read-view` hello shell; `pnpm dev` with fixture picker; Playwright smoke (Chromium + WebKit)
-- [ ] `apps/macos/project.yml`: `Inlay` app (NSDocument, `live.inlay.Inlay`, UTIs, window with WKWebView loading hello page via `mdview://` handler), `InlayQuickLook` stub (`live.inlay.Inlay.QuickLook`), `InlayCore` package (`RenderEngine` over JSC, `PathGuard`), `InlayTests`, `InlayCoreTests`; build phase bundles web output
-- [ ] JSC toolchain smoke: IIFE stub → resource → `JSContext` in XCTest
+- [x] `apps/macos/project.yml`: `Inlay` app (NSDocument, `live.inlay.Inlay`, UTIs, window with WKWebView loading hello page via `mdview://` handler), `InlayQuickLook` stub (`live.inlay.Inlay.QuickLook`), `InlayCore` package (`RenderEngine` over JSC, `PathGuard`), `InlayTests`, `InlayCoreTests`; build phase bundles web output
+- [x] JSC toolchain smoke: IIFE stub → resource → `JSContext` in XCTest
 - [ ] Scripts: `check-licenses`, `gen-third-party-notices` (+ freshness check), `check-dco`, `check-spdx`, `build-web`; `THIRD_PARTY_NOTICES.md` bundled and shown in About → Acknowledgements
 - [ ] CI: Linux job (lint, typecheck, Vitest, Playwright, licenses, notices, DCO, SPDX); macOS job (`macos-26`, Xcode 26.3, web build, xcodegen, `xcodebuild test`)
 - [ ] Quick Look spike: script execution, sibling-file read, `cid:` attachment; verdict in DECISIONS.md

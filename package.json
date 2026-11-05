@@ -26,8 +26,8 @@
     "dco:check": "node scripts/check-dco.mjs",
     "check": "pnpm run lint && pnpm run typecheck && pnpm run spdx:check && pnpm run licenses:check && pnpm run notices:check",
     "mac:generate": "cd apps/macos && xcodegen generate",
-    "mac:build": "pnpm run build && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet build",
-    "mac:test": "pnpm run build && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test"
+    "mac:build": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet build",
+    "mac:test": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",

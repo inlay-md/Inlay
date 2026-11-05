@@ -28,7 +28,7 @@ export interface FixtureEntry {
 }
 
 export const fixturesDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'md');
-export const assetsDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets');
+export const assetsDir = join(fixturesDir, 'assets');
 
 export const manifest: FixtureEntry[] = (manifestJson as { fixtures: FixtureEntry[] }).fixtures;
 

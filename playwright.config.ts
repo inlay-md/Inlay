@@ -15,7 +15,7 @@ export default defineConfig({
   },
   webServer: {
     command: `pnpm --filter @inlay-md/read-view run preview -- --port ${port} --strictPort`,
-    url: `http://localhost:${port}/`,
+    url: `http://localhost:${port}/__inlay/`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
