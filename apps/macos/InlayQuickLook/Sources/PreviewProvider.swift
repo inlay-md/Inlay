@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import Foundation
 import InlayCore
+import OSLog
 import QuickLookUI
 import UniformTypeIdentifiers
 
@@ -10,9 +11,11 @@ import UniformTypeIdentifiers
 /// (3) `cid:` attachments resolve. The real tiers arrive in M4.
 final class PreviewProvider: QLPreviewProvider, QLPreviewingController {
     private static let engine: RenderEngine? = try? RenderEngine.bundled()
+    private static let log = Logger(subsystem: "live.inlay.Inlay.QuickLook", category: "preview")
 
     func providePreview(for request: QLFilePreviewRequest) async throws -> QLPreviewReply {
         let url = request.fileURL
+        Self.log.notice("providePreview for \(url.lastPathComponent, privacy: .public); engine \(Self.engine?.version ?? "unavailable", privacy: .public)")
         let data = try Data(contentsOf: url)
         let markdown = String(decoding: data, as: UTF8.self)
         let rendered = (try? Self.engine?.render(markdown, options: staticOptions()))

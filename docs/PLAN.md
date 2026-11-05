@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read this file first, then `CLAUDE.md`.
 
-**Status:** M0 in progress (started 2026-11-05). Branch `main`.
+**Status:** M0 complete except the Quick Look spike verdict, which needs a Finder check by the product owner (ADR-0017). CI green on `main` (2026-11-05). Next: M1 on branch `m1-read-view` after "go".
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -17,8 +17,8 @@ Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The 
 - [x] JSC toolchain smoke: IIFE stub → resource → `JSContext` in XCTest
 - [x] Scripts: `check-licenses`, `gen-third-party-notices` (+ freshness check), `check-dco`, `check-spdx`, `build-web`; `THIRD_PARTY_NOTICES.md` bundled and shown in About → Acknowledgements
 - [x] CI: Linux job (lint, typecheck, Vitest, Playwright, licenses, notices, DCO, SPDX); macOS job (`macos-26`, Xcode 26.3, web build, xcodegen, `xcodebuild test`)
-- [ ] Quick Look spike: script execution, sibling-file read, `cid:` attachment; verdict in DECISIONS.md
-- [ ] Push `main`; CI green
+- [ ] Quick Look spike: stub built, embedded and registered; JS / sibling / cid results must be read in Finder (ADR-0017); verdict to be recorded
+- [x] Push `main`; CI green (run 41993673157)
 - [ ] M0 summary + manual verification steps; wait for "go"
 
 Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a `.md` into a window; license/notices/DCO checks run in CI; spike verdict recorded.
