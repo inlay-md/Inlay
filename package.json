@@ -25,6 +25,7 @@
     "notices:check": "node scripts/gen-third-party-notices.mjs --check",
     "dco:check": "node scripts/check-dco.mjs",
     "check": "pnpm run lint && pnpm run typecheck && pnpm run spdx:check && pnpm run licenses:check && pnpm run notices:check",
+    "icons": "scripts/render-icons.sh",
     "mac:generate": "cd apps/macos && xcodegen generate",
     "mac:build": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet build",
     "mac:test": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test"

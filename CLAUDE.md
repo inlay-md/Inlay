@@ -12,7 +12,8 @@ Inlay is a macOS-first Markdown editor: a thin Swift/AppKit NSDocument shell hos
 - `packages/settings-ui` — settings page (web, so it ports).
 - `fixtures/` — golden Markdown corpus + `manifest.json`; every fixture is in the round-trip and rendering tests.
 - `apps/macos/` — `project.yml` (XcodeGen) → `Inlay` app, `InlayQuickLook` extension, `InlayCore` Swift package, XCTest targets.
-- `scripts/` — license check, third-party notices, DCO check, web build, vendor copy.
+- `scripts/` — license check, third-party notices, DCO check, web build, vendor copy, icon rendering.
+- `design/` — brand assets: SVG icon masters and rendered web favicons (`design/icon/README.md`).
 - `docs/` — BRIEF.md, PLAN.md, DECISIONS.md.
 
 ## Commands
@@ -22,6 +23,7 @@ Inlay is a macOS-first Markdown editor: a thin Swift/AppKit NSDocument shell hos
 - `pnpm test` — `pnpm test:unit` (Vitest) + `pnpm test:e2e` (Playwright, Chromium + WebKit).
 - `pnpm check` — Biome lint/format, typecheck, SPDX headers, license check, notices freshness.
 - `pnpm notices` — regenerate `THIRD_PARTY_NOTICES.md` after dependency changes.
+- `pnpm icons` — re-render the app icon set and web favicons from the SVG masters in `design/icon/` (run after editing them).
 - `pnpm mac:generate` — `xcodegen generate` in `apps/macos` (run after editing `project.yml`).
 - `pnpm mac:build` / `pnpm mac:test` — `xcodebuild` build / test of scheme `Inlay` (runs `pnpm build` first).
 - CI: `.github/workflows/ci.yml` (Linux: web checks + tests; macOS: Xcode build + tests). CI must be green on `main`.
