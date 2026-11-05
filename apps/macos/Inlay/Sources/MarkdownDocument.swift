@@ -61,6 +61,8 @@ final class MarkdownDocument: NSDocument, EditorHostDelegate {
     /// A save succeeded (Save / Save As / autosave in place).
     var onSaved: ((NSDocument.SaveOperationType) -> Void)?
     var onModeRequested: ((String) -> Void)?
+    /// Editing mode the editor page starts in (`DocumentInfo.mode`, ADR-0033); the window keeps it current.
+    var editorStartMode = "source"
     var onPositionReported: ((_ line: Int, _ cursorLine: Int, _ cursorColumn: Int) -> Void)?
 
     var isQuarantined: Bool { quarantineValue != nil }
@@ -312,6 +314,7 @@ final class MarkdownDocument: NSDocument, EditorHostDelegate {
             "quarantined": isUntrusted,
             "baseURL": "\(MDViewSchemeHandler.scheme)://\(docId)/",
             "readOnly": !decodable,
+            "mode": editorStartMode,
         ]
         if let path = fileURL?.path { info["path"] = path }
         return info
