@@ -9,6 +9,12 @@
 > [!WARNING]
 > Inlay is in early development and there are no releases yet. The scaffold (M0) is done and the Read view (M1) is in progress. See the [roadmap](#roadmap) and [`docs/PLAN.md`](docs/PLAN.md).
 
+<p align="center">
+  <img src="design/ui/png/app-read-view.png" alt="Design mockup of Inlay's Read view: a Markdown report with a live Chart.js chart, an outline sidebar and a toolbar with Read, Edit, Source and Split modes" width="880">
+  <br>
+  <sub>Design mockup of the Read view. The app does not look like this yet; see <a href="#design">Design</a>.</sub>
+</p>
+
 Most Markdown apps strip or sanitize embedded HTML. Inlay does the opposite: a `<script>` that draws a Chart.js chart, an inline `<svg>` diagram, a `<style>` block or a slider widget runs as it would on a web page, in an isolated view that cannot reach your Mac or the network. Inlay also never rewrites your file behind your back. Opening and saving without edits leaves the file byte-for-byte identical.
 
 ````markdown
@@ -104,6 +110,31 @@ Common commands:
 | `pnpm mac:test` | Same as `mac:build`, then runs the XCTest suites |
 
 The Xcode project is generated from [`apps/macos/project.yml`](apps/macos/project.yml) and is not checked in. Edit `project.yml` and run `pnpm mac:generate`; never edit the `.pbxproj` by hand.
+
+## Design
+
+The icon, brand and app UI were designed before the app, so each milestone has a target to build toward. The artboards live in [`design/ui`](design/ui) as standalone HTML with screenshots in [`design/ui/png`](design/ui/png); the icon masters and favicons are in [`design/icon`](design/icon). Tasks for applying them are listed per milestone in [`docs/PLAN.md`](docs/PLAN.md).
+
+<table>
+  <tr>
+    <td align="center" width="50%"><a href="design/ui/png/app-icon.png"><img src="design/ui/png/app-icon.png" alt="App icon board: the Inlay icon at 1024 px with its 128, 64, 32 and 16 px cuts, the template glyph and the document icon"></a><br><sub>App icon: a page with a tile set into it</sub></td>
+    <td align="center" width="50%"><a href="design/ui/png/app-wysiwyg-raw-island.png"><img src="design/ui/png/app-wysiwyg-raw-island.png" alt="WYSIWYG editor mockup with a raw HTML island showing the source of a Chart.js block"></a><br><sub>WYSIWYG with a raw island</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="design/ui/png/app-split-mode.png"><img src="design/ui/png/app-split-mode.png" alt="Split mode mockup: CodeMirror source beside the rendered page, with a quarantine banner"></a><br><sub>Split mode on a quarantined file</sub></td>
+    <td align="center"><a href="design/ui/png/quick-look.png"><img src="design/ui/png/quick-look.png" alt="Quick Look mockup: a Finder window beside the preview panel with SVG rendered and Scripts off pills"></a><br><sub>Quick Look in Finder</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="design/ui/png/logo.png"><img src="design/ui/png/logo.png" alt="Logo board: mark and wordmark on light and on ink, the mark alone, and the tagline Markdown that runs"></a><br><sub>Logo and wordmark</sub></td>
+    <td align="center"><a href="design/ui/png/color-and-type.png"><img src="design/ui/png/color-and-type.png" alt="Colour and type board: Ink, Paper, Line, Brass and Verdigris swatches with Sora, Inter and JetBrains Mono samples"></a><br><sub>Colour and type</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="design/ui/png/illustrations.png"><img src="design/ui/png/illustrations.png" alt="Illustration set: hero scene plus byte-identical, sandboxed, offline charts and empty state spots"></a><br><sub>Illustration set</sub></td>
+    <td align="center"><a href="design/ui/png/website.png"><img src="design/ui/png/website.png" alt="Landing page mockup for inlay.live" height="420"></a><br><sub>inlay.live landing page (<a href="design/ui/website.html">HTML</a>)</sub></td>
+  </tr>
+</table>
+
+Re-render the screenshots with `pnpm design:render` and the icon set with `pnpm icons`.
 
 ## Roadmap
 

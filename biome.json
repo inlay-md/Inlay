@@ -15,7 +15,8 @@
       "!**/*.yml",
       "!**/__snapshots__",
       "!apps/macos/**/*.json",
-      "!fixtures"
+      "!fixtures",
+      "!design/ui/*.html"
     ]
   },
   "formatter": {
