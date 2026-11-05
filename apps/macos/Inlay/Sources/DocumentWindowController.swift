@@ -25,13 +25,17 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
     let readView: ReadWebView
     let editorView: EditorWebView
     let splitView = SyncSplitView()
+    let splitController = NSSplitViewController()
     let sourceHeader = PaneHeaderView(title: "Source", detail: "Ln 1, Col 1")
     let readHeader = PaneHeaderView(title: "Read", detail: "scroll synced")
     private let trustBanner = TrustBannerView()
     let conflictBanner = ConflictBannerView()
-    private let sourcePane = NSStackView()
-    private let readPane = NSStackView()
-    private let stack = NSStackView()
+    let sourcePane: PaneView
+    let readPane: PaneView
+    let sourceItem: NSSplitViewItem
+    let readItem: NSSplitViewItem
+    /// Banners stack (hidden banners collapse); the split view is pinned below it by constraints.
+    private let banners = NSStackView()
     private var modeControl: NSSegmentedControl?
     private(set) var mode: ViewMode = .read
     /// Last source line the editor reported (Split sync); re-applied after the Read view reloads.
@@ -41,6 +45,10 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
     init(document: MarkdownDocument) {
         readView = ReadWebView(docId: document.docId)
         editorView = EditorWebView(docId: document.docId, delegate: document)
+        sourcePane = PaneView(header: sourceHeader, content: editorView)
+        readPane = PaneView(header: readHeader, content: readView)
+        sourceItem = NSSplitViewItem(viewController: PaneViewController(pane: sourcePane))
+        readItem = NSSplitViewItem(viewController: PaneViewController(pane: readPane))
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1080, height: 720),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .unifiedTitleAndToolbar],
@@ -55,37 +63,42 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
         shouldCascadeWindows = true
         windowFrameAutosaveName = "InlayDocumentWindow"
 
-        for (pane, header, view) in [(sourcePane, sourceHeader, editorView as NSView), (readPane, readHeader, readView as NSView)] {
-            pane.orientation = .vertical
-            pane.spacing = 0
-            pane.alignment = .width
-            pane.distribution = .fill
-            pane.addArrangedSubview(header)
-            pane.addArrangedSubview(view)
-            view.setContentHuggingPriority(.defaultLow, for: .vertical)
-            view.setContentHuggingPriority(.defaultLow, for: .horizontal)
-            pane.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        }
         sourcePane.setAccessibilityIdentifier("inlay-source-pane")
         readPane.setAccessibilityIdentifier("inlay-read-pane")
         splitView.isVertical = true
         splitView.dividerStyle = .thin
-        splitView.addArrangedSubview(sourcePane)
-        splitView.addArrangedSubview(readPane)
-        splitView.setHoldingPriority(.defaultLow, forSubviewAt: 0)
-        splitView.setHoldingPriority(.defaultLow, forSubviewAt: 1)
+        splitController.splitView = splitView
+        for item in [sourceItem, readItem] {
+            item.canCollapse = false
+            item.minimumThickness = 240
+            item.holdingPriority = .defaultLow
+            splitController.addSplitViewItem(item)
+        }
 
-        stack.orientation = .vertical
-        stack.spacing = 0
-        stack.alignment = .width
-        stack.distribution = .fill
-        stack.addArrangedSubview(trustBanner)
-        stack.addArrangedSubview(conflictBanner)
-        stack.addArrangedSubview(splitView)
+        banners.orientation = .vertical
+        banners.spacing = 0
+        banners.alignment = .width
+        banners.distribution = .fill
+        banners.addArrangedSubview(trustBanner)
+        banners.addArrangedSubview(conflictBanner)
         trustBanner.setContentHuggingPriority(.required, for: .vertical)
         conflictBanner.setContentHuggingPriority(.required, for: .vertical)
-        splitView.setContentHuggingPriority(.defaultLow, for: .vertical)
-        window.contentView = stack
+        let container = NSView()
+        let split = splitController.view
+        banners.translatesAutoresizingMaskIntoConstraints = false
+        split.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(banners)
+        container.addSubview(split)
+        NSLayoutConstraint.activate([
+            banners.topAnchor.constraint(equalTo: container.topAnchor),
+            banners.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            banners.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            split.topAnchor.constraint(equalTo: banners.bottomAnchor),
+            split.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            split.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            split.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+        ])
+        window.contentView = container
         window.center()
         window.setFrameAutosaveName("InlayDocumentWindow")
         installToolbar()
@@ -189,16 +202,14 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
 
     private func applyMode(_ next: ViewMode) {
         mode = next
-        sourcePane.isHidden = next == .read
-        readPane.isHidden = next == .source
-        sourceHeader.isHidden = next != .split
-        readHeader.isHidden = next != .split
+        sourcePane.showsHeader = next == .split
+        readPane.showsHeader = next == .split
+        sourceItem.isCollapsed = next == .read
+        readItem.isCollapsed = next == .source
         splitView.syncFraction = next == .split ? splitView.syncFraction : nil
-        if next == .split, let total = window?.contentView?.bounds.width, total > 0 {
-            splitView.setPosition(total / 2, ofDividerAt: 0)
-        }
+        splitView.centreDividerOnLayout = next == .split
+        splitView.needsLayout = true
         modeControl?.selectedSegment = Self.segmentIndex(of: next)
-        splitView.needsDisplay = true
         if next == .split { refreshReadViewFromLiveText() }
     }
 
