@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Emitter } from './events.ts';
-import type { ContentProvider, DocumentInfo, Eol, Host, HostEvents, Mode } from './host.ts';
+import type {
+  ContentProvider,
+  DocumentInfo,
+  EditorPosition,
+  Eol,
+  Host,
+  HostEvents,
+  Mode,
+} from './host.ts';
 import {
   DEFAULT_SETTINGS,
   resolveSettings,
@@ -121,6 +129,7 @@ export class MockHost implements Host {
     this.lastSavedText = await this.provider();
     this.info = { ...this.info, text: this.lastSavedText };
     this.dirty = false;
+    this.events.emit('documentSaved', { path: this.info.path });
   }
 
   async openExternal(url: string): Promise<void> {
@@ -148,6 +157,14 @@ export class MockHost implements Host {
 
   notifyContentChanged(): void {
     this.record('notifyContentChanged');
+  }
+
+  /** Last position the editor reported. */
+  lastPosition: EditorPosition | null = null;
+
+  reportPosition(position: EditorPosition): void {
+    this.record('reportPosition', position);
+    this.lastPosition = position;
   }
 
   provideContent(provider: ContentProvider): void {
