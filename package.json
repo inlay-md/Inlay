@@ -1,0 +1,41 @@
+{
+  "name": "inlay",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A Markdown editor and viewer that lets you inlay both SVG and HTML.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@12.16.1",
+  "scripts": {
+    "build": "pnpm -r --filter './packages/*' run build",
+    "dev": "pnpm --filter @inlay-md/read-view run dev",
+    "test": "pnpm run test:unit && pnpm run test:e2e",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "typecheck": "pnpm -r --filter './packages/*' run typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "spdx:check": "node scripts/check-spdx.mjs",
+    "licenses:check": "node scripts/check-licenses.mjs",
+    "notices": "node scripts/gen-third-party-notices.mjs",
+    "notices:check": "node scripts/gen-third-party-notices.mjs --check",
+    "dco:check": "node scripts/check-dco.mjs",
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run spdx:check && pnpm run licenses:check && pnpm run notices:check",
+    "mac:generate": "cd apps/macos && xcodegen generate",
+    "mac:build": "pnpm run build && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet build",
+    "mac:test": "pnpm run build && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.3",
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.6",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.1.0"
+  }
+}

@@ -8,8 +8,8 @@ Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The 
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
 - [x] `docs/BRIEF.md` verbatim (with the 2026-11-05 Read view amendment), `CLAUDE.md`, `docs/PLAN.md`, `docs/DECISIONS.md`
 - [ ] Licensing: `LICENSE` (Apache-2.0), `NOTICE`, `TRADEMARKS.md`, `CONTRIBUTING.md` (DCO), `.gitignore`, `.editorconfig`; first commit
-- [ ] pnpm workspace: root `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json` (strict), Biome, Vitest workspace, Playwright config
-- [ ] `packages/host-api`: `Host` interface, settings schema, `MockHost`, event channel, `isTrustedOrigin`, unit tests
+- [x] pnpm workspace: root `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json` (strict), Biome, Vitest workspace, Playwright config
+- [x] `packages/host-api`: `Host` interface, settings schema, `MockHost`, event channel, `isTrustedOrigin`, unit tests
 - [ ] Fixtures v1 (Markdown only) + `manifest.json` + manifest/trait tests: GFM, nested lists, tables (alignment, HTML in cells), front matter, footnotes, reference links, HTML comments, directives, mixed EOL, trailing whitespace, Vietnamese/CJK/emoji, BOM, undecodable bytes, 10k-line perf file
 - [ ] `packages/md-render` stub with both builds (Vite ESM + esbuild IIFE exposing `render`)
 - [ ] `packages/read-view` hello shell; `pnpm dev` with fixture picker; Playwright smoke (Chromium + WebKit)
