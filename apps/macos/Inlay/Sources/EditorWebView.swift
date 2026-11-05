@@ -63,6 +63,11 @@ final class EditorWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
         evaluateJavaScript("window.inlayWebKitHost && window.inlayWebKitHost.emit(\(Self.jsString(event)), \(json))") { _, _ in }
     }
 
+    /// Asks the editor page to show WYSIWYG or Source (ADR-0033); the page carries the caret over.
+    func requestEditorMode(_ mode: String) {
+        emit("modeRequested", payload: mode)
+    }
+
     /// Top source line and cursor, pulled by native for mode switching.
     func position() async -> (line: Int, cursorLine: Int, cursorColumn: Int)? {
         guard let value = try? await evaluateJavaScript("window.inlayEditor ? JSON.stringify(window.inlayEditor.getPosition()) : null") as? String,

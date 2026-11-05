@@ -76,6 +76,44 @@ final class WindowModesTests: XCTestCase {
         UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
     }
 
+    @MainActor func testWysiwygModeShowsTheEditorPaneAndSwitchesThePage() async throws {
+        let (doc, controller) = try await open(try temporaryCopy(of: "gfm-basics.md"))
+        defer { doc.close() }
+        XCTAssertEqual(doc.editorStartMode, "source")
+        controller.setMode(.wysiwyg)
+        try await settle(controller, mode: .wysiwyg)
+        XCTAssertFalse(controller.sourceItem.isCollapsed)
+        XCTAssertTrue(controller.readItem.isCollapsed)
+        XCTAssertEqual(doc.editorStartMode, "wysiwyg", "a reloaded page would start in WYSIWYG")
+        let pageMode = try await TestSupport.poll(controller.editorView, "window.inlayEditor.mode === 'wysiwyg' && window.inlayEditor.wysiwygView ? 'wysiwyg' : ''", timeout: 15)
+        XCTAssertEqual(pageMode, "wysiwyg")
+        let item = NSMenuItem(title: "WYSIWYG", action: #selector(DocumentWindowController.showWysiwygMode(_:)), keyEquivalent: "")
+        XCTAssertTrue(controller.validateMenuItem(item))
+        XCTAssertEqual(item.state, .on)
+        let refresh = NSMenuItem(title: "Refresh", action: #selector(DocumentWindowController.refreshReadView(_:)), keyEquivalent: "")
+        XCTAssertFalse(controller.validateMenuItem(refresh), "no Read pane to refresh")
+        XCTAssertEqual(DocumentWindowController.segmentIndex(of: .wysiwyg), 1)
+
+        // Back to Source: the page switches too; a caret line set in Source survives the switch back.
+        controller.setMode(.source)
+        try await settle(controller, mode: .source)
+        let back = try await TestSupport.poll(controller.editorView, "window.inlayEditor.mode === 'source' ? 'source' : ''")
+        XCTAssertEqual(back, "source")
+        _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.setCursorSourceLine(30); true")
+        controller.setMode(.wysiwyg)
+        try await settle(controller, mode: .wysiwyg)
+        let carried = try await TestSupport.poll(controller.editorView, "(() => { const p = window.inlayEditor.getPosition(); return p.cursorLine === 30 ? 'yes' : ''; })()")
+        XCTAssertEqual(carried, "yes", "the caret line survives Source → WYSIWYG")
+        // Read takes over at the WYSIWYG viewport's top line (at or above the caret's line 30).
+        controller.setMode(.read)
+        try await settle(controller, mode: .read)
+        XCTAssertTrue(controller.sourceItem.isCollapsed)
+        XCTAssertFalse(controller.readItem.isCollapsed)
+        XCTAssertGreaterThanOrEqual(controller.syncedLine, 1)
+        XCTAssertLessThanOrEqual(controller.syncedLine, 30)
+        UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
+    }
+
     @MainActor func testSwitchingModesCarriesTheSourceLineOver() async throws {
         let (doc, controller) = try await open(try temporaryCopy(of: "perf-10k-lines.md"))
         defer { doc.close() }
