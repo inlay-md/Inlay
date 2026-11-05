@@ -7,7 +7,8 @@
     "BSD-3-Clause",
     "BSD-3-Clause-Clear",
     "Apache-2.0",
-    "0BSD"
+    "0BSD",
+    "Unlicense"
   ],
   "exceptions": [
     {
@@ -19,19 +20,12 @@
     },
     {
       "scope": "shipped",
-      "name": "robust-predicates",
-      "license": "Unlicense",
-      "status": "pending",
-      "date": "2026-11-05",
-      "reason": "Public-domain dedication (Unlicense) for geometric predicates compiled into d3.min.js via d3-delaunay/delaunator. Vendored for offline D3 documents (ADR-0008). Needs the product owner's decision: accept Unlicense for shipped code, or stop vendoring D3."
-    },
-    {
-      "scope": "shipped",
       "name": "elkjs",
       "license": "EPL-2.0 OR GPL-3.0-or-later",
-      "status": "pending",
+      "status": "approved",
       "date": "2026-11-05",
-      "reason": "Eclipse Layout Kernel (taken under EPL-2.0, a weak file-level copyleft) is compiled into mermaid.min.js 12.x. Vendored for offline Mermaid documents (ADR-0008). Needs the product owner's decision: accept EPL-2.0 for this vendored bundle, or build a Mermaid bundle without ELK."
+      "reason": "Eclipse Layout Kernel (taken under EPL-2.0, a weak file-level copyleft) is compiled unmodified into mermaid.min.js 12.x, vendored for offline Mermaid documents (ADR-0008). Accepted for this bundle only (ADR-0027); EPL-2.0 is not on the general allowlist. Its notice and license text are in THIRD_PARTY_NOTICES.md.",
+      "approvedBy": "product owner"
     }
   ],
   "licenseOverrides": [
