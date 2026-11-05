@@ -9,7 +9,7 @@ test.describe('Read view shell (M0)', () => {
     const files = await options.allTextContents();
     expect(files).toContain('gfm-basics.md');
     expect(files).not.toContain('undecodable.md');
-    await expect(page.locator('#inlay-root .inlay-stub')).toBeVisible();
+    await expect(page.locator('#inlay-root h1')).toBeVisible();
   });
 
   test('switching fixtures re-renders through md-render with the Host base URL', async ({
@@ -17,12 +17,12 @@ test.describe('Read view shell (M0)', () => {
   }) => {
     await page.goto('/__inlay/?fixture=unicode-text.md');
     const root = page.locator('#inlay-root');
-    await expect(root.locator('.inlay-stub')).toContainText('Tiếng Việt có dấu');
+    await expect(root).toContainText('Tiếng Việt có dấu');
     await expect(root).toHaveAttribute('data-base-url', /\/__fixtures\/md\/$/);
     await expect(page).toHaveTitle(/Unicode text/);
 
     await page.selectOption('#inlay-fixture-picker', 'gfm-basics.md');
-    await expect(root.locator('.inlay-stub')).toContainText('# GFM basics');
+    await expect(root.locator('h1')).toHaveText('GFM basics');
     await expect(page).toHaveURL(/fixture=gfm-basics\.md/);
   });
 
@@ -37,7 +37,7 @@ test.describe('Read view shell (M0)', () => {
 
   test('the 10k-line fixture renders quickly', async ({ page }) => {
     await page.goto('/__inlay/?fixture=perf-10k-lines.md');
-    await expect(page.locator('#inlay-root .inlay-stub')).toContainText('Performance fixture');
+    await expect(page.locator('#inlay-root h1')).toContainText('Performance fixture');
     const status = await page.locator('#inlay-dev-status').textContent();
     expect(status).toMatch(/\d+ lines · rendered in/);
   });

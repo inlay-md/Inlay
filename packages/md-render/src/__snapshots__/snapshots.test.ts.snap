@@ -1,0 +1,1417 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture snapshots > crlf.md [full] 1`] = `
+"<h1 data-source-line="1-1">CRLF file</h1>
+<p data-source-line="3-3">Every line ends with CRLF, including the last.</p>
+<table data-source-line="5-7"><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>1</td><td>2</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > crlf.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 8,
+  "rewrittenUrls": 0,
+  "title": "CRLF file",
+}
+`;
+
+exports[`fixture snapshots > crlf.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">CRLF file</h1>
+<p data-source-line="3-3">Every line ends with CRLF, including the last.</p>
+<table data-source-line="5-7"><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>1</td><td>2</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > crlf.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 8,
+  "rewrittenUrls": 0,
+  "title": "CRLF file",
+}
+`;
+
+exports[`fixture snapshots > crlf.md [static] 1`] = `
+"<h1 data-source-line="1-1">CRLF file</h1>
+<p data-source-line="3-3">Every line ends with CRLF, including the last.</p>
+<table data-source-line="5-7"><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>1</td><td>2</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > crlf.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 8,
+  "rewrittenUrls": 0,
+  "title": "CRLF file",
+}
+`;
+
+exports[`fixture snapshots > directives.md [full] 1`] = `
+"<h1 data-source-line="1-1">Directives and containers</h1>
+<p data-source-line="3-5">:::note
+This is a note container (remark-directive / markdown-it-container style).
+:::</p>
+<p data-source-line="7-9">::: details Click to expand
+Hidden content with <strong>markdown</strong>.
+:::</p>
+<p data-source-line="11-13">:::warning{title="Careful"}
+Attributes on a container.
+:::</p>
+<p data-source-line="15-15">A paragraph with an :inline-directive[label]{.cls} and a text ::leaf-directive.</p>
+<p data-source-line="17-17">::youtube[Video]{#dQw4w9WgXcQ}</p>"
+`;
+
+exports[`fixture snapshots > directives.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 18,
+  "rewrittenUrls": 0,
+  "title": "Directives and containers",
+}
+`;
+
+exports[`fixture snapshots > directives.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Directives and containers</h1>
+<p data-source-line="3-5">:::note
+This is a note container (remark-directive / markdown-it-container style).
+:::</p>
+<p data-source-line="7-9">::: details Click to expand
+Hidden content with <strong>markdown</strong>.
+:::</p>
+<p data-source-line="11-13">:::warning{title="Careful"}
+Attributes on a container.
+:::</p>
+<p data-source-line="15-15">A paragraph with an :inline-directive[label]{.cls} and a text ::leaf-directive.</p>
+<p data-source-line="17-17">::youtube[Video]{#dQw4w9WgXcQ}</p>"
+`;
+
+exports[`fixture snapshots > directives.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 18,
+  "rewrittenUrls": 0,
+  "title": "Directives and containers",
+}
+`;
+
+exports[`fixture snapshots > directives.md [static] 1`] = `
+"<h1 data-source-line="1-1">Directives and containers</h1>
+<p data-source-line="3-5">:::note
+This is a note container (remark-directive / markdown-it-container style).
+:::</p>
+<p data-source-line="7-9">::: details Click to expand
+Hidden content with <strong>markdown</strong>.
+:::</p>
+<p data-source-line="11-13">:::warning{title="Careful"}
+Attributes on a container.
+:::</p>
+<p data-source-line="15-15">A paragraph with an :inline-directive[label]{.cls} and a text ::leaf-directive.</p>
+<p data-source-line="17-17">::youtube[Video]{#dQw4w9WgXcQ}</p>"
+`;
+
+exports[`fixture snapshots > directives.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 18,
+  "rewrittenUrls": 0,
+  "title": "Directives and containers",
+}
+`;
+
+exports[`fixture snapshots > empty.md [full] 1`] = `""`;
+
+exports[`fixture snapshots > empty.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 0,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > empty.md [sanitized] 1`] = `""`;
+
+exports[`fixture snapshots > empty.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 0,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > empty.md [static] 1`] = `""`;
+
+exports[`fixture snapshots > empty.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 0,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [full] 1`] = `
+"<h1 data-source-line="1-1">Footnotes and reference links</h1>
+<p data-source-line="3-3">Here is a footnote reference<sup><a href="#fn-1" id="fnref-1" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup> and another<sup><a href="#fn-note" id="fnref-note" data-footnote-ref="" aria-describedby="footnote-label">2</a></sup>.</p>
+<p data-source-line="5-5">A <a href="https://example.com/ref" title="Reference title">reference link</a> and an <a href="https://example.com/implicit">implicit one</a> and a collapsed <a href="https://example.com/ref" title="Reference title">ref</a>.</p>
+<p data-source-line="7-7">An image by reference: <img src="./assets/sample.svg" alt="logo"></p>
+<p data-source-line="18-18"><a href="https://example.com/autolink-in-angle-brackets">https://example.com/autolink-in-angle-brackets</a></p>
+<section data-footnotes="" class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="fn-1" data-source-line="9-9">
+<p data-source-line="9-9">The first footnote. <a href="#fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="fn-note" data-source-line="10-12">
+<p data-source-line="10-10">A longer footnote.</p>
+<p data-source-line="12-12">With an indented second paragraph. <a href="#fnref-note" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>"
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Footnotes and reference links",
+}
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Footnotes and reference links</h1>
+<p data-source-line="3-3">Here is a footnote reference<sup><a href="#fn-1" id="fnref-1" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup> and another<sup><a href="#fn-note" id="fnref-note" data-footnote-ref="" aria-describedby="footnote-label">2</a></sup>.</p>
+<p data-source-line="5-5">A <a href="https://example.com/ref" title="Reference title">reference link</a> and an <a href="https://example.com/implicit">implicit one</a> and a collapsed <a href="https://example.com/ref" title="Reference title">ref</a>.</p>
+<p data-source-line="7-7">An image by reference: <img src="./assets/sample.svg" alt="logo"></p>
+<p data-source-line="18-18"><a href="https://example.com/autolink-in-angle-brackets">https://example.com/autolink-in-angle-brackets</a></p>
+<section data-footnotes="" class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="fn-1" data-source-line="9-9">
+<p data-source-line="9-9">The first footnote. <a href="#fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="fn-note" data-source-line="10-12">
+<p data-source-line="10-10">A longer footnote.</p>
+<p data-source-line="12-12">With an indented second paragraph. <a href="#fnref-note" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>"
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Footnotes and reference links",
+}
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [static] 1`] = `
+"<h1 data-source-line="1-1">Footnotes and reference links</h1>
+<p data-source-line="3-3">Here is a footnote reference<sup><a href="#fn-1" id="fnref-1" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup> and another<sup><a href="#fn-note" id="fnref-note" data-footnote-ref="" aria-describedby="footnote-label">2</a></sup>.</p>
+<p data-source-line="5-5">A <a href="https://example.com/ref" title="Reference title">reference link</a> and an <a href="https://example.com/implicit">implicit one</a> and a collapsed <a href="https://example.com/ref" title="Reference title">ref</a>.</p>
+<p data-source-line="7-7">An image by reference: <img src="./assets/sample.svg" alt="logo"></p>
+<p data-source-line="18-18"><a href="https://example.com/autolink-in-angle-brackets">https://example.com/autolink-in-angle-brackets</a></p>
+<section data-footnotes="" class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="fn-1" data-source-line="9-9">
+<p data-source-line="9-9">The first footnote. <a href="#fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="fn-note" data-source-line="10-12">
+<p data-source-line="10-10">A longer footnote.</p>
+<p data-source-line="12-12">With an indented second paragraph. <a href="#fnref-note" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>"
+`;
+
+exports[`fixture snapshots > footnotes-and-references.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Footnotes and reference links",
+}
+`;
+
+exports[`fixture snapshots > front-matter.md [full] 1`] = `
+"<h1 data-source-line="8-8">Document with front matter</h1>
+<p data-source-line="10-10">The YAML block above must survive byte-for-byte and is hidden in the Read view.</p>
+<p data-source-line="12-12">Second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > front-matter.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": "title: Front matter fixture
+tags: [markdown, inlay]
+draft: false
+date: 2026-11-05",
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Front matter fixture",
+}
+`;
+
+exports[`fixture snapshots > front-matter.md [sanitized] 1`] = `
+"<h1 data-source-line="8-8">Document with front matter</h1>
+<p data-source-line="10-10">The YAML block above must survive byte-for-byte and is hidden in the Read view.</p>
+<p data-source-line="12-12">Second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > front-matter.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": "title: Front matter fixture
+tags: [markdown, inlay]
+draft: false
+date: 2026-11-05",
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Front matter fixture",
+}
+`;
+
+exports[`fixture snapshots > front-matter.md [static] 1`] = `
+"<h1 data-source-line="8-8">Document with front matter</h1>
+<p data-source-line="10-10">The YAML block above must survive byte-for-byte and is hidden in the Read view.</p>
+<p data-source-line="12-12">Second paragraph.</p>"
+`;
+
+exports[`fixture snapshots > front-matter.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": "title: Front matter fixture
+tags: [markdown, inlay]
+draft: false
+date: 2026-11-05",
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 13,
+  "rewrittenUrls": 0,
+  "title": "Front matter fixture",
+}
+`;
+
+exports[`fixture snapshots > gfm-basics.md [full] 1`] = `
+"<h1 data-source-line="1-1">GFM basics</h1>
+<p data-source-line="3-3">A paragraph with <strong>strong</strong>, <em>emphasis</em>, <del>strikethrough</del>, <code>inline code</code>, a <a href="https://example.com" title="Title">link</a> and an autolink <a href="https://inlay.live">https://inlay.live</a>.</p>
+<blockquote data-source-line="5-7">
+<p data-source-line="5-5">A blockquote with a nested list:</p>
+<ul data-source-line="6-7">
+<li data-source-line="6-6">one</li>
+<li data-source-line="7-7">two</li>
+</ul>
+</blockquote>
+<h2 data-source-line="9-9">Task list</h2>
+<ul class="contains-task-list" data-source-line="11-13">
+<li class="task-list-item" data-source-line="11-11"><input type="checkbox" checked disabled> Byte-identical round trip</li>
+<li class="task-list-item" data-source-line="12-12"><input type="checkbox" disabled> WYSIWYG islands</li>
+<li class="task-list-item" data-source-line="13-13"><input type="checkbox" disabled> Quick Look tiers</li>
+</ul>
+<h2 data-source-line="15-15">Table with alignment</h2>
+<table data-source-line="17-20"><thead><tr><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td align="left">a</td><td align="center">b</td><td align="right">c</td></tr><tr><td align="left">long cell</td><td align="center"><em>em</em></td><td align="right"><code>code</code></td></tr></tbody></table>
+<h2 data-source-line="22-22">Code</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="ts" data-source-line="24-28"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">export</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> function</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> hello</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  return</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \`Hello, \${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">name</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">}!\`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<pre data-source-line="30-31"><code>indented code block
+second line
+</code></pre>
+<h2 data-source-line="33-33">Image</h2>
+<p data-source-line="35-35"><img src="./assets/sample.svg" alt="Sample"></p>
+<p data-source-line="37-39">Hard break with two trailing spaces<br>
+next line. Backslash break<br>
+next line.</p>
+<hr data-source-line="41-41">
+<p data-source-line="43-43">Final paragraph.</p>"
+`;
+
+exports[`fixture snapshots > gfm-basics.md [full] 2`] = `
+{
+  "codeLanguages": [
+    "ts",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 44,
+  "rewrittenUrls": 0,
+  "title": "GFM basics",
+}
+`;
+
+exports[`fixture snapshots > gfm-basics.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">GFM basics</h1>
+<p data-source-line="3-3">A paragraph with <strong>strong</strong>, <em>emphasis</em>, <del>strikethrough</del>, <code>inline code</code>, a <a href="https://example.com" title="Title">link</a> and an autolink <a href="https://inlay.live">https://inlay.live</a>.</p>
+<blockquote data-source-line="5-7">
+<p data-source-line="5-5">A blockquote with a nested list:</p>
+<ul data-source-line="6-7">
+<li data-source-line="6-6">one</li>
+<li data-source-line="7-7">two</li>
+</ul>
+</blockquote>
+<h2 data-source-line="9-9">Task list</h2>
+<ul class="contains-task-list" data-source-line="11-13">
+<li class="task-list-item" data-source-line="11-11"><input type="checkbox" checked disabled> Byte-identical round trip</li>
+<li class="task-list-item" data-source-line="12-12"><input type="checkbox" disabled> WYSIWYG islands</li>
+<li class="task-list-item" data-source-line="13-13"><input type="checkbox" disabled> Quick Look tiers</li>
+</ul>
+<h2 data-source-line="15-15">Table with alignment</h2>
+<table data-source-line="17-20"><thead><tr><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td align="left">a</td><td align="center">b</td><td align="right">c</td></tr><tr><td align="left">long cell</td><td align="center"><em>em</em></td><td align="right"><code>code</code></td></tr></tbody></table>
+<h2 data-source-line="22-22">Code</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="ts" data-source-line="24-28"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">export</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> function</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> hello</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  return</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \`Hello, \${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">name</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">}!\`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<pre data-source-line="30-31"><code>indented code block
+second line
+</code></pre>
+<h2 data-source-line="33-33">Image</h2>
+<p data-source-line="35-35"><img src="./assets/sample.svg" alt="Sample"></p>
+<p data-source-line="37-39">Hard break with two trailing spaces<br>
+next line. Backslash break<br>
+next line.</p>
+<hr data-source-line="41-41">
+<p data-source-line="43-43">Final paragraph.</p>"
+`;
+
+exports[`fixture snapshots > gfm-basics.md [sanitized] 2`] = `
+{
+  "codeLanguages": [
+    "ts",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 44,
+  "rewrittenUrls": 0,
+  "title": "GFM basics",
+}
+`;
+
+exports[`fixture snapshots > gfm-basics.md [static] 1`] = `
+"<h1 data-source-line="1-1">GFM basics</h1>
+<p data-source-line="3-3">A paragraph with <strong>strong</strong>, <em>emphasis</em>, <del>strikethrough</del>, <code>inline code</code>, a <a href="https://example.com" title="Title">link</a> and an autolink <a href="https://inlay.live">https://inlay.live</a>.</p>
+<blockquote data-source-line="5-7">
+<p data-source-line="5-5">A blockquote with a nested list:</p>
+<ul data-source-line="6-7">
+<li data-source-line="6-6">one</li>
+<li data-source-line="7-7">two</li>
+</ul>
+</blockquote>
+<h2 data-source-line="9-9">Task list</h2>
+<ul class="contains-task-list" data-source-line="11-13">
+<li class="task-list-item" data-source-line="11-11"><input type="checkbox" checked disabled> Byte-identical round trip</li>
+<li class="task-list-item" data-source-line="12-12"><input type="checkbox" disabled> WYSIWYG islands</li>
+<li class="task-list-item" data-source-line="13-13"><input type="checkbox" disabled> Quick Look tiers</li>
+</ul>
+<h2 data-source-line="15-15">Table with alignment</h2>
+<table data-source-line="17-20"><thead><tr><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td align="left">a</td><td align="center">b</td><td align="right">c</td></tr><tr><td align="left">long cell</td><td align="center"><em>em</em></td><td align="right"><code>code</code></td></tr></tbody></table>
+<h2 data-source-line="22-22">Code</h2>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="ts" data-source-line="24-28"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">export</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> function</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> hello</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  return</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \`Hello, \${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">name</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">}!\`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<pre data-source-line="30-31"><code>indented code block
+second line
+</code></pre>
+<h2 data-source-line="33-33">Image</h2>
+<p data-source-line="35-35"><img src="./assets/sample.svg" alt="Sample"></p>
+<p data-source-line="37-39">Hard break with two trailing spaces<br>
+next line. Backslash break<br>
+next line.</p>
+<hr data-source-line="41-41">
+<p data-source-line="43-43">Final paragraph.</p>"
+`;
+
+exports[`fixture snapshots > gfm-basics.md [static] 2`] = `
+{
+  "codeLanguages": [
+    "ts",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 44,
+  "rewrittenUrls": 0,
+  "title": "GFM basics",
+}
+`;
+
+exports[`fixture snapshots > html-comments.md [full] 1`] = `
+"<h1 data-source-line="1-1">HTML comments</h1>
+<!-- A block-level comment that must be preserved exactly -->
+<p data-source-line="5-5">Paragraph with an inline <!-- inline comment --> comment.</p>
+<!--
+Multi-line
+comment block
+-->
+<!-- TODO: islands keep these bytes -->
+<p data-source-line="13-13">Text immediately after a comment line.</p>"
+`;
+
+exports[`fixture snapshots > html-comments.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 14,
+  "rewrittenUrls": 0,
+  "title": "HTML comments",
+}
+`;
+
+exports[`fixture snapshots > html-comments.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">HTML comments</h1>
+
+<p data-source-line="5-5">Paragraph with an inline  comment.</p>
+
+
+<p data-source-line="13-13">Text immediately after a comment line.</p>"
+`;
+
+exports[`fixture snapshots > html-comments.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 14,
+  "rewrittenUrls": 0,
+  "title": "HTML comments",
+}
+`;
+
+exports[`fixture snapshots > html-comments.md [static] 1`] = `
+"<h1 data-source-line="1-1">HTML comments</h1>
+
+<p data-source-line="5-5">Paragraph with an inline  comment.</p>
+
+
+<p data-source-line="13-13">Text immediately after a comment line.</p>"
+`;
+
+exports[`fixture snapshots > html-comments.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 14,
+  "rewrittenUrls": 0,
+  "title": "HTML comments",
+}
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [full] 1`] = `
+"<h1 data-source-line="1-1">Mixed line endings</h1>
+<p data-source-line="3-5">Most lines end with CRLF.
+This one ends with a bare LF.
+Back to CRLF.</p>
+<ul data-source-line="7-8">
+<li data-source-line="7-7">list item one</li>
+<li data-source-line="8-8">list item two</li>
+</ul>
+<p data-source-line="10-11">A lone CR follows this line.
+Then CRLF again.</p>
+<pre data-source-line="13-16"><code>code block line 1
+code block line 2
+</code></pre>
+<p data-source-line="18-18">Last line.</p>"
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Mixed line endings",
+}
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Mixed line endings</h1>
+<p data-source-line="3-5">Most lines end with CRLF.
+This one ends with a bare LF.
+Back to CRLF.</p>
+<ul data-source-line="7-8">
+<li data-source-line="7-7">list item one</li>
+<li data-source-line="8-8">list item two</li>
+</ul>
+<p data-source-line="10-11">A lone CR follows this line.
+Then CRLF again.</p>
+<pre data-source-line="13-16"><code>code block line 1
+code block line 2
+</code></pre>
+<p data-source-line="18-18">Last line.</p>"
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Mixed line endings",
+}
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [static] 1`] = `
+"<h1 data-source-line="1-1">Mixed line endings</h1>
+<p data-source-line="3-5">Most lines end with CRLF.
+This one ends with a bare LF.
+Back to CRLF.</p>
+<ul data-source-line="7-8">
+<li data-source-line="7-7">list item one</li>
+<li data-source-line="8-8">list item two</li>
+</ul>
+<p data-source-line="10-11">A lone CR follows this line.
+Then CRLF again.</p>
+<pre data-source-line="13-16"><code>code block line 1
+code block line 2
+</code></pre>
+<p data-source-line="18-18">Last line.</p>"
+`;
+
+exports[`fixture snapshots > mixed-line-endings.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 19,
+  "rewrittenUrls": 0,
+  "title": "Mixed line endings",
+}
+`;
+
+exports[`fixture snapshots > nested-lists.md [full] 1`] = `
+"<h1 data-source-line="1-1">Nested lists</h1>
+<ol data-source-line="3-17">
+<li data-source-line="3-8">
+<p data-source-line="3-3">First</p>
+<ol data-source-line="4-8">
+<li data-source-line="4-4">Nested ordered</li>
+<li data-source-line="5-8">Second nested
+<ul data-source-line="6-8">
+<li data-source-line="6-6">Bullet under ordered</li>
+<li data-source-line="7-8">Another
+<ol data-source-line="8-8">
+<li data-source-line="8-8">Deep ordered</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li data-source-line="9-15">
+<p data-source-line="9-9">Second</p>
+<p data-source-line="11-11">A paragraph inside a loose list item.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="sh" data-source-line="13-15"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">echo</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "code inside list"</span></span></code></pre>
+</li>
+<li data-source-line="17-17">
+<p data-source-line="17-17">Third</p>
+</li>
+</ol>
+<ul data-source-line="19-23">
+<li data-source-line="19-19">Tight bullet</li>
+<li data-source-line="20-22">Another bullet
+<ul data-source-line="21-22">
+<li data-source-line="21-21">Nested tight</li>
+<li data-source-line="22-22">Nested tight 2</li>
+</ul>
+</li>
+<li data-source-line="23-23">Last</li>
+</ul>
+<ul data-source-line="25-26">
+<li data-source-line="25-25">Star bullet with <em>emphasis</em></li>
+<li data-source-line="26-26">Another</li>
+</ul>
+<ul data-source-line="28-28">
+<li data-source-line="28-28">Plus bullet</li>
+</ul>
+<ol start="5" data-source-line="30-31">
+<li data-source-line="30-30">Starts at five</li>
+<li data-source-line="31-31">Six</li>
+</ol>
+<ul class="contains-task-list" data-source-line="33-34">
+<li class="task-list-item" data-source-line="33-34"><input type="checkbox" disabled> Task in nested
+<ul class="contains-task-list" data-source-line="34-34">
+<li class="task-list-item" data-source-line="34-34"><input type="checkbox" checked disabled> Nested task done</li>
+</ul>
+</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > nested-lists.md [full] 2`] = `
+{
+  "codeLanguages": [
+    "sh",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 35,
+  "rewrittenUrls": 0,
+  "title": "Nested lists",
+}
+`;
+
+exports[`fixture snapshots > nested-lists.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Nested lists</h1>
+<ol data-source-line="3-17">
+<li data-source-line="3-8">
+<p data-source-line="3-3">First</p>
+<ol data-source-line="4-8">
+<li data-source-line="4-4">Nested ordered</li>
+<li data-source-line="5-8">Second nested
+<ul data-source-line="6-8">
+<li data-source-line="6-6">Bullet under ordered</li>
+<li data-source-line="7-8">Another
+<ol data-source-line="8-8">
+<li data-source-line="8-8">Deep ordered</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li data-source-line="9-15">
+<p data-source-line="9-9">Second</p>
+<p data-source-line="11-11">A paragraph inside a loose list item.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="sh" data-source-line="13-15"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">echo</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "code inside list"</span></span></code></pre>
+</li>
+<li data-source-line="17-17">
+<p data-source-line="17-17">Third</p>
+</li>
+</ol>
+<ul data-source-line="19-23">
+<li data-source-line="19-19">Tight bullet</li>
+<li data-source-line="20-22">Another bullet
+<ul data-source-line="21-22">
+<li data-source-line="21-21">Nested tight</li>
+<li data-source-line="22-22">Nested tight 2</li>
+</ul>
+</li>
+<li data-source-line="23-23">Last</li>
+</ul>
+<ul data-source-line="25-26">
+<li data-source-line="25-25">Star bullet with <em>emphasis</em></li>
+<li data-source-line="26-26">Another</li>
+</ul>
+<ul data-source-line="28-28">
+<li data-source-line="28-28">Plus bullet</li>
+</ul>
+<ol start="5" data-source-line="30-31">
+<li data-source-line="30-30">Starts at five</li>
+<li data-source-line="31-31">Six</li>
+</ol>
+<ul class="contains-task-list" data-source-line="33-34">
+<li class="task-list-item" data-source-line="33-34"><input type="checkbox" disabled> Task in nested
+<ul class="contains-task-list" data-source-line="34-34">
+<li class="task-list-item" data-source-line="34-34"><input type="checkbox" checked disabled> Nested task done</li>
+</ul>
+</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > nested-lists.md [sanitized] 2`] = `
+{
+  "codeLanguages": [
+    "sh",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 35,
+  "rewrittenUrls": 0,
+  "title": "Nested lists",
+}
+`;
+
+exports[`fixture snapshots > nested-lists.md [static] 1`] = `
+"<h1 data-source-line="1-1">Nested lists</h1>
+<ol data-source-line="3-17">
+<li data-source-line="3-8">
+<p data-source-line="3-3">First</p>
+<ol data-source-line="4-8">
+<li data-source-line="4-4">Nested ordered</li>
+<li data-source-line="5-8">Second nested
+<ul data-source-line="6-8">
+<li data-source-line="6-6">Bullet under ordered</li>
+<li data-source-line="7-8">Another
+<ol data-source-line="8-8">
+<li data-source-line="8-8">Deep ordered</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li data-source-line="9-15">
+<p data-source-line="9-9">Second</p>
+<p data-source-line="11-11">A paragraph inside a loose list item.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="sh" data-source-line="13-15"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">echo</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "code inside list"</span></span></code></pre>
+</li>
+<li data-source-line="17-17">
+<p data-source-line="17-17">Third</p>
+</li>
+</ol>
+<ul data-source-line="19-23">
+<li data-source-line="19-19">Tight bullet</li>
+<li data-source-line="20-22">Another bullet
+<ul data-source-line="21-22">
+<li data-source-line="21-21">Nested tight</li>
+<li data-source-line="22-22">Nested tight 2</li>
+</ul>
+</li>
+<li data-source-line="23-23">Last</li>
+</ul>
+<ul data-source-line="25-26">
+<li data-source-line="25-25">Star bullet with <em>emphasis</em></li>
+<li data-source-line="26-26">Another</li>
+</ul>
+<ul data-source-line="28-28">
+<li data-source-line="28-28">Plus bullet</li>
+</ul>
+<ol start="5" data-source-line="30-31">
+<li data-source-line="30-30">Starts at five</li>
+<li data-source-line="31-31">Six</li>
+</ol>
+<ul class="contains-task-list" data-source-line="33-34">
+<li class="task-list-item" data-source-line="33-34"><input type="checkbox" disabled> Task in nested
+<ul class="contains-task-list" data-source-line="34-34">
+<li class="task-list-item" data-source-line="34-34"><input type="checkbox" checked disabled> Nested task done</li>
+</ul>
+</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > nested-lists.md [static] 2`] = `
+{
+  "codeLanguages": [
+    "sh",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 35,
+  "rewrittenUrls": 0,
+  "title": "Nested lists",
+}
+`;
+
+exports[`fixture snapshots > perf-10k-lines.md [full] 1`] = `"658273484e6071c51423ab6f590ec3f1e0924b5f5a4b421034a6165d11ac62a2"`;
+
+exports[`fixture snapshots > perf-10k-lines.md [full] 2`] = `
+{
+  "codeLanguages": [
+    "js",
+  ],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 10203,
+  "rewrittenUrls": 0,
+  "title": "Performance fixture (generated)",
+}
+`;
+
+exports[`fixture snapshots > perf-10k-lines.md [sanitized] 1`] = `"658273484e6071c51423ab6f590ec3f1e0924b5f5a4b421034a6165d11ac62a2"`;
+
+exports[`fixture snapshots > perf-10k-lines.md [sanitized] 2`] = `
+{
+  "codeLanguages": [
+    "js",
+  ],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 10203,
+  "rewrittenUrls": 0,
+  "title": "Performance fixture (generated)",
+}
+`;
+
+exports[`fixture snapshots > perf-10k-lines.md [static] 1`] = `"658273484e6071c51423ab6f590ec3f1e0924b5f5a4b421034a6165d11ac62a2"`;
+
+exports[`fixture snapshots > perf-10k-lines.md [static] 2`] = `
+{
+  "codeLanguages": [
+    "js",
+  ],
+  "frontMatter": null,
+  "hasMath": true,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 10203,
+  "rewrittenUrls": 0,
+  "title": "Performance fixture (generated)",
+}
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [full] 1`] = `
+"<h1 data-source-line="1-2">Setext heading level one</h1>
+<h2 data-source-line="4-5">Setext heading level two</h2>
+<h4 data-source-line="7-7">ATX heading with closing hashes</h4>
+<ul data-source-line="9-10">
+<li data-source-line="9-9">Star bullets</li>
+<li data-source-line="10-10">Second star</li>
+</ul>
+<ul data-source-line="12-13">
+<li data-source-line="12-12">Dash bullets</li>
+<li data-source-line="13-13">Second dash</li>
+</ul>
+<ul data-source-line="15-15">
+<li data-source-line="15-15">Plus bullets</li>
+</ul>
+<ol data-source-line="17-18">
+<li data-source-line="17-17">Paren ordered</li>
+<li data-source-line="18-18">Second</li>
+</ol>
+<p data-source-line="20-20"><em>Underscore emphasis</em> and <strong>underscore strong</strong> next to <em>star emphasis</em> and <strong>star strong</strong>.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="python" data-source-line="22-24"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"tilde fence"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="md" data-source-line="26-28"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">\`\`\`nested fence\`\`\`</span></span></code></pre>
+<p data-source-line="30-31">Hard   spaces   inside   a   line and a line ending with a backslash<br>
+continued.</p>
+<p data-source-line="33-33">Escaped *stars* and snake_case_words plus a literal # hash.</p>
+<hr data-source-line="35-35">
+<hr data-source-line="37-37">
+<p data-source-line="39-39">Trailing list without final newline:</p>
+<ul data-source-line="40-41">
+<li data-source-line="40-40">a</li>
+<li data-source-line="41-41">b</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [full] 2`] = `
+{
+  "codeLanguages": [
+    "md",
+    "python",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 41,
+  "rewrittenUrls": 0,
+  "title": "Setext heading level one",
+}
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [sanitized] 1`] = `
+"<h1 data-source-line="1-2">Setext heading level one</h1>
+<h2 data-source-line="4-5">Setext heading level two</h2>
+<h4 data-source-line="7-7">ATX heading with closing hashes</h4>
+<ul data-source-line="9-10">
+<li data-source-line="9-9">Star bullets</li>
+<li data-source-line="10-10">Second star</li>
+</ul>
+<ul data-source-line="12-13">
+<li data-source-line="12-12">Dash bullets</li>
+<li data-source-line="13-13">Second dash</li>
+</ul>
+<ul data-source-line="15-15">
+<li data-source-line="15-15">Plus bullets</li>
+</ul>
+<ol data-source-line="17-18">
+<li data-source-line="17-17">Paren ordered</li>
+<li data-source-line="18-18">Second</li>
+</ol>
+<p data-source-line="20-20"><em>Underscore emphasis</em> and <strong>underscore strong</strong> next to <em>star emphasis</em> and <strong>star strong</strong>.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="python" data-source-line="22-24"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"tilde fence"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="md" data-source-line="26-28"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">\`\`\`nested fence\`\`\`</span></span></code></pre>
+<p data-source-line="30-31">Hard   spaces   inside   a   line and a line ending with a backslash<br>
+continued.</p>
+<p data-source-line="33-33">Escaped *stars* and snake_case_words plus a literal # hash.</p>
+<hr data-source-line="35-35">
+<hr data-source-line="37-37">
+<p data-source-line="39-39">Trailing list without final newline:</p>
+<ul data-source-line="40-41">
+<li data-source-line="40-40">a</li>
+<li data-source-line="41-41">b</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [sanitized] 2`] = `
+{
+  "codeLanguages": [
+    "md",
+    "python",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 41,
+  "rewrittenUrls": 0,
+  "title": "Setext heading level one",
+}
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [static] 1`] = `
+"<h1 data-source-line="1-2">Setext heading level one</h1>
+<h2 data-source-line="4-5">Setext heading level two</h2>
+<h4 data-source-line="7-7">ATX heading with closing hashes</h4>
+<ul data-source-line="9-10">
+<li data-source-line="9-9">Star bullets</li>
+<li data-source-line="10-10">Second star</li>
+</ul>
+<ul data-source-line="12-13">
+<li data-source-line="12-12">Dash bullets</li>
+<li data-source-line="13-13">Second dash</li>
+</ul>
+<ul data-source-line="15-15">
+<li data-source-line="15-15">Plus bullets</li>
+</ul>
+<ol data-source-line="17-18">
+<li data-source-line="17-17">Paren ordered</li>
+<li data-source-line="18-18">Second</li>
+</ol>
+<p data-source-line="20-20"><em>Underscore emphasis</em> and <strong>underscore strong</strong> next to <em>star emphasis</em> and <strong>star strong</strong>.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="python" data-source-line="22-24"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"tilde fence"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0" data-lang="md" data-source-line="26-28"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">\`\`\`nested fence\`\`\`</span></span></code></pre>
+<p data-source-line="30-31">Hard   spaces   inside   a   line and a line ending with a backslash<br>
+continued.</p>
+<p data-source-line="33-33">Escaped *stars* and snake_case_words plus a literal # hash.</p>
+<hr data-source-line="35-35">
+<hr data-source-line="37-37">
+<p data-source-line="39-39">Trailing list without final newline:</p>
+<ul data-source-line="40-41">
+<li data-source-line="40-40">a</li>
+<li data-source-line="41-41">b</li>
+</ul>"
+`;
+
+exports[`fixture snapshots > setext-and-styles.md [static] 2`] = `
+{
+  "codeLanguages": [
+    "md",
+    "python",
+  ],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 41,
+  "rewrittenUrls": 0,
+  "title": "Setext heading level one",
+}
+`;
+
+exports[`fixture snapshots > tables.md [full] 1`] = `
+"<h1 data-source-line="1-1">Tables</h1>
+<table data-source-line="3-5"><thead><tr><th>Default</th><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td>1</td><td align="left">2</td><td align="center">3</td><td align="right">4</td></tr></tbody></table>
+<p data-source-line="7-7">Compact table, no leading pipes:</p>
+<table data-source-line="9-12"><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>alpha</td><td>1</td></tr><tr><td>beta</td><td>2</td></tr></tbody></table>
+<h2 data-source-line="14-14">HTML in cells</h2>
+<table data-source-line="16-22"><thead><tr><th>Feature</th><th>Notes</th></tr></thead><tbody><tr><td>Line break</td><td>first<br>second</td></tr><tr><td>Bold tag</td><td><b>bold</b> and <i>italic</i></td></tr><tr><td>Keyboard</td><td>Press <kbd>⌘</kbd>+<kbd>S</kbd></td></tr><tr><td>Escaped pipe</td><td>a | b</td></tr><tr><td>Inline SVG</td><td><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="tomato"></circle></svg></td></tr></tbody></table>
+<h2 data-source-line="24-24">Empty cells and ragged rows</h2>
+<table data-source-line="26-30"><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td></td><td>3</td></tr><tr><td>only one</td><td></td><td></td></tr><tr><td>1</td><td>2</td><td>3</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > tables.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Tables",
+}
+`;
+
+exports[`fixture snapshots > tables.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Tables</h1>
+<table data-source-line="3-5"><thead><tr><th>Default</th><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td>1</td><td align="left">2</td><td align="center">3</td><td align="right">4</td></tr></tbody></table>
+<p data-source-line="7-7">Compact table, no leading pipes:</p>
+<table data-source-line="9-12"><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>alpha</td><td>1</td></tr><tr><td>beta</td><td>2</td></tr></tbody></table>
+<h2 data-source-line="14-14">HTML in cells</h2>
+<table data-source-line="16-22"><thead><tr><th>Feature</th><th>Notes</th></tr></thead><tbody><tr><td>Line break</td><td>first<br>second</td></tr><tr><td>Bold tag</td><td><b>bold</b> and <i>italic</i></td></tr><tr><td>Keyboard</td><td>Press <kbd>⌘</kbd>+<kbd>S</kbd></td></tr><tr><td>Escaped pipe</td><td>a | b</td></tr><tr><td>Inline SVG</td><td><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="tomato"></circle></svg></td></tr></tbody></table>
+<h2 data-source-line="24-24">Empty cells and ragged rows</h2>
+<table data-source-line="26-30"><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td></td><td>3</td></tr><tr><td>only one</td><td></td><td></td></tr><tr><td>1</td><td>2</td><td>3</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > tables.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Tables",
+}
+`;
+
+exports[`fixture snapshots > tables.md [static] 1`] = `
+"<h1 data-source-line="1-1">Tables</h1>
+<table data-source-line="3-5"><thead><tr><th>Default</th><th align="left">Left</th><th align="center">Center</th><th align="right">Right</th></tr></thead><tbody><tr><td>1</td><td align="left">2</td><td align="center">3</td><td align="right">4</td></tr></tbody></table>
+<p data-source-line="7-7">Compact table, no leading pipes:</p>
+<table data-source-line="9-12"><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>alpha</td><td>1</td></tr><tr><td>beta</td><td>2</td></tr></tbody></table>
+<h2 data-source-line="14-14">HTML in cells</h2>
+<table data-source-line="16-22"><thead><tr><th>Feature</th><th>Notes</th></tr></thead><tbody><tr><td>Line break</td><td>first<br>second</td></tr><tr><td>Bold tag</td><td><b>bold</b> and <i>italic</i></td></tr><tr><td>Keyboard</td><td>Press <kbd>⌘</kbd>+<kbd>S</kbd></td></tr><tr><td>Escaped pipe</td><td>a | b</td></tr><tr><td>Inline SVG</td><td><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="tomato"></circle></svg></td></tr></tbody></table>
+<h2 data-source-line="24-24">Empty cells and ragged rows</h2>
+<table data-source-line="26-30"><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td></td><td>3</td></tr><tr><td>only one</td><td></td><td></td></tr><tr><td>1</td><td>2</td><td>3</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > tables.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": true,
+  "hasScripts": false,
+  "lineCount": 31,
+  "rewrittenUrls": 0,
+  "title": "Tables",
+}
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [full] 1`] = `
+"<p data-source-line="1-1">Trailing whitespace fixture</p>
+<p data-source-line="3-4">Line with two trailing spaces<br>
+next line after hard break.</p>
+<pre data-source-line="6-6"><code>Tab-indented line (code block)
+</code></pre>
+<p data-source-line="8-8">Paragraph with trailing tab</p>
+<ul data-source-line="10-11">
+<li data-source-line="10-10">list item with trailing space</li>
+<li data-source-line="11-11">another</li>
+</ul>
+<p data-source-line="15-15">Line after whitespace-only line, and no final newline</p>"
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [sanitized] 1`] = `
+"<p data-source-line="1-1">Trailing whitespace fixture</p>
+<p data-source-line="3-4">Line with two trailing spaces<br>
+next line after hard break.</p>
+<pre data-source-line="6-6"><code>Tab-indented line (code block)
+</code></pre>
+<p data-source-line="8-8">Paragraph with trailing tab</p>
+<ul data-source-line="10-11">
+<li data-source-line="10-10">list item with trailing space</li>
+<li data-source-line="11-11">another</li>
+</ul>
+<p data-source-line="15-15">Line after whitespace-only line, and no final newline</p>"
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [static] 1`] = `
+"<p data-source-line="1-1">Trailing whitespace fixture</p>
+<p data-source-line="3-4">Line with two trailing spaces<br>
+next line after hard break.</p>
+<pre data-source-line="6-6"><code>Tab-indented line (code block)
+</code></pre>
+<p data-source-line="8-8">Paragraph with trailing tab</p>
+<ul data-source-line="10-11">
+<li data-source-line="10-10">list item with trailing space</li>
+<li data-source-line="11-11">another</li>
+</ul>
+<p data-source-line="15-15">Line after whitespace-only line, and no final newline</p>"
+`;
+
+exports[`fixture snapshots > trailing-whitespace.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 15,
+  "rewrittenUrls": 0,
+  "title": null,
+}
+`;
+
+exports[`fixture snapshots > unicode-text.md [full] 1`] = `
+"<h1 data-source-line="1-1">Unicode text</h1>
+<h2 data-source-line="3-3">Vietnamese</h2>
+<p data-source-line="5-5">Tiếng Việt có dấu: Hà Nội, Đà Nẵng, Thành phố Hồ Chí Minh. Chữ "ự", "ờ", "ẫ" dùng nhiều dấu kết hợp. Gõ Telex: <code>aa</code> → â, <code>dd</code> → đ, <code>ow</code> → ơ.</p>
+<p data-source-line="7-7">Decomposed form (combining marks): Tiếng Việt — the next word uses real combining characters: Tiếng (U+0065 U+0302 U+0301 style).</p>
+<h2 data-source-line="9-9">CJK</h2>
+<p data-source-line="11-13">中文：这是一个 Markdown 编辑器，能完整渲染嵌入的 SVG 和 HTML。
+日本語：これはマークダウンエディタです。全角スペース　と句読点、。
+한국어: 마크다운 편집기입니다. 한글 입력 테스트.</p>
+<h2 data-source-line="15-15">Emoji and astral-plane characters</h2>
+<p data-source-line="17-18">Emoji: 🙂 🇻🇳 👨‍👩‍👧‍👦 🧑🏽‍💻 — family and skin-tone sequences use ZWJ.
+Astral: 𝔘𝔫𝔦𝔠𝔬𝔡𝔢 (mathematical fraktur), 😀 (U+1F600), 𠀋 (CJK Extension B).</p>
+<h2 data-source-line="20-20">Mixed directions</h2>
+<p data-source-line="22-22">العربية مع English inside, and עברית too.</p>
+<table data-source-line="24-27"><thead><tr><th>Ngôn ngữ</th><th>例</th></tr></thead><tbody><tr><td>Việt</td><td>Xin chào</td></tr><tr><td>日本</td><td>こんにちは</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > unicode-text.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 28,
+  "rewrittenUrls": 0,
+  "title": "Unicode text",
+}
+`;
+
+exports[`fixture snapshots > unicode-text.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">Unicode text</h1>
+<h2 data-source-line="3-3">Vietnamese</h2>
+<p data-source-line="5-5">Tiếng Việt có dấu: Hà Nội, Đà Nẵng, Thành phố Hồ Chí Minh. Chữ "ự", "ờ", "ẫ" dùng nhiều dấu kết hợp. Gõ Telex: <code>aa</code> → â, <code>dd</code> → đ, <code>ow</code> → ơ.</p>
+<p data-source-line="7-7">Decomposed form (combining marks): Tiếng Việt — the next word uses real combining characters: Tiếng (U+0065 U+0302 U+0301 style).</p>
+<h2 data-source-line="9-9">CJK</h2>
+<p data-source-line="11-13">中文：这是一个 Markdown 编辑器，能完整渲染嵌入的 SVG 和 HTML。
+日本語：これはマークダウンエディタです。全角スペース　と句読点、。
+한국어: 마크다운 편집기입니다. 한글 입력 테스트.</p>
+<h2 data-source-line="15-15">Emoji and astral-plane characters</h2>
+<p data-source-line="17-18">Emoji: 🙂 🇻🇳 👨‍👩‍👧‍👦 🧑🏽‍💻 — family and skin-tone sequences use ZWJ.
+Astral: 𝔘𝔫𝔦𝔠𝔬𝔡𝔢 (mathematical fraktur), 😀 (U+1F600), 𠀋 (CJK Extension B).</p>
+<h2 data-source-line="20-20">Mixed directions</h2>
+<p data-source-line="22-22">العربية مع English inside, and עברית too.</p>
+<table data-source-line="24-27"><thead><tr><th>Ngôn ngữ</th><th>例</th></tr></thead><tbody><tr><td>Việt</td><td>Xin chào</td></tr><tr><td>日本</td><td>こんにちは</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > unicode-text.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 28,
+  "rewrittenUrls": 0,
+  "title": "Unicode text",
+}
+`;
+
+exports[`fixture snapshots > unicode-text.md [static] 1`] = `
+"<h1 data-source-line="1-1">Unicode text</h1>
+<h2 data-source-line="3-3">Vietnamese</h2>
+<p data-source-line="5-5">Tiếng Việt có dấu: Hà Nội, Đà Nẵng, Thành phố Hồ Chí Minh. Chữ "ự", "ờ", "ẫ" dùng nhiều dấu kết hợp. Gõ Telex: <code>aa</code> → â, <code>dd</code> → đ, <code>ow</code> → ơ.</p>
+<p data-source-line="7-7">Decomposed form (combining marks): Tiếng Việt — the next word uses real combining characters: Tiếng (U+0065 U+0302 U+0301 style).</p>
+<h2 data-source-line="9-9">CJK</h2>
+<p data-source-line="11-13">中文：这是一个 Markdown 编辑器，能完整渲染嵌入的 SVG 和 HTML。
+日本語：これはマークダウンエディタです。全角スペース　と句読点、。
+한국어: 마크다운 편집기입니다. 한글 입력 테스트.</p>
+<h2 data-source-line="15-15">Emoji and astral-plane characters</h2>
+<p data-source-line="17-18">Emoji: 🙂 🇻🇳 👨‍👩‍👧‍👦 🧑🏽‍💻 — family and skin-tone sequences use ZWJ.
+Astral: 𝔘𝔫𝔦𝔠𝔬𝔡𝔢 (mathematical fraktur), 😀 (U+1F600), 𠀋 (CJK Extension B).</p>
+<h2 data-source-line="20-20">Mixed directions</h2>
+<p data-source-line="22-22">العربية مع English inside, and עברית too.</p>
+<table data-source-line="24-27"><thead><tr><th>Ngôn ngữ</th><th>例</th></tr></thead><tbody><tr><td>Việt</td><td>Xin chào</td></tr><tr><td>日本</td><td>こんにちは</td></tr></tbody></table>"
+`;
+
+exports[`fixture snapshots > unicode-text.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 28,
+  "rewrittenUrls": 0,
+  "title": "Unicode text",
+}
+`;
+
+exports[`fixture snapshots > utf8-bom.md [full] 1`] = `
+"<h1 data-source-line="1-1">UTF-8 BOM</h1>
+<p data-source-line="3-3">This file starts with a byte order mark (EF BB BF) that must be preserved.</p>"
+`;
+
+exports[`fixture snapshots > utf8-bom.md [full] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 4,
+  "rewrittenUrls": 0,
+  "title": "UTF-8 BOM",
+}
+`;
+
+exports[`fixture snapshots > utf8-bom.md [sanitized] 1`] = `
+"<h1 data-source-line="1-1">UTF-8 BOM</h1>
+<p data-source-line="3-3">This file starts with a byte order mark (EF BB BF) that must be preserved.</p>"
+`;
+
+exports[`fixture snapshots > utf8-bom.md [sanitized] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 4,
+  "rewrittenUrls": 0,
+  "title": "UTF-8 BOM",
+}
+`;
+
+exports[`fixture snapshots > utf8-bom.md [static] 1`] = `
+"<h1 data-source-line="1-1">UTF-8 BOM</h1>
+<p data-source-line="3-3">This file starts with a byte order mark (EF BB BF) that must be preserved.</p>"
+`;
+
+exports[`fixture snapshots > utf8-bom.md [static] 2`] = `
+{
+  "codeLanguages": [],
+  "frontMatter": null,
+  "hasMath": false,
+  "hasMermaid": false,
+  "hasRawHtml": false,
+  "hasScripts": false,
+  "lineCount": 4,
+  "rewrittenUrls": 0,
+  "title": "UTF-8 BOM",
+}
+`;

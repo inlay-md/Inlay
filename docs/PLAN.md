@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M0 complete; CI green on `main` (2026-11-05). Quick Look spike verdict in ADR-0018. Next: M1 on branch `m1-read-view` after "go".
+**Status:** M1 in progress on branch `m1-read-view` (2026-11-05): md-render pipeline landed (slice 1). Two license exceptions pending the product owner (ADR-0019).
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -24,7 +24,7 @@ Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The 
 Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a `.md` into a window; license/notices/DCO checks run in CI; spike verdict recorded.
 
 ## M1 — Read view (branch `m1-read-view`)
-- [ ] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test
+- [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0019, ADR-0020)
 - [ ] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX) copied at build time with version manifest; license check + notices
 - [ ] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; Mermaid lazy-load; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme
 - [ ] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, nonce), read WKWebView isolation, external links, quarantine → static + native trust banner (trust store), "Allow network" toggle (per file), file change → debounced refresh

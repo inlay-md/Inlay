@@ -18,11 +18,11 @@ final class ReadWebViewTests: XCTestCase {
         window.contentView = webView
         webView.loadDocument()
 
-        // Poll until the shell has rendered the stub.
+        // Poll until the shell has rendered the document.
         var rendered = false
         for _ in 0..<100 {
-            if let value = try? await webView.evaluateJavaScript("document.querySelector('#inlay-root .inlay-stub') ? document.querySelector('#inlay-root .inlay-stub').textContent.slice(0, 40) : ''") as? String, !value.isEmpty {
-                XCTAssertTrue(value.hasPrefix("# Unicode text"), value)
+            if let value = try? await webView.evaluateJavaScript("document.querySelector('#inlay-root h1') ? document.querySelector('#inlay-root h1').textContent : ''") as? String, !value.isEmpty {
+                XCTAssertEqual(value, "Unicode text")
                 rendered = true
                 break
             }
