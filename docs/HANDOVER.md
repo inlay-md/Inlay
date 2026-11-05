@@ -1,13 +1,14 @@
-# Handover: Inlay after M1 (Read view)
+# Handover: resuming Inlay at the start of M2 (Source + Split)
 
-Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and task lists), `docs/DECISIONS.md` (ADR-0001…0024), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M2 task list), `docs/DECISIONS.md` (ADR-0001…0027), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
 
-## State on 2026-11-05 (end of M1)
+## State on 2026-11-05 (M1 merged)
 
-- `main` holds M0. Branch `m1-read-view` holds M1 in five slices (md-render pipeline, Read view runtime, lazy Shiki/KaTeX/Mermaid, rendered-content fixtures with offline CDN rewriting, Swift trust/network/file watching) and is proposed as a PR to `main`; merge after the product owner's "go".
-- Two license exceptions are **pending the product owner** (ADR-0020): `robust-predicates` (Unlicense, inside d3.min.js) and `elkjs` (EPL-2.0, inside mermaid.min.js). `pnpm licenses:check` passes but prints them until they are accepted (set `"status"` to approved in `scripts/license-policy.json`) or the library stops being vendored.
+- `main` holds M0 and M1 (#3, squash-merged; five slices: md-render pipeline, Read view runtime, lazy Shiki/KaTeX/Mermaid, rendered-content fixtures with offline CDN rewriting, Swift trust/network/file watching).
+- No license decisions are pending: Unlicense is on the allowlist (ADR-0026) and `elkjs`/EPL-2.0 is an approved per-package exception for the vendored Mermaid bundle (ADR-0027). `pnpm licenses:check` prints both as notes.
 - Local toolchain: Node 26, pnpm 12.16, Xcode 27.2, XcodeGen 2.46, Playwright Chromium + WebKit installed.
-- M2 (Source + Split) starts on branch `m2-source-split` after "go".
+- Open PRs: none expected once #5 (licensing + this handover) is merged. CI on `main` is green (#4 fixed the 10k-line Vitest timeout).
+- M2 (Source + Split) starts on branch `m2-source-split` after the product owner's "go"; the task list is in `docs/PLAN.md`, the architecture in ADR-0003 (byte preservation), ADR-0005 (save pulls live content) and ADR-0010 (source→read sync only).
 
 ## How M1 fits together
 
@@ -51,6 +52,10 @@ The macOS build needs `scripts/build-web.sh` first (it copies `packages/read-vie
 - `e2e/` — Playwright specs; `scripts/` — policy checks and notices generator.
 
 ## M2 entry points
+
+- The brand PR (#2) added a design section to `docs/PLAN.md` with per-milestone UI tasks (window chrome, CodeMirror theme, Split divider); pick up the M1/M2-tagged ones while building M2 rather than as a separate pass.
+- Workflow that worked in M1: one branch per milestone, small vertical slices each committed green (`pnpm check`, `pnpm test`, `pnpm mac:test`), PLAN checkboxes ticked and an ADR per non-obvious choice in the same commit, PR to `main` at the end, product owner merges (squash) after "go". Run `pnpm mac:test` in the background while continuing web work; never run two web builds at once (Playwright's web server and `scripts/build-web.sh` both write `packages/read-view/dist`).
+- Verify in the real app with `pnpm mac:build` and `open apps/macos/DerivedData/Build/Products/Debug/Inlay.app <file>` (or the default DerivedData path when built from Xcode); `screencapture -l <windowId>` captures a single Inlay window (list ids with a few lines of Swift over `CGWindowListCopyWindowInfo`), never the whole screen.
 
 - Document model and CodeMirror live in a new `packages/editor`; `MockHost.provideContent`/`saveDocument` already model the save path (ADR-0005). The Read view's `inlayReadView.scrollToSourceLine` / `getPosition` are the Split-mode sync hooks (source → read only, ADR-0010).
 - The editor webview gets the `WKScriptMessageHandlerWithReply` bridge (`WebKitHost` adapter in `packages/host-api`); the Read webview must keep having none.
