@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M2 merged into `main` (2026-11-06, #6). Next: M3 on branch `m3-wysiwyg` after "go"; the IME checklist is still to be run by hand.
+**Status:** M3 built on branch `m3-wysiwyg` (2026-11-06), PR open to `main`. Next: M4 after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -58,6 +58,7 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - [x] 3b · 10k-line performance: deferred block verification, plain-DOM list items, no listener plugin, lazy KaTeX and island previews, Crepe table block off; Source safety net above 50k lines / 5 MB with a one-click switch (ADR-0034)
 - [ ] 3b: optional Mermaid preview toggle in code blocks (Crepe's `renderPreview` hook; vendored Mermaid bundle)
 - Done when: byte-identical for every fixture via WYSIWYG; editing one block changes only its range (automated); islands editable in place; zero islands on pure-GFM fixtures; mode switches keep caret/viewport; composition tests pass; 10k lines < 1 s.
+- Status 2026-11-06: every fixture byte-identical through WYSIWYG via the real NSDocument (`EditorDocumentTests`) and in Playwright; one-block edits confined (Vitest, Playwright, XCTest); islands and inline islands editable in place with edits confined to their bytes; zero islands on every fixture the manifest marks pure GFM; mode switches keep caret line and viewport (Playwright, XCTest); CDP composition tests pass in Chromium (WebKit: manual checklist); 10k lines open in well under 1 s in Chromium and WebKit (best of three readings).
 
 ## M4 — Quick Look (branch `m4-quicklook`; needs Team ID)
 - [ ] JSC bundle finalization (polyfills, sync Shiki with conservative target, KaTeX, inlined theme, `assetLoader`, size caps, truncation)
@@ -84,7 +85,8 @@ The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in
 - [ ] M1 · Quarantine banner ("This file was downloaded…", **Trust this document**) styled as in `design/ui/app-split-mode.html`; "Scripts off · quarantined" pill state
 - [ ] M1 · Empty state ("Drop a Markdown file, or ⌘O") with the illustration from `design/ui/illustrations.html`
 - [x] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings) in `packages/editor/src/theme.ts`; Split divider with the verdigris scroll-sync marker (`SyncSplitView`); cursor position in the native pane header (`PaneHeaderView`)
-- [ ] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice; inline formatting toolbar; "Block n of m changed · bytes" status item
+- [x] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice (`wysiwyg/theme.css`, `island-view.ts`); inline formatting toolbar (Crepe Toolbar feature)
+- [ ] M3 · "Block n of m changed · bytes" status item (needs the native status bar from the M1 chrome task; `stats.wysiwyg` and the splice's `changed` count are ready)
 - [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
 - [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage
 - [ ] Website · build inlay.live from `design/ui/website.html` as a static site with self-hosted fonts and `design/icon/web` favicons (product decision pending: `site/` in this repo or a separate repo)
