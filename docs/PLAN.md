@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 merged into `main` (2026-11-05, #3). No license exceptions pending: Unlicense allowed (ADR-0026), elkjs/EPL-2.0 approved per package (ADR-0027). Next: M2 on branch `m2-source-split`.
+**Status:** M1 merged into `main` (2026-11-05, #3). M2 in progress on branch `m2-source-split` (started 2026-11-05).
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -35,12 +35,16 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - Done when: fixtures render in Playwright (Chromium + WebKit) and in the app; probe proves no native/network reach per ADR-0007; charts render offline; quarantine flow works without modifying the file.
 
 ## M2 — Source + Split (branch `m2-source-split`)
-- [ ] Document model: decode (`bom`, dominant `eol`), `getText()` byte identity; CodeMirror Source mode; mixed-EOL prototype (`lineSeparator` vs per-line EOL table) decided first
-- [ ] `WebKitHost` adapter + Swift bridge (`WKScriptMessageHandlerWithReply`)
-- [ ] NSDocument: read `Data`, save override pulling live content (+ crash mirror), autosave in place, revert, Versions, Duplicate, tabs, Open Recent, dirty tracking, change detection (NSFilePresenter) → auto-reload / conflict banner
-- [ ] Split mode: editor + read webviews, debounced re-render, source→read scroll sync, mode switching with position
-- [ ] Menus and shortcuts
+- [x] Document model in `packages/editor`: decode (`bom`, dominant `eol`), `getText()` byte identity for every fixture; mixed-EOL prototype decided first (`lineSeparator` = dominant EOL, ADR-0028); editor↔source line map
+- [x] CodeMirror Source mode page: explicit setup (special chars, search, history, Markdown + nested HTML/code languages, front-matter parser), brand theme, `window.inlayEditor` API (content, positions, dirty), dev server with fixtures, Playwright in Chromium + WebKit (ADR-0029)
+- [x] `WebKitHost` adapter (`{method,args}` reply protocol, `inlayWebKitHost` callbacks, `documentSaved`/`reportPosition`; audited as the only `window.webkit` user)
+- [x] Swift bridge (`EditorBridge`, the one `WKScriptMessageHandlerWithReply`, on `EditorWebView` only; the Read webview still has none, asserted); `/__inlay/editor/` route with a strict CSP in the scheme handler; `SettingsStore`
+- [x] NSDocument: save override pulling live content with the 3 s mirror fallback and warning, `autosavesInPlace`, revert and Versions through `fileChanged`, dirty tracking from the editor, own writes recognised, conflict state with reload / keep (ADR-0030); XCTest: every fixture byte-identical through the live editor, an edit changes only its bytes, autosave / Save As / revert, conflict
+- [x] Window: native conflict banner (Reload from Disk / Keep Editing), mirror-save and editor-crash alerts; File menu with Duplicate / Save As (alternate) / Rename / Move To / Revert To → Browse All Versions; window tabs (`tabbingMode .preferred`) and Open Recent (NSDocumentController)
+- [x] Split mode: editor + Read panes in an `NSSplitView`, debounced re-render through the mirror pull + `refreshDocument()`, source→read scroll sync from `reportPosition`, mode switching carrying the source line both ways (ADR-0031); XCTest for panes, carry-over, Split re-render + follow, conflict banner
+- [x] Menus and shortcuts: View → Source ⌘2 / Split ⌘3 / Read ⌘4 (WYSIWYG ⌘1 disabled until M3), toolbar segmented control, Refresh ⌘R
 - Done when: open→save byte-identical for every fixture via real NSDocument (XCTest); edits confined; all save paths covered; conflict banner; 10k lines < 1 s; manual IME checklist in Source.
+- Status 2026-11-06: byte identity for every fixture through the live editor (`EditorDocumentTests`), edits confined to their bytes, Save / Save As / Save To / autosave / Duplicate / revert covered, conflict banner tested end to end (`WindowModesTests`), 10k lines open in < 1 s (Playwright `editor.spec.ts`) and switch modes in XCTest, `docs/IME-CHECKLIST.md` written (to be run by hand on the release build; not yet recorded as passed).
 
 ## M3 — WYSIWYG (branch `m3-wysiwyg`)
 - [ ] 3a: Crepe integration; `rawIsland`/`rawInlineIsland`; loader with per-block round-trip + style sniffing; inline islands; island node views (sanitized static, script card, style card, front matter/comments/directives cards); block-splice save; `onContentRequested`; island ratio metric
@@ -68,10 +72,10 @@ The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in
 - [x] Canvas: app icon, logo and wordmark, colour and type, illustration set, app windows (Read, WYSIWYG with raw island, Split on a quarantined file), Quick Look panel, inlay.live landing page
 - [x] App icon in the Xcode asset catalog; web favicons; `pnpm icons` and `pnpm design:render` (ADR-0020)
 - [ ] M1 · Read view theme CSS from the tokens: 680 px measure, type scale (34/22/16), table and figure styles, `live` pill on script-rendered figures; light and dark variants (`design/ui/app-read-view.html`)
-- [ ] M1 · Window chrome: unified toolbar with the Read / Edit / Source / Split segmented control (Edit and Source disabled until M3 and M2), "Scripts on/off" pill, "Network off/on" toggle, Share; status bar with word and character count, encoding and EOL, sandbox note and "Unchanged on disk"
+- [ ] M1 · Window chrome: unified toolbar with the Read / Edit / Source / Split segmented control (done in M2; Edit disabled until M3), "Scripts on/off" pill, "Network off/on" toggle, Share; status bar with word and character count, encoding and EOL, sandbox note and "Unchanged on disk"
 - [ ] M1 · Quarantine banner ("This file was downloaded…", **Trust this document**) styled as in `design/ui/app-split-mode.html`; "Scripts off · quarantined" pill state
 - [ ] M1 · Empty state ("Drop a Markdown file, or ⌘O") with the illustration from `design/ui/illustrations.html`
-- [ ] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings); Split divider with the scroll-sync marker; cursor position in the pane header
+- [x] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings) in `packages/editor/src/theme.ts`; Split divider with the verdigris scroll-sync marker (`SyncSplitView`); cursor position in the native pane header (`PaneHeaderView`)
 - [ ] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice; inline formatting toolbar; "Block n of m changed · bytes" status item
 - [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
 - [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage

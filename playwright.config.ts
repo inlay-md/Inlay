@@ -2,6 +2,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const port = 4173;
+/** The editor page's preview server (packages/editor); specs address it absolutely. */
+export const editorPort = 4174;
 
 export default defineConfig({
   testDir: './e2e',
@@ -13,12 +15,20 @@ export default defineConfig({
     baseURL: `http://localhost:${port}`,
     trace: 'retain-on-failure',
   },
-  webServer: {
-    command: `pnpm --filter @inlay-md/read-view run preview -- --port ${port} --strictPort`,
-    url: `http://localhost:${port}/__inlay/`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: `pnpm --filter @inlay-md/read-view run preview -- --port ${port} --strictPort`,
+      url: `http://localhost:${port}/__inlay/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+    {
+      command: `pnpm --filter @inlay-md/editor run preview -- --port ${editorPort} --strictPort`,
+      url: `http://localhost:${editorPort}/__inlay/editor/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+  ],
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },

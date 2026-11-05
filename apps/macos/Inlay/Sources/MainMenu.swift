@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import AppKit
 
-/// Programmatic menu bar (no storyboard). Mode items are placeholders until M2/M3.
+/// Programmatic menu bar (no storyboard). WYSIWYG stays disabled until M3.
 enum MainMenu {
     static func build(target: AnyObject) -> NSMenu {
         let main = NSMenu()
@@ -35,10 +35,21 @@ enum MainMenu {
         file.addItem(recent)
         file.addItem(.separator())
         file.addItem(withTitle: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
-        file.addItem(withTitle: "Save…", action: #selector(NSDocument.save(_:)), keyEquivalent: "s")
+        file.addItem(withTitle: "Save", action: #selector(NSDocument.save(_:)), keyEquivalent: "s")
+        // Autosave-in-place documents: Duplicate replaces Save As, which stays as the ⌥ alternate.
+        let duplicate = file.addItem(withTitle: "Duplicate", action: #selector(NSDocument.duplicate(_:)), keyEquivalent: "S")
+        duplicate.keyEquivalentModifierMask = [.command, .shift]
         let saveAs = file.addItem(withTitle: "Save As…", action: #selector(NSDocument.saveAs(_:)), keyEquivalent: "S")
-        saveAs.keyEquivalentModifierMask = [.command, .shift]
-        file.addItem(withTitle: "Revert to Saved…", action: #selector(NSDocument.revertToSaved(_:)), keyEquivalent: "")
+        saveAs.keyEquivalentModifierMask = [.command, .shift, .option]
+        saveAs.isAlternate = true
+        file.addItem(withTitle: "Rename…", action: #selector(NSDocument.rename(_:)), keyEquivalent: "")
+        file.addItem(withTitle: "Move To…", action: #selector(NSDocument.move(_:)), keyEquivalent: "")
+        let revert = NSMenuItem(title: "Revert To", action: nil, keyEquivalent: "")
+        let revertMenu = NSMenu(title: "Revert To")
+        revertMenu.addItem(withTitle: "Last Saved", action: #selector(NSDocument.revertToSaved(_:)), keyEquivalent: "")
+        revertMenu.addItem(withTitle: "Browse All Versions…", action: #selector(NSDocument.browseVersions(_:)), keyEquivalent: "")
+        revert.submenu = revertMenu
+        file.addItem(revert)
         file.addItem(.separator())
         file.addItem(withTitle: "Page Setup…", action: #selector(NSDocument.runPageLayout(_:)), keyEquivalent: "P")
         file.addItem(withTitle: "Print…", action: #selector(NSDocument.printDocument(_:)), keyEquivalent: "p")
@@ -55,10 +66,11 @@ enum MainMenu {
         main.addItem(submenu(edit, title: "Edit"))
 
         let view = NSMenu(title: "View")
-        for (index, title) in ["WYSIWYG", "Source", "Split", "Read"].enumerated() {
-            let item = view.addItem(withTitle: title, action: nil, keyEquivalent: "\(index + 1)")
-            item.isEnabled = title == "Read"
-        }
+        let wysiwyg = view.addItem(withTitle: "WYSIWYG", action: nil, keyEquivalent: "1")
+        wysiwyg.isEnabled = false
+        view.addItem(withTitle: "Source", action: #selector(DocumentWindowController.showSourceMode(_:)), keyEquivalent: "2")
+        view.addItem(withTitle: "Split", action: #selector(DocumentWindowController.showSplitMode(_:)), keyEquivalent: "3")
+        view.addItem(withTitle: "Read", action: #selector(DocumentWindowController.showReadMode(_:)), keyEquivalent: "4")
         view.addItem(.separator())
         view.addItem(withTitle: "Allow Network for This Document", action: #selector(DocumentWindowController.toggleAllowNetwork(_:)), keyEquivalent: "")
         view.addItem(withTitle: "Trust This Document", action: #selector(DocumentWindowController.trustDocument(_:)), keyEquivalent: "")

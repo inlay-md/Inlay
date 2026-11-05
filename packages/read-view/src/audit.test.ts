@@ -24,11 +24,19 @@ function sourceFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 
+/** `window.webkit` / `w.webkit?.` property access; not `-webkit-` CSS or the adapter's file name. */
+const WEBKIT = /\.webkit\b(?!\.ts)/;
+
 describe('web core audit', () => {
   const files = sourceFiles(packagesDir);
 
   it('finds the runtime sources', () => {
     expect(files.length).toBeGreaterThan(10);
+  });
+
+  it('exactly one file is the WebKit adapter', () => {
+    const adapters = files.filter((f) => WEBKIT.test(stripComments(readFileSync(f, 'utf8'))));
+    expect(adapters.map((f) => f.replace(packagesDir, ''))).toEqual(['host-api/src/webkit.ts']);
   });
 
   it("every 'message' listener checks the origin with isTrustedOrigin", () => {
@@ -43,11 +51,13 @@ describe('web core audit', () => {
   it('no runtime code hardcodes a custom scheme or assumes https', () => {
     for (const file of files) {
       const text = stripComments(readFileSync(file, 'utf8'));
-      // The dev-server plugin plays native and may build http URLs; everything else gets its base from Host.
+      // The dev-server plugins play native and may build http URLs; everything else gets its base from Host.
       if (file.endsWith('fixtures-plugin.ts')) continue;
+      // The WebKit adapter is the one place allowed to touch window.webkit (brief, ADR-0002).
+      const isAdapter = file.endsWith('/host-api/src/webkit.ts');
       expect(text, file).not.toMatch(/['"`]mdview:\/\//);
       expect(text, file).not.toMatch(/location\.protocol\s*===?\s*['"]https:/);
-      expect(text, file).not.toMatch(/window\.webkit/);
+      if (!isAdapter) expect(text, file).not.toMatch(WEBKIT);
     }
   });
 });
