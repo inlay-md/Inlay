@@ -22,10 +22,54 @@ export interface EditorPageOptions {
   theme?: 'light' | 'dark' | 'system';
   /** Overrides the mode the document info asks for (browser `?mode=`). */
   mode?: EditorMode;
+  /** Large-document safety net (ADR-0016): above either limit the page opens in Source. */
+  safetyNet?: SafetyNet;
+}
+
+export interface SafetyNet {
+  lines: number;
+  bytes: number;
+}
+
+/** ~50k lines / 5 MB (ADR-0016); the 10k-line fixture stays well below. */
+export const DEFAULT_SAFETY_NET: SafetyNet = { lines: 50_000, bytes: 5 * 1024 * 1024 };
+
+export function exceedsSafetyNet(text: string, net: SafetyNet): boolean {
+  if (text.length > net.bytes) return true;
+  let lines = 1;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c === 10 || (c === 13 && text.charCodeAt(i + 1) !== 10)) lines++;
+    if (lines > net.lines) return true;
+  }
+  return false;
 }
 
 export function editorModeFor(mode: Mode | undefined): EditorMode {
   return mode === 'wysiwyg' ? 'wysiwyg' : 'source';
+}
+
+function showSafetyBanner(parent: HTMLElement, onSwitch: () => void): void {
+  const banner = document.createElement('div');
+  banner.className = 'inlay-safety-banner';
+  banner.setAttribute('role', 'status');
+  const text = document.createElement('span');
+  text.textContent = 'Large document: opened in Source mode to stay responsive.';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'Open in WYSIWYG anyway';
+  button.addEventListener('click', () => {
+    banner.remove();
+    onSwitch();
+  });
+  const dismiss = document.createElement('button');
+  dismiss.type = 'button';
+  dismiss.className = 'inlay-safety-dismiss';
+  dismiss.setAttribute('aria-label', 'Dismiss');
+  dismiss.textContent = '×';
+  dismiss.addEventListener('click', () => banner.remove());
+  banner.append(text, button, dismiss);
+  parent.prepend(banner);
 }
 
 export async function createEditorPage(o: EditorPageOptions): Promise<EditorApi> {
@@ -36,6 +80,10 @@ export async function createEditorPage(o: EditorPageOptions): Promise<EditorApi>
   let lastProvidedText: string | null = null;
   let mode: EditorMode = o.mode ?? editorModeFor(doc.mode);
   let dirty = false;
+  const net = o.safetyNet ?? DEFAULT_SAFETY_NET;
+  // Safety net: a very large document opens in Source with a one-click way into WYSIWYG.
+  const netted = mode === 'wysiwyg' && exceedsSafetyNet(doc.text, net);
+  if (netted) mode = 'source';
 
   const info = (): LoadInfo => ({ text: doc.text, eol: doc.eol, readOnly: doc.readOnly });
 
@@ -114,6 +162,13 @@ export async function createEditorPage(o: EditorPageOptions): Promise<EditorApi>
   if (mode === 'wysiwyg') {
     source.show(false);
     await ensureWysiwyg();
+  }
+  if (netted) {
+    host.requestMode('source');
+    showSafetyBanner(o.parent, () => {
+      host.requestMode('wysiwyg');
+      void switchTo('wysiwyg');
+    });
   }
 
   host.provideContent(() => {

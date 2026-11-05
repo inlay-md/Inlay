@@ -100,7 +100,13 @@ export class InPlaceEditor {
               return true;
             },
           },
-          { key: 'Mod-Enter', run: () => (this.close(true), true) },
+          {
+            key: 'Mod-Enter',
+            run: () => {
+              this.close(true);
+              return true;
+            },
+          },
           ...defaultKeymap,
           ...historyKeymap,
           indentWithTab,

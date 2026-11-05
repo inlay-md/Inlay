@@ -54,9 +54,13 @@ export const PAGE_CSS = `
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ${DARK} } }
 :root[data-theme="light"] { ${LIGHT} }
 html, body { margin: 0; height: 100%; background: var(--inlay-ed-bg); color: var(--inlay-ed-fg); }
-#inlay-editor { height: 100%; }
-#inlay-editor .cm-editor { height: 100%; }
-#inlay-editor .inlay-wysiwyg { height: 100%; }
+#inlay-editor { height: 100%; display: flex; flex-direction: column; }
+#inlay-editor .cm-editor { height: auto; flex: 1 1 auto; min-height: 0; }
+#inlay-editor .inlay-wysiwyg { flex: 1 1 auto; min-height: 0; height: auto; }
+.inlay-safety-banner { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 8px 14px; background: var(--inlay-ed-line); border-bottom: 1px solid var(--inlay-ed-border); color: var(--inlay-ed-fg); font: 13px -apple-system, BlinkMacSystemFont, sans-serif; }
+.inlay-safety-banner span { flex: 1 1 auto; }
+.inlay-safety-banner button { border: 1px solid var(--inlay-ed-border); border-radius: 4px; background: var(--inlay-ed-bg); color: var(--inlay-ed-verdigris); font: inherit; padding: 2px 10px; cursor: pointer; }
+.inlay-safety-banner .inlay-safety-dismiss { color: var(--inlay-ed-muted); border: none; background: none; font-size: 16px; padding: 0 4px; }
 `;
 
 export const editorTheme: Extension = EditorView.theme({
