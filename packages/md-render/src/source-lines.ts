@@ -63,9 +63,9 @@ function walk(node: Root | Element, isRoot: boolean): void {
   for (const child of node.children) {
     if (child.type === 'element') {
       const el = child as Element;
-      if (BLOCK_TAGS.has(el.tagName) && el.properties['dataSourceLine'] === undefined) {
+      if (BLOCK_TAGS.has(el.tagName) && el.properties.dataSourceLine === undefined) {
         const range = sourceRange(el);
-        if (range) el.properties['dataSourceLine'] = range;
+        if (range) el.properties.dataSourceLine = range;
       }
       walk(el, false);
     } else if (child.type === 'raw' && isRoot) {

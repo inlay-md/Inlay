@@ -197,7 +197,7 @@ export function rehypeVendorRewrite(vendorBaseURL: string, counter: { count: num
       let attr: 'src' | 'href' | null = null;
       if (node.tagName === 'script') attr = 'src';
       else if (node.tagName === 'link') {
-        const rel = node.properties['rel'];
+        const rel = node.properties.rel;
         const rels = Array.isArray(rel) ? rel.map(String) : typeof rel === 'string' ? [rel] : [];
         if (
           rels.includes('stylesheet') ||
@@ -212,10 +212,10 @@ export function rehypeVendorRewrite(vendorBaseURL: string, counter: { count: num
       const rewritten = rewriteVendorUrl(value, vendorBaseURL);
       if (rewritten === null) return;
       node.properties[attr] = rewritten;
-      node.properties['dataInlayVendor'] = value;
+      node.properties.dataInlayVendor = value;
       // Subresource integrity hashes were computed for the CDN file, not our copy.
-      delete node.properties['integrity'];
-      delete node.properties['crossOrigin'];
+      delete node.properties.integrity;
+      delete node.properties.crossOrigin;
       counter.count++;
     });
   };

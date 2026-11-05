@@ -14,11 +14,11 @@ export function rehypeMermaid() {
       if (node.tagName !== 'pre' || node.children.length !== 1) return;
       const code = node.children[0];
       if (code?.type !== 'element' || code.tagName !== 'code') return;
-      const cls = code.properties['className'];
+      const cls = code.properties.className;
       const classes = Array.isArray(cls) ? cls.map(String) : [];
       if (!classes.includes('language-mermaid')) return;
-      node.properties['className'] = ['mermaid'];
-      node.properties['dataLang'] = 'mermaid';
+      node.properties.className = ['mermaid'];
+      node.properties.dataLang = 'mermaid';
       node.children = [{ type: 'text', value: hastText(code).replace(/\n$/, '') }];
     });
   };

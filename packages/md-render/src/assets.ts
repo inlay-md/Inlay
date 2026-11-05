@@ -56,7 +56,7 @@ export function rehypeInlineAssets(
   return (tree: Root) => {
     visit(tree, 'element', (node) => {
       if (node.tagName !== 'img') return;
-      const src = node.properties['src'];
+      const src = node.properties.src;
       if (typeof src !== 'string' || !isDocumentRelative(src)) return;
       let relPath: string;
       try {
@@ -69,8 +69,8 @@ export function rehypeInlineAssets(
       if (!bytes || bytes.length > maxBytes) return;
       const uri = dataUri(bytes, relPath);
       if (uri) {
-        node.properties['src'] = uri;
-        node.properties['dataInlaySrc'] = src;
+        node.properties.src = uri;
+        node.properties.dataInlaySrc = src;
       }
     });
   };

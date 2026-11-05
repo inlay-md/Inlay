@@ -70,7 +70,7 @@ export function collectMeta(tree: MdastRoot): CollectedMeta {
       }
       case 'heading':
         if (headingTitle === null) {
-          const text = mdastText(node).trim();
+          const text = mdastText(node, { includeHtml: false }).trim();
           if (text) headingTitle = text;
         }
         break;

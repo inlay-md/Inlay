@@ -80,7 +80,7 @@ export function createSyncHighlighter(
 }
 
 function languageOf(code: Element): string | null {
-  const cls = code.properties['className'];
+  const cls = code.properties.className;
   const classes = Array.isArray(cls) ? cls.map(String) : [];
   for (const c of classes) {
     if (c.startsWith('language-')) {
@@ -100,7 +100,7 @@ export function highlightedPre(
   const root = highlighter.highlight(code, lang);
   const pre = root?.children.find((c): c is Element => c.type === 'element' && c.tagName === 'pre');
   if (!pre) return null;
-  pre.properties['dataLang'] = lang;
+  pre.properties.dataLang = lang;
   return pre;
 }
 
@@ -127,8 +127,8 @@ export function rehypeHighlight(highlighter: CodeHighlighter | undefined) {
       if (!lang || !highlighter.supports(lang)) return;
       const pre = highlightedPre(highlighter, hastText(code).replace(/\n$/, ''), lang);
       if (!pre) return;
-      const range = node.properties['dataSourceLine'];
-      if (range !== undefined) pre.properties['dataSourceLine'] = range;
+      const range = node.properties.dataSourceLine;
+      if (range !== undefined) pre.properties.dataSourceLine = range;
       parent.children[index] = pre;
     });
   };

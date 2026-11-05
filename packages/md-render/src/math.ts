@@ -6,7 +6,7 @@ import katex from 'katex';
 import { visit } from 'unist-util-visit';
 
 function classes(node: Element): string[] {
-  const c = node.properties['className'];
+  const c = node.properties.className;
   return Array.isArray(c) ? c.map(String) : typeof c === 'string' ? [c] : [];
 }
 
@@ -41,8 +41,8 @@ export function rehypeKatex() {
       };
       if (display && parent.type === 'element' && parent.tagName === 'pre') {
         // Replace the whole <pre> with the display block, keeping its source range.
-        const range = parent.properties['dataSourceLine'];
-        if (range !== undefined) wrapper.properties['dataSourceLine'] = range;
+        const range = parent.properties.dataSourceLine;
+        if (range !== undefined) wrapper.properties.dataSourceLine = range;
         Object.assign(parent, wrapper);
         return;
       }

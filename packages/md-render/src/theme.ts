@@ -4,7 +4,7 @@
  * follow `prefers-color-scheme` unless the page sets `data-theme="light|dark"`
  * on `<html>`. Code colours come from Shiki's dual-theme CSS variables.
  */
-export const THEME_CSS = String.raw`
+export const THEME_CSS = `
 :root {
   color-scheme: light dark;
   --inlay-fg: #1d1d1f;

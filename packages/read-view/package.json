@@ -5,9 +5,12 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
+    "vendor": "node scripts/copy-vendor.ts",
+    "predev": "node scripts/copy-vendor.ts",
     "dev": "vite",
+    "prebuild": "node scripts/copy-vendor.ts",
     "build": "vite build",
-    "preview": "vite build && vite preview",
+    "preview": "pnpm run build && vite preview",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

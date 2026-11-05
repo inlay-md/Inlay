@@ -40,8 +40,8 @@ describe('JavaScriptCore bundle', () => {
     const out = api.render('# Hi\n\nTiếng Việt <b>x</b>\n\n```js\nlet a = 1\n```\n', {
       mode: 'static',
     });
-    expect(out.meta['title']).toBe('Hi');
-    expect(out.meta['lineCount']).toBe(8);
+    expect(out.meta.title).toBe('Hi');
+    expect(out.meta.lineCount).toBe(8);
     expect(out.html).toContain('Tiếng Việt <b>x</b>');
     expect(out.html).toContain('class="shiki');
   });

@@ -286,27 +286,18 @@ function buildSchema(allowStyleElement: boolean): SanitizeSchema {
     ...SVG_ATTRIBUTES,
   ];
   // `code` keeps language-* classes by default; the math/mermaid markers need their own classes.
-  attributes['code'] = ['className'];
-  attributes['pre'] = ['className'];
-  attributes['use'] = ['href', 'xLinkHref'];
-  attributes['image'] = ['href', 'xLinkHref', 'width', 'height', 'x', 'y'];
-  attributes['input'] = [
-    'type',
-    'checked',
-    'disabled',
-    'value',
-    'min',
-    'max',
-    'step',
-    'placeholder',
-  ];
-  attributes['a'] = [...(attributes['a'] ?? []), 'target', 'rel', 'download'];
-  attributes['img'] = [...(attributes['img'] ?? []), 'srcSet', 'sizes', 'loading', 'decoding'];
+  attributes.code = ['className'];
+  attributes.pre = ['className'];
+  attributes.use = ['href', 'xLinkHref'];
+  attributes.image = ['href', 'xLinkHref', 'width', 'height', 'x', 'y'];
+  attributes.input = ['type', 'checked', 'disabled', 'value', 'min', 'max', 'step', 'placeholder'];
+  attributes.a = [...(attributes.a ?? []), 'target', 'rel', 'download'];
+  attributes.img = [...(attributes.img ?? []), 'srcSet', 'sizes', 'loading', 'decoding'];
   const protocols = { ...(base.protocols ?? {}) };
-  protocols['href'] = [...(protocols['href'] ?? []), 'tel', 'sms'];
-  protocols['src'] = [...(protocols['src'] ?? []), 'data'];
-  protocols['poster'] = ['http', 'https'];
-  protocols['xLinkHref'] = [];
+  protocols.href = [...(protocols.href ?? []), 'tel', 'sms'];
+  protocols.src = [...(protocols.src ?? []), 'data'];
+  protocols.poster = ['http', 'https'];
+  protocols.xLinkHref = [];
   return {
     ...base,
     tagNames: [...tagNames],
