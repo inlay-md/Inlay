@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Inlay mark for favicon and avatars: page and tile on an ink rounded square, no body lines. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>Inlay mark</title>
+  <rect width="48" height="48" rx="10" fill="#141A22"/>
+  <rect x="9" y="5" width="30" height="38" rx="5" fill="#F7F8FA"/>
+  <rect x="14" y="12" width="20" height="3" rx="1.5" fill="#C5CCD6"/>
+  <rect x="13" y="22" width="22" height="16" rx="3" fill="#141A22"/>
+  <rect x="14" y="23" width="20" height="14" rx="2.4" fill="none" stroke="#E0A83A" stroke-width="1.6"/>
+  <rect x="17.5" y="30" width="3" height="5" rx="0.8" fill="#E0A83A"/>
+  <rect x="22.5" y="27" width="3" height="8" rx="0.8" fill="#E0A83A"/>
+  <rect x="27.5" y="28.5" width="3" height="6.5" rx="0.8" fill="#5FC9C0"/>
+</svg>

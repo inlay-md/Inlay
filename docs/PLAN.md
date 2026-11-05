@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M1 complete on branch `m1-read-view` (2026-11-05): PR to `main` awaiting the product owner's "go". Two license exceptions pending (ADR-0019). Next: M2 on branch `m2-source-split`.
+**Status:** M1 complete on branch `m1-read-view` (2026-11-05): PR to `main` awaiting the product owner's "go". Two license exceptions pending (ADR-0020). Next: M2 on branch `m2-source-split`.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -24,11 +24,11 @@ Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The 
 Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a `.md` into a window; license/notices/DCO checks run in CI; spike verdict recorded.
 
 ## M1 — Read view (branch `m1-read-view`)
-- [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0019, ADR-0020)
-- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (two exceptions pending, ADR-0019)
-- [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0021)
-- [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0022), KaTeX CSS + woff2 fonts from the vendor bundle
-- [x] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, per-response nonce), read WKWebView isolation, external links, `.md` links open as documents, quarantine → static + native trust banner (trust store keyed by path + xattr), "Allow network" toggle (per file, remembered), file change → debounced refresh via NSFilePresenter + vnode watcher (ADR-0023, ADR-0024)
+- [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0020, ADR-0021)
+- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (two exceptions pending, ADR-0020)
+- [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0022)
+- [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0023), KaTeX CSS + woff2 fonts from the vendor bundle
+- [x] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, per-response nonce), read WKWebView isolation, external links, `.md` links open as documents, quarantine → static + native trust banner (trust store keyed by path + xattr), "Allow network" toggle (per file, remembered), file change → debounced refresh via NSFilePresenter + vnode watcher (ADR-0024, ADR-0025)
 - [x] `isTrustedOrigin` used by all message listeners (none exist yet; a Vitest audit enforces it); runtime audited for `https:`/scheme assumptions by the same test
 - [x] Fixtures: Chart.js/ECharts/D3 via real CDN URLs (+ older-major pin), widget, inline svg, svg img, style block, math, Mermaid, highlighting, local images, web-page-semantics, non-rewritable CDN script, fetch toggle, `../assets` (blocked), security probe, KaTeX auto-render from CDN
 - [x] Tests: Vitest snapshots + rewriter table + JSC parity; Playwright (route-intercepted CDNs, probe, dark mode, perf budget, scroll restore); XCTest app tests (probe via real scheme handler, traversal 403, navigation policy, uncoordinated/atomic refresh, quarantine → trust, network toggle, vendored chart, lazy grammars)
@@ -59,5 +59,21 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 - [ ] Themes + custom CSS; editor font settings
 - [ ] Preferences window (settings-ui)
 - [ ] Sparkle 2 + appcast; release workflow (sign, notarize, staple, DMG, GitHub Release)
-- [ ] About → Acknowledgements polish, app icon, first-run defaults
+- [x] App icon set and favicons rendered from `design/icon` (ADR-0020)
+- [ ] About → Acknowledgements polish, first-run defaults
 - Done when: exported HTML works standalone; PDF paginates; notarized DMG installs; Sparkle update succeeds.
+
+## Design — applying the brand and UI (cross-cutting; sources in `design/`)
+The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in `design/README.md`); the artboards are exported to `design/ui/*.html` with screenshots in `design/ui/png/`. Tokens: Ink `#141A22`, Paper `#F7F8FA`/`#F4F5F7`, Line `#DDE1E7`, Muted `#5B6673`, Brass `#9A6E1A` (`#E0A83A` on dark), Verdigris `#1F7A7A` (`#5FC9C0` on dark). Brass marks the seam between prose and embedded code; verdigris marks anything live. The Mac app uses the system font (SF Pro, SF Mono); Sora, Inter and JetBrains Mono (all OFL) are for the website and the About window only.
+- [x] Canvas: app icon, logo and wordmark, colour and type, illustration set, app windows (Read, WYSIWYG with raw island, Split on a quarantined file), Quick Look panel, inlay.live landing page
+- [x] App icon in the Xcode asset catalog; web favicons; `pnpm icons` and `pnpm design:render` (ADR-0020)
+- [ ] M1 · Read view theme CSS from the tokens: 680 px measure, type scale (34/22/16), table and figure styles, `live` pill on script-rendered figures; light and dark variants (`design/ui/app-read-view.html`)
+- [ ] M1 · Window chrome: unified toolbar with the Read / Edit / Source / Split segmented control (Edit and Source disabled until M3 and M2), "Scripts on/off" pill, "Network off/on" toggle, Share; status bar with word and character count, encoding and EOL, sandbox note and "Unchanged on disk"
+- [ ] M1 · Quarantine banner ("This file was downloaded…", **Trust this document**) styled as in `design/ui/app-split-mode.html`; "Scripts off · quarantined" pill state
+- [ ] M1 · Empty state ("Drop a Markdown file, or ⌘O") with the illustration from `design/ui/illustrations.html`
+- [ ] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings); Split divider with the scroll-sync marker; cursor position in the pane header
+- [ ] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice; inline formatting toolbar; "Block n of m changed · bytes" status item
+- [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
+- [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage
+- [ ] Website · build inlay.live from `design/ui/website.html` as a static site with self-hosted fonts and `design/icon/web` favicons (product decision pending: `site/` in this repo or a separate repo)
+

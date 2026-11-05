@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
- * Browser-side syntax highlighting (ADR-0020): the page paints first with plain
+ * Browser-side syntax highlighting (ADR-0021): the page paints first with plain
  * `<pre><code class="language-x">`; then only the grammars the document uses are
  * imported and the blocks are upgraded in place with Shiki's dual-theme output.
  */

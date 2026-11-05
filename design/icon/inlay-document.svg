@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Inlay document icon for .md files, 64x80 artwork. macOS 11+ generates Finder document icons from the app icon; this is for the website and docs. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" width="64" height="80">
+  <title>Markdown document opened by Inlay</title>
+  <path d="M6 2h36l16 16v58a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z" fill="#FFFFFF" stroke="#C5CCD6" stroke-width="2"/>
+  <path d="M42 2v16h16" fill="#E6E9EE" stroke="#C5CCD6" stroke-width="2"/>
+  <rect x="14" y="26" width="26" height="3" rx="1.5" fill="#C5CCD6"/>
+  <rect x="14" y="33" width="20" height="3" rx="1.5" fill="#C5CCD6"/>
+  <rect x="14" y="40" width="36" height="24" rx="3" fill="#141A22"/>
+  <rect x="15.5" y="41.5" width="33" height="21" rx="2.5" fill="none" stroke="#E0A83A" stroke-width="1.2"/>
+  <rect x="21" y="52" width="5" height="8" rx="1" fill="#E0A83A"/>
+  <rect x="29.5" y="46" width="5" height="14" rx="1" fill="#E0A83A"/>
+  <rect x="38" y="49" width="5" height="11" rx="1" fill="#5FC9C0"/>
+</svg>
