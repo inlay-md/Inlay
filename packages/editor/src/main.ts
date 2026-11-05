@@ -3,11 +3,12 @@
  * Editor page entry. In the app the page is served at `<base>/__inlay/editor/`
  * and talks to native through the WebKit Host adapter; in the browser (dev server,
  * Playwright) a MockHost loads a fixture named by `?fixture=<file>` from the dev
- * route `/__fixtures/md/<file>`, or starts with an empty document.
+ * route `/__fixtures/md/<file>`, or starts with an empty document; `?mode=wysiwyg`
+ * starts in WYSIWYG (native asks for the mode through `DocumentInfo.mode`).
  */
 import { createWebKitHost, detectEol, type Host, MockHost } from '@inlay-md/host-api';
 import { decodeDocument } from './document.ts';
-import { createSourceEditor } from './editor.ts';
+import { createEditorPage } from './page.ts';
 import { PAGE_CSS } from './theme.ts';
 
 async function browserHost(): Promise<Host> {
@@ -25,6 +26,7 @@ async function browserHost(): Promise<Host> {
     bom = decoded.bom;
     readOnly = !decoded.decodable;
   }
+  const mode = params.get('mode');
   const host = new MockHost({
     docId: fixture ?? 'untitled',
     path: fixture ? `/fixtures/md/${fixture}` : null,
@@ -33,6 +35,7 @@ async function browserHost(): Promise<Host> {
     eol: detectEol(text),
     readOnly,
     baseURL: new URL('/__fixtures/md/', location.href).href,
+    ...(mode === 'wysiwyg' || mode === 'source' ? { mode } : {}),
   });
   // Browser-only probe so tests can look at what the editor told the host.
   (window as unknown as { inlayMockHost?: MockHost }).inlayMockHost = host;
@@ -50,7 +53,7 @@ async function boot(): Promise<void> {
   const theme = params.get('theme');
   const parent = document.getElementById('inlay-editor');
   if (!parent) throw new Error('editor mount point missing');
-  const api = createSourceEditor({
+  const api = await createEditorPage({
     parent,
     host,
     doc,

@@ -56,6 +56,7 @@ export const PAGE_CSS = `
 html, body { margin: 0; height: 100%; background: var(--inlay-ed-bg); color: var(--inlay-ed-fg); }
 #inlay-editor { height: 100%; }
 #inlay-editor .cm-editor { height: 100%; }
+#inlay-editor .inlay-wysiwyg { height: 100%; }
 `;
 
 export const editorTheme: Extension = EditorView.theme({
