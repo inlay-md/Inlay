@@ -2,9 +2,18 @@
 
 Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M3 task list), `docs/DECISIONS.md` (ADR-0001…0031), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
 
-## State on 2026-11-06 (M2 on branch `m2-source-split`, PR open)
+## State on 2026-11-06 (M2 merged, M3 next)
 
-- M2 adds `packages/editor` (document model, CodeMirror Source mode page), the `WebKitHost` adapter, the Swift `EditorBridge`/`EditorWebView`, saving through the real NSDocument, the conflict banner and Split mode. Architecture: ADR-0028 (mixed EOL), ADR-0029 (editor page + bridge protocol), ADR-0030 (save entry points, mirror, conflicts), ADR-0031 (modes, Split sync).
+- `main` holds M0, M1 and M2 (#6, squash-merged; six slices: document model + mixed-EOL prototype, Source mode page + WebKit adapter, editor webview + bridge + NSDocument saving, window modes + Split sync + conflict banner, split-view layout fix, window-test polling fix). CI on `main` is green.
+- Open PRs: none expected once this handover PR is merged. No product decisions or license exceptions are pending.
+- M3 (WYSIWYG) starts on branch `m3-wysiwyg` after the product owner's "go"; the task list is in `docs/PLAN.md`, the architecture in ADR-0004 (block model, per-block style sniffing, raw islands) and ADR-0028 (CodeMirror offsets ≠ UTF-16 indices in CRLF files: use `offsetToStringIndex` for block splicing). Milkdown's remark must be pinned to md-render's versions.
+- `docs/IME-CHECKLIST.md` has not been run by hand yet; record the result in the M2 section of PLAN when it passes.
+
+## How M2 fits together
+
+- `packages/editor/src/document.ts` (decode/encode, source line count), `line-map.ts` (editor ↔ source lines), `source-state.ts` (`createSourceState` with `lineSeparator`, `getText` = `sliceDoc`, offset helpers), `setup.ts` + `theme.ts` + `front-matter.ts` (CodeMirror extensions), `editor.ts` (`createSourceEditor`: dirty tracking vs `savedDoc`, debounced `notifyContentChanged`/`reportPosition`, `fileChanged`/`documentSaved` handling, `window.inlayEditor`), `main.ts` (WebKit host or MockHost with `?fixture=`), `fixtures-plugin.ts` (dev routes). Architecture: ADR-0028 (mixed EOL), ADR-0029 (editor page + bridge protocol).
+- `packages/host-api/src/webkit.ts` — `WebKitHost`: `{method, args}` to the `inlay` reply handler; `window.inlayWebKitHost.requestContent()/emit()` for native → web. `Host.reportPosition` and the `documentSaved` event are new.
+- `apps/macos/Inlay/Sources`: `EditorWebView` (bridge, navigation policy, `requestContent`, `emit`, `position`), `EditorBridge` (dispatch, unit-testable `handle`), `SettingsStore`, `MarkdownDocument` (live pulls in `save(_:)`/`saveAs`/`saveTo`/`duplicate(_:)`/`canClose`, synchronous `save(to:)`, mirror, `hasConflict`, ADR-0030), `DocumentWindowController` (`ViewMode`, `NSSplitViewController` panes, Split sync, banners, toolbar, menu validation, ADR-0031), `PaneChrome` (`PaneView`, `PaneHeaderView`, `SyncSplitView`, `ConflictBannerView`), `MainMenu` (Duplicate / Rename / Move To / Revert To, View ⌘2/⌘3/⌘4). The scheme handler serves `/__inlay/editor/` with the strict editor CSP and routes on `routePath(of:)`.
 - Tests: `pnpm test:unit` (405), `pnpm test:e2e` (56 across Chromium + WebKit; `e2e/editor.spec.ts` runs against a second preview server on port 4174), `pnpm mac:test` (38 XCTest cases incl. `EditorDocumentTests`, `WindowModesTests`).
 - Manual: `docs/IME-CHECKLIST.md` has not been run yet on a release build.
 
