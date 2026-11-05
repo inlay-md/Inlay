@@ -1,6 +1,32 @@
-# Handover: Inlay after M2 (Source + Split), before M3
+# Handover: Inlay after M3 (WYSIWYG), before M4
 
-Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M3 task list), `docs/DECISIONS.md` (ADR-0001…0031), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M4 task list), `docs/DECISIONS.md` (ADR-0001…0034), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+
+## State on 2026-11-06 (M3 on branch `m3-wysiwyg`, PR open)
+
+- `m3-wysiwyg` holds six slices on top of `main`: Crepe + pinned remark, the block loader and splice save, the editor page hosting Source and WYSIWYG, island cards with in-place editing and KaTeX math, the macOS WYSIWYG view mode, the IME guard and large-document safety net. Local runs: `pnpm check`, `pnpm test` (472 unit, 80 Playwright in Chromium + WebKit, 2 Chromium-only composition tests skipped in WebKit), `pnpm mac:test` (41 XCTest cases) all green.
+- Open for the product owner: the "restyled" tier (ADR-0032) reads the brief's round-trip rule as mdast equality for blocks whose bytes differ only in formatting (hand-padded tables, trimmed trailing whitespace, escapes); unchanged blocks still save verbatim, an edited restyled block takes remark's canonical form. Crepe's table block feature is off for performance (ADR-0034); table row/column handles are a follow-up. The Source-mode IME checklist and the new WYSIWYG section of `docs/IME-CHECKLIST.md` have not been run by hand.
+- M4 (Quick Look) needs the Team ID; its task list is in `docs/PLAN.md`.
+
+## How M3 fits together
+
+- `packages/editor/src/page.ts` — one page, two editors (`ModeEditor` in `types.ts`): `createSourceEditor` (`editor.ts`, CodeMirror) and `createWysiwygEditor` (`wysiwyg/editor.ts`, Crepe, loaded on demand). The page owns `savedText`, hands the live text across on `modeRequested`/`setMode`, maps the caret by UTF-16 index (`getCaretIndex`/`setCaretIndex`; CodeMirror through `offsetToStringIndex`) and the viewport by source line, and applies the safety net (ADR-0033, ADR-0034).
+- `wysiwyg/schema.ts` — Inlay nodes (`raw_island`, `raw_inline_island`, `math_block`, `math_inline`, `definition`, `link_reference`, `image_reference`), the hardbreak/link marker plugin, and `applyInlayPlugins` which removes Milkdown's rewriting plugins. `wysiwyg/transformer.ts` — mdast ↔ ProseMirror per block with cached remark-stringify processors per style. `wysiwyg/style.ts` — style sniffing and variants. `wysiwyg/loader.ts` — exact / restyled / island with deferred verification (`verify(budgetMs)`, swaps for late mismatches). `wysiwyg/splice.ts` — the live document back to text (identity, then structural equality, then positional replacement), segments for position mapping.
+- Node views: `island-view.ts` (cards, previews through md-render `sanitized`, in-place editor), `in-place.ts` (shared CodeMirror editor writing the node attribute; Enter on a selected atom opens it), `math-view.ts` (KaTeX), `list-item-view.ts` (plain DOM), `lazy.ts` (viewport-gated rendering). `composition.ts` guards Milkdown's input rules.
+- Swift: `ViewMode.wysiwyg` in `DocumentWindowController` (segment 1, ⌘1), `EditorWebView.requestEditorMode`, `MarkdownDocument.editorStartMode` → `DocumentInfo.mode`.
+- Tests: `packages/editor/src/wysiwyg/loader.test.ts` (jsdom, headless Milkdown: byte identity, islands per manifest, edits, 10k load), `e2e/wysiwyg.spec.ts`, `e2e/composition.spec.ts`, XCTest `EditorDocumentTests` (WYSIWYG byte identity and edit) and `WindowModesTests`.
+
+## Gotchas learned in M3
+
+- Milkdown's `text` stringify handler returns any text ending in whitespace unescaped (meant for whitespace-only runs); it lost `\$5`. `style.ts` supplies its own handler.
+- Milkdown's listener plugin serializes the whole document on state init (200 ms for 10k lines) and debounces by 200 ms; Crepe's list item and table block are a Vue app per node. Removed / replaced for the 10k budget (ADR-0033, ADR-0034).
+- `remark-inline-links` (in Milkdown's commonmark) resolves and drops reference definitions; Crepe's LaTeX feature turns `$$` math into a `LaTeX` fence; its image block rewrites alt text. All removed (ADR-0032).
+- A `\n` → EOL replace must leave existing `\r\n` alone (`/\r\n|\n/g`), or CRLF code blocks gain `\r\r\n`.
+- JavaScript `replace` with a replacement *string* turns `$$` into `$`; Playwright expectations built with `.replace` need a replacer function (the same gotcha as M1, now in e2e).
+- In headless Playwright on macOS the End key does not move the caret in a contenteditable (macOS semantics); tests place the caret through the ProseMirror view.
+- A hidden WKWebView (XCTest host) throttles timers to once a second; chunked work that must finish while hidden (block verification) runs in one go when `document.hidden`.
+- Perf readings under parallel Playwright workers or a concurrent `xcodebuild` can double; the 10k test takes the best of three opens.
+- The Biome/zsh trap of the session: `=====` in an `echo` is a zsh `=command` expansion; use `---`.
 
 ## State on 2026-11-06 (M2 merged, M3 next)
 
