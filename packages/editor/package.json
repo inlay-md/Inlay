@@ -26,7 +26,10 @@
     "@inlay-md/host-api": "workspace:*",
     "@lezer/common": "1.2.3",
     "@lezer/highlight": "1.2.1",
-    "@lezer/markdown": "1.4.3"
+    "@lezer/markdown": "1.4.3",
+    "@milkdown/crepe": "7.23.0",
+    "@milkdown/kit": "7.23.0",
+    "remark-stringify": "11.0.0"
   },
   "devDependencies": {
     "@inlay-md/fixtures": "workspace:*",
