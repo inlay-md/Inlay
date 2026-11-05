@@ -34,11 +34,22 @@ export interface DocumentInfo {
 export interface HostEvents {
   /** The file changed on disk. The web core decides whether to reload or show a conflict. */
   fileChanged: { path: string };
+  /** The host wrote the content it last pulled from the ContentProvider; the editor is clean again. */
+  documentSaved: { path: string | null };
   settingsChanged: Settings;
   /** Native asks the web core to switch mode (menu, shortcut). */
   modeRequested: Mode;
   /** Appearance changed (system or user override). */
   themeChanged: 'light' | 'dark';
+}
+
+/** Where the editor is: pushed to the host for Split-mode scroll sync and the pane header. */
+export interface EditorPosition {
+  /** 1-based source line (remark numbering) at the top of the viewport. */
+  line: number;
+  /** Cursor, 1-based, in source numbering; column in UTF-16 code units from the line start. */
+  cursorLine: number;
+  cursorColumn: number;
 }
 
 /** Supplies the live document text when the host saves. Never a cached copy. */
@@ -57,8 +68,10 @@ export interface Host {
   setSettings(patch: Partial<Settings>): Promise<Settings>;
   setDirty(dirty: boolean): void;
   requestMode(mode: Mode): void;
-  /** Debounced upstream; tells the host the live content changed (Read view refresh). */
+  /** Debounced upstream; tells the host the live content changed (Read view refresh, crash mirror). */
   notifyContentChanged(): void;
+  /** Debounced upstream; the editor viewport or cursor moved (source→read scroll sync, ADR-0010). */
+  reportPosition(position: EditorPosition): void;
   provideContent(provider: ContentProvider): void;
   on<K extends keyof HostEvents>(event: K, handler: (payload: HostEvents[K]) => void): () => void;
 }

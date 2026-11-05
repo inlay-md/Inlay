@@ -9,7 +9,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "echo 'editor: page build lands with Source mode'",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "pnpm run build && vite preview",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

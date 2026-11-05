@@ -36,8 +36,9 @@ Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a
 
 ## M2 — Source + Split (branch `m2-source-split`)
 - [x] Document model in `packages/editor`: decode (`bom`, dominant `eol`), `getText()` byte identity for every fixture; mixed-EOL prototype decided first (`lineSeparator` = dominant EOL, ADR-0028); editor↔source line map
-- [ ] CodeMirror Source mode page (editor shell, theme, pane header, `window.inlayEditor` API, dev server with fixtures, Playwright)
-- [ ] `WebKitHost` adapter + Swift bridge (`WKScriptMessageHandlerWithReply`)
+- [x] CodeMirror Source mode page: explicit setup (special chars, search, history, Markdown + nested HTML/code languages, front-matter parser), brand theme, `window.inlayEditor` API (content, positions, dirty), dev server with fixtures, Playwright in Chromium + WebKit (ADR-0029)
+- [x] `WebKitHost` adapter (`{method,args}` reply protocol, `inlayWebKitHost` callbacks, `documentSaved`/`reportPosition`; audited as the only `window.webkit` user)
+- [ ] Swift bridge (`WKScriptMessageHandlerWithReply`) on the editor webview only; `/__inlay/editor/` route and CSP in the scheme handler
 - [ ] NSDocument: read `Data`, save override pulling live content (+ crash mirror), autosave in place, revert, Versions, Duplicate, tabs, Open Recent, dirty tracking, change detection (NSFilePresenter) → auto-reload / conflict banner
 - [ ] Split mode: editor + read webviews, debounced re-render, source→read scroll sync, mode switching with position
 - [ ] Menus and shortcuts
@@ -72,7 +73,7 @@ The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in
 - [ ] M1 · Window chrome: unified toolbar with the Read / Edit / Source / Split segmented control (Edit and Source disabled until M3 and M2), "Scripts on/off" pill, "Network off/on" toggle, Share; status bar with word and character count, encoding and EOL, sandbox note and "Unchanged on disk"
 - [ ] M1 · Quarantine banner ("This file was downloaded…", **Trust this document**) styled as in `design/ui/app-split-mode.html`; "Scripts off · quarantined" pill state
 - [ ] M1 · Empty state ("Drop a Markdown file, or ⌘O") with the illustration from `design/ui/illustrations.html`
-- [ ] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings); Split divider with the scroll-sync marker; cursor position in the pane header
+- [ ] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings) — done in `packages/editor/src/theme.ts`; Split divider with the scroll-sync marker; cursor position in the pane header
 - [ ] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice; inline formatting toolbar; "Block n of m changed · bytes" status item
 - [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
 - [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage
