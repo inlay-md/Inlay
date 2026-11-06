@@ -7,7 +7,7 @@ Ideas come from studying other Markdown apps (list below). Each one has been che
 - **The file on disk is sacred.** View features (folding, focus mode, outline) never touch bytes. Features that write (image paste, smart punctuation) change only the bytes the user asked for, through the block splice.
 - **One parser.** New syntax goes into md-render and the editor's pinned remark together, with fixtures, and must round-trip or become an island.
 - **Host boundary and Read view isolation.** Anything that needs native help goes through `Host`. The Read view keeps zero message handlers, so features that need a file save (for example "export this diagram") run from the editor webview or native code, never from document-page script.
-- **Licences.** MIT/BSD/Apache-2.0/ISC only for shipped code. GPL tools such as Pandoc may only be *called* if the user installed them, and that needs a product-owner decision first.
+- **Licences.** MIT/BSD/Apache-2.0/ISC for shipped code, plus the approved exceptions: Unlicense (ADR-0026), EPL-2.0 for the vendored Mermaid bundle only (ADR-0027), and OFL for font files. GPL tools such as Pandoc may only be *called* if the user installed them, and that needs a product-owner decision first.
 
 Size: **S** ≈ a slice or two, **M** ≈ a few days of slices, **L** ≈ a milestone of its own.
 
@@ -21,7 +21,7 @@ Size: **S** ≈ a slice or two, **M** ≈ a few days of slices, **L** ≈ a mile
 | [MDX Editor](https://dev.to/maqi1520/created-a-markdown-desktop-app-with-tauri-h8d) | Tauri editor with React components in Markdown | Folder document tree, format-on-save, 10+ document and code themes, WeChat-style formatted copy |
 | [Moraya](https://users.rust-lang.org/t/an-extremely-elegant-open-source-ai-markdown-editor-tauri-svelte/138163) ([summary](https://www.sourcepulse.org/projects/28106930)) | Tauri + Svelte + Milkdown, AI-first | Visual / Source / Split with block-level scroll anchoring, AI chat panel, MCP, API keys in the Keychain, local models, plugin API |
 | [MDHero](https://mdhero.app/blogs/building-native-viewer-8mb/) (MIT) | Tauri viewer with Quick Look | Viewer-first (opens rendered on double-click), find, print to PDF, LLM paste cleanup (escaped `\n`), lazy Shiki/Mermaid, 400 ms first paint, 45 MB idle |
-| Typora | Commercial WYSIWYG editor | Seamless live preview, outline + file tree, focus/typewriter, table drag/resize, image copy and upload (PicGo), Pandoc export, PDF bookmarks, `[TOC]`, heading numbering via CSS, word count and reading time, smart punctuation, snippets, RTL |
+| [Typora](https://typora.io/) ([support docs](https://support.typora.io/)) | Commercial WYSIWYG editor | Seamless live preview, outline + file tree, focus/typewriter, table drag/resize, image copy and upload (PicGo), Pandoc export, PDF bookmarks, `[TOC]`, heading numbering via CSS, word count and reading time, smart punctuation, snippets, RTL |
 | [QLMarkdown](https://github.com/sbarex/QLMarkdown) (GPL-3, read only) | Quick Look extension + settings app + CLI | GitHub alerts, wikilinks, hashtags, heading anchors, emoji, TOC sidebar in wide previews, front matter as a table, extra file types (`.qmd`, `.rmd`, `.mdx`, TextBundle), Shortcuts actions, a CLI converter |
 
 ## Already planned, so not repeated below
@@ -34,7 +34,7 @@ Quick Look tiers (M4); HTML/PDF export, themes and custom CSS, preferences windo
 
 | Feature | Seen in | Notes for Inlay | Size |
 |---|---|---|---|
-| Outline sidebar with click-to-jump and current-heading tracking | Typora, MarkText, CrabPad, FlyMD, Moraya | Already a tentative M5 item. Build it natively from md-render's heading list plus `data-source-line`, so one outline serves Read, Source and WYSIWYG. Dock left or right; hover preview when collapsed (MarkText). | M |
+| Outline sidebar with click-to-jump and current-heading tracking | Typora, MarkText, CrabPad, FlyMD, Moraya | Already a tentative M5 item. Add a `headings` list (text, depth, source line) to md-render's `RenderMeta` and build the outline natively from it, so one outline serves Read, Source and WYSIWYG. Dock left or right; hover preview when collapsed (MarkText). | M |
 | Find in every mode | MDHero, MarkText | Source has CodeMirror search. Add a find bar in WYSIWYG (a ProseMirror search plugin) and a native find bar for the Read view over WKWebView's find API. Replace stays editor-only. | M |
 | Heading folding (view only) | MarkText | Folding changes the view, never the saved text. ProseMirror decorations in WYSIWYG, CodeMirror `foldService` in Source. | S |
 | Heading anchors and in-document links | Typora, QLMarkdown | GitHub-style slugs (`rehype-slug`, MIT) in md-render; `[link](#heading)` jumps in Read and WYSIWYG. Also lets the outline and export bookmarks share IDs. | S |
@@ -79,7 +79,7 @@ Each extension needs fixtures, md-render + JSC parity, and the editor's round-tr
 | Admonitions via directives (`:::note`) | CrabPad, QLMarkdown (MkDocs) | Directives are islands today; `remark-directive` (MIT) could render a known set. | M |
 | Definition lists, abbreviations | CrabPad, QLMarkdown | Low demand; render-only. | S |
 | Front matter shown as a table in Read view and Quick Look | QLMarkdown | Currently a card in WYSIWYG; a tidy property table helps viewer use. | S |
-| Chemistry (`\ce{}`) and equation numbering | Typora | KaTeX's mhchem extension (MIT) is already in the KaTeX package. | S |
+| Chemistry (`\ce{}`) and equation numbering | Typora | KaTeX's mhchem extension (MIT) ships in the KaTeX package; load it in md-render and the JSC bundle. KaTeX numbers only `\tag{}` equations, so automatic numbering needs our own counter in md-render. | S |
 
 ### Export, sharing and automation
 
@@ -97,14 +97,14 @@ Each extension needs fixtures, md-render + JSC parity, and the editor's round-tr
 |---|---|---|---|
 | TOC sidebar when the preview window is wide | QLMarkdown | Static HTML/CSS, so it works in Tier 1. | S |
 | "Show source" toggle | QLMarkdown | Highlighted raw Markdown in the preview. | S |
-| More file types: `.markdown`, `.mdown`, `.qmd`, `.rmd`, `.mdx` (JSX shown as code), TextBundle / `.textpack` | QLMarkdown | TextBundle is the Mac interchange format (Bear, Ulysses, iA Writer) and keeps images in the bundle. Claim UTIs carefully; add a troubleshooting note on `mdls` and conflicting Quick Look extensions. | M |
+| More file types: `.mdown`, `.qmd`, `.rmd`, `.mdx` (JSX shown as code), TextBundle / `.textpack` | QLMarkdown | TextBundle is the Mac interchange format (Bear, Ulysses, iA Writer) and keeps images in the bundle. Claim UTIs carefully; add a troubleshooting note on `mdls` and conflicting Quick Look extensions. | M |
 
 ### macOS integration
 
 | Feature | Seen in | Notes for Inlay | Size |
 |---|---|---|---|
-| Apple Writing Tools in WYSIWYG | (macOS 15+) | Set the WKWebView's Writing Tools behaviour and check that rewrites arrive as ordinary ProseMirror transactions, so the block splice still confines changes. A system feature that needs no AI work of ours. | S |
-| Services menu ("New Inlay note with selection") and Share | Typora (context menu) | Small native additions. | S |
+| Apple Writing Tools in WYSIWYG | macOS | macOS 15+. Set the WKWebView's Writing Tools behaviour and check that rewrites arrive as ordinary ProseMirror transactions, so the block splice still confines changes. A system feature that needs no AI work of ours. | S |
+| Services menu ("New Inlay note with selection") and Share | macOS | Small native additions. | S |
 | Custom keyboard shortcuts | CrabPad | macOS already lets users rebind menu items (System Settings → Keyboard); only web-only commands would need our own UI. Low priority. | S |
 
 ## Later (v2): larger features that fit the brief but need design
