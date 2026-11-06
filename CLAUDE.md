@@ -41,5 +41,6 @@ Inlay is a macOS-first Markdown editor: a thin Swift/AppKit NSDocument shell hos
 - Swift shell stays thin: document lifecycle, file I/O, watching, scheme handlers, menus, webview config, Quick Look. Everything else lives in the web core.
 - XcodeGen owns the project: never hand-edit `.pbxproj`; edit `apps/macos/project.yml`.
 - Every source file carries `SPDX-License-Identifier: Apache-2.0`. Commits: Conventional Commits, DCO sign-off (`git commit -s`), never commit with a failing build or tests, small vertical slices.
+- Before every `git push`: run the `caveman-review` skill and the `security-review` skill on the pending changes, fix every finding that applies (note in the PR or commit the ones deliberately left), re-run `pnpm check` and `pnpm test`, then push.
 - Stop and ask the product owner for: credentials/signing, product decisions not in the brief, contradictions with the brief, non-allowlisted licenses, destructive git operations. If the same approach fails twice, re-plan instead of pushing through.
 - End each milestone with a summary, what's left, and manual verification steps; then wait for "go".
