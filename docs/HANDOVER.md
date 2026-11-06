@@ -26,6 +26,7 @@ Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress a
 - In headless Playwright on macOS the End key does not move the caret in a contenteditable (macOS semantics); tests place the caret through the ProseMirror view.
 - A hidden WKWebView (XCTest host) throttles timers to once a second; chunked work that must finish while hidden (block verification) runs in one go when `document.hidden`.
 - Perf readings under parallel Playwright workers or a concurrent `xcodebuild` can double; the 10k test takes the best of three opens.
+- Split sync race (found by CI, fixed in M3): after an edit the Read view reloads and restores the position it saved before the refresh; native's `scrollToSourceLine` from `onPageLoaded` could land before `window.inlayReadView` existed (dropped) or before that restore (overridden). The runtime now parks a line sent early in `window.inlayPendingSourceLine` and lets an explicit request beat the saved position.
 - The Biome/zsh trap of the session: `=====` in an `echo` is a zsh `=command` expansion; use `---`.
 
 ## State on 2026-11-06 (M2 merged, M3 next)

@@ -86,6 +86,7 @@ export async function boot(
   document.close();
 
   let resolveReady: () => void = () => {};
+  let explicitScroll = false;
   const ready = new Promise<void>((resolve) => {
     resolveReady = resolve;
   });
@@ -105,7 +106,11 @@ export async function boot(
       location.reload();
     },
     getPosition: () => getPosition(),
-    scrollToSourceLine: (line) => scrollToSourceLine(line),
+    scrollToSourceLine: (line) => {
+      // An explicit request (Split sync, mode switch) beats the saved position of a refresh.
+      explicitScroll = true;
+      return scrollToSourceLine(line);
+    },
     setTheme(next) {
       if (next === 'system') delete document.documentElement.dataset.theme;
       else document.documentElement.dataset.theme = next;
@@ -136,8 +141,16 @@ export async function boot(
     if (!document.documentElement.dataset.theme) rerenderMermaid();
   });
 
-  const saved = loadPosition(doc.docId);
-  if (saved) restorePosition(saved);
+  // Native may have asked for a line before this runtime existed (a refresh mid-sync): honour it,
+  // otherwise restore the position saved before the refresh, unless an explicit request came first.
+  const pending = window.inlayPendingSourceLine;
+  if (typeof pending === 'number') {
+    delete window.inlayPendingSourceLine;
+    api.scrollToSourceLine(pending);
+  } else if (!explicitScroll) {
+    const saved = loadPosition(doc.docId);
+    if (saved) restorePosition(saved);
+  }
   let scheduled = false;
   window.addEventListener(
     'scroll',
