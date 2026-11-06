@@ -2,9 +2,10 @@
 
 Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and the M4 task list), `docs/DECISIONS.md` (ADR-0001…0034), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
 
-## State on 2026-11-06 (M3 on branch `m3-wysiwyg`, PR open)
+## State on 2026-11-06 (M3 merged, M4 next)
 
-- `m3-wysiwyg` holds six slices on top of `main`: Crepe + pinned remark, the block loader and splice save, the editor page hosting Source and WYSIWYG, island cards with in-place editing and KaTeX math, the macOS WYSIWYG view mode, the IME guard and large-document safety net. Local runs: `pnpm check`, `pnpm test` (472 unit, 80 Playwright in Chromium + WebKit, 2 Chromium-only composition tests skipped in WebKit), `pnpm mac:test` (41 XCTest cases) all green.
+- `main` holds M0–M3 (#8, squash-merged, CI green after three CI-only fixes: 60 s timeouts for the 10k-line Vitest cases, a 2 s WYSIWYG open budget on GitHub's Linux WebKit, and a real Split-sync race fixed in the Read view runtime). Local runs: `pnpm check`, `pnpm test` (472 unit, 80 Playwright in Chromium + WebKit, 2 Chromium-only composition tests skipped in WebKit), `pnpm mac:test` (41 XCTest cases) all green.
+- M4 (Quick Look) starts on branch `m4-quicklook` after the product owner's "go"; it needs the Team ID for the App Group (`group.live.inlay`) and the extension's signing. Architecture: ADR-0006 (JavaScriptCore bundle constraints), ADR-0016 (Quick Look caps and truncation), ADR-0017/0018 (spike verdict: JS runs, sibling files unreadable, `cid:` attachments work), ADR-0020/0021 (vendored bundles, md-render output contract). `packages/md-render/scripts/build-jsc.ts` builds the IIFE; `apps/macos/InlayQuickLook/Sources/PreviewProvider.swift` is still the M0 stub; `InlayCore.RenderEngine` holds the warm `JSContext`.
 - Open for the product owner: the "restyled" tier (ADR-0032) reads the brief's round-trip rule as mdast equality for blocks whose bytes differ only in formatting (hand-padded tables, trimmed trailing whitespace, escapes); unchanged blocks still save verbatim, an edited restyled block takes remark's canonical form. Crepe's table block feature is off for performance (ADR-0034); table row/column handles are a follow-up. The Source-mode IME checklist and the new WYSIWYG section of `docs/IME-CHECKLIST.md` have not been run by hand.
 - M4 (Quick Look) needs the Team ID; its task list is in `docs/PLAN.md`.
 
