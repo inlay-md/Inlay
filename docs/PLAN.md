@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M3 merged into `main` (2026-11-06, #8). Next: M4 on branch `m4-quicklook` after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
+**Status:** M0–M3 merged to `main` (M3 in #8, 2026-11-06). Next: M4 on branch `m4-quicklook` after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
@@ -89,5 +89,5 @@ The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in
 - [ ] M3 · "Block n of m changed · bytes" status item (needs the native status bar from the M1 chrome task; `stats.wysiwyg` and the splice's `changed` count are ready)
 - [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
 - [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage
-- [ ] Website · build inlay.live from `design/ui/website.html` as a static site with self-hosted fonts and `design/icon/web` favicons (product decision pending: `site/` in this repo or a separate repo)
+- [x] Website · inlay.live landing page built from `design/ui/website.html` as a static Astro site with self-hosted fonts and the brand favicons, in the separate `inlay-md/inlay.live` repository (deployed on Vercel from its `main`); it carries a progress section to keep in step with this file
 

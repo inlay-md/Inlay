@@ -7,7 +7,7 @@
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-lightgrey.svg)
 
 > [!WARNING]
-> Inlay is in early development and there are no releases yet. The scaffold (M0) is done and the Read view (M1) is in progress. See the [roadmap](#roadmap) and [`docs/PLAN.md`](docs/PLAN.md).
+> Inlay is in early development and there are no releases yet. The Read view (M1), Source and Split modes (M2) and the WYSIWYG editor (M3) are built and on `main`. Quick Look (M4) is next. See the [roadmap](#roadmap) and [`docs/PLAN.md`](docs/PLAN.md).
 
 <p align="center">
   <img src="design/ui/png/app-read-view.png" alt="Design mockup of Inlay's Read view: a Markdown report with a live Chart.js chart, an outline sidebar and a toolbar with Read, Edit, Source and Split modes" width="880">
@@ -36,18 +36,19 @@ Inlay serves known libraries such as Chart.js from copies bundled with the app, 
 
 ## Features
 
-Planned for v1. Boxes are ticked as each feature ships.
+Planned for v1. A box is ticked once the feature is built, tested and merged to `main`. Nothing has been released yet.
 
-- [ ] **Full rendering of embedded content.** Raw HTML, inline and linked SVG, and document-level `<style>` and `<script>` run at page level in the Read view, with no iframes.
-- [ ] **Offline charts.** Chart.js, ECharts, D3, Mermaid and KaTeX URLs on cdnjs, jsDelivr and unpkg are swapped for bundled copies.
-- [ ] **WYSIWYG editing**, built on Milkdown Crepe. Anything that can't be edited losslessly, such as raw HTML, front matter or HTML comments, becomes a *raw island* with its own in-place source editor.
-- [ ] **Source and Split modes** with CodeMirror 6. Split shows the source next to the live Read view with scroll sync.
+- [x] **Full rendering of embedded content.** Raw HTML, inline and linked SVG, and document-level `<style>` and `<script>` run at page level in the Read view, with no iframes.
+- [x] **Offline charts.** Chart.js, ECharts, D3, Mermaid and KaTeX URLs on cdnjs, jsDelivr and unpkg are swapped for bundled copies.
+- [x] **WYSIWYG editing**, built on Milkdown Crepe. Anything that can't be edited losslessly, such as raw HTML, front matter or HTML comments, becomes a *raw island* with its own in-place source editor.
+- [x] **Source and Split modes** with CodeMirror 6. Split shows the source next to the live Read view with scroll sync.
 - [ ] **Quick Look for `.md` files** in Finder. SVG always renders, scripts are opt-in, and a static fallback is used otherwise.
-- [ ] **The file on disk is sacred.** Open→save is byte-identical. Editing one block changes only that block's bytes, line endings and BOM included.
-- [ ] GitHub Flavored Markdown (tables, task lists, footnotes), front matter, KaTeX math, Mermaid diagrams and syntax highlighting.
-- [ ] Local images relative to the document, light and dark themes, HTML and PDF export.
-- [ ] Correct IME input in WYSIWYG and Source, including Vietnamese Telex/VNI and CJK.
-- [ ] Opening a 10,000-line file feels instant.
+- [x] **The file on disk is sacred.** Open→save is byte-identical. Editing one block changes only that block's bytes, line endings and BOM included.
+- [x] GitHub Flavored Markdown (tables, task lists, footnotes), front matter, KaTeX math, Mermaid diagrams and syntax highlighting.
+- [x] Local images relative to the document, and light and dark appearance.
+- [ ] Themes, custom CSS, and HTML and PDF export.
+- [ ] Correct IME input in WYSIWYG and Source, including Vietnamese Telex/VNI and CJK. Automated composition tests pass; the manual check on a release build is still to do.
+- [x] Opening a 10,000-line file feels instant.
 
 Out of scope for v1: sync or cloud storage, plugins, AI features, collaboration, the Mac App Store, and Windows/Linux builds. Windows and Linux support through a Tauri shell is planned later, and the architecture is designed for it.
 
@@ -69,10 +70,10 @@ Inlay is a thin native shell (Swift, AppKit, `NSDocument`) around a TypeScript w
 
 ```
 packages/md-render     unified/remark → rehype → HTML; browser ESM build + JavaScriptCore IIFE
-packages/editor        document model, CodeMirror Source mode, Milkdown Crepe + raw islands   (M2–M3)
+packages/editor        document model, CodeMirror Source mode, Milkdown Crepe + raw islands
 packages/read-view     the Read view page and runtime
 packages/host-api      the Host interface between web and native, plus a MockHost for the browser
-packages/settings-ui   settings page                                                         (M5)
+packages/settings-ui   settings page                                                         (planned)
 apps/macos             XcodeGen project: Inlay app, InlayQuickLook extension, InlayCore Swift package
 fixtures/              golden Markdown corpus used by the round-trip and rendering tests
 docs/                  product brief, plan, decision log
@@ -141,10 +142,10 @@ Re-render the screenshots with `pnpm design:render` and the icon set with `pnpm 
 | Milestone | Scope | Status |
 | --- | --- | --- |
 | **M0** Scaffold | Workspace, Host interface, fixtures, XcodeGen app, CI, licensing | ✅ Done |
-| **M1** Read view | Full rendering, offline libraries, KaTeX, Mermaid, highlighting, isolation, quarantine, file watching | 🚧 In progress |
-| **M2** Source + Split | CodeMirror Source mode, Split with scroll sync, byte-identical saving through `NSDocument` | Planned |
-| **M3** WYSIWYG | Crepe, raw islands, block-splice saving, mode switching, IME | Planned |
-| **M4** Quick Look | Rendering tiers 1–3 and shared settings | Planned |
+| **M1** Read view | Full rendering, offline libraries, KaTeX, Mermaid, highlighting, isolation, quarantine, file watching | ✅ Done |
+| **M2** Source + Split | CodeMirror Source mode, Split with scroll sync, byte-identical saving through `NSDocument` | ✅ Done |
+| **M3** WYSIWYG | Crepe, raw islands, block-splice saving, mode switching, IME | ✅ Done |
+| **M4** Quick Look | Rendering tiers 1–3 and shared settings | ⏭️ Next |
 | **M5** Polish and release | HTML/PDF export, themes, preferences, Sparkle updates, signed and notarized builds | Planned |
 
 Detailed task lists are in [`docs/PLAN.md`](docs/PLAN.md), and the reasoning behind design choices is in [`docs/DECISIONS.md`](docs/DECISIONS.md).
