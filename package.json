@@ -29,7 +29,8 @@
     "design:render": "node scripts/render-ui.mjs",
     "mac:generate": "cd apps/macos && xcodegen generate",
     "mac:build": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet build",
-    "mac:test": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test"
+    "mac:test": "scripts/build-web.sh && pnpm run mac:generate && xcodebuild -project apps/macos/Inlay.xcodeproj -scheme Inlay -destination 'platform=macOS' -quiet test",
+    "dev:editor": "pnpm --filter @inlay-md/editor run dev"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",

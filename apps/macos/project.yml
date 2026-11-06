@@ -89,7 +89,7 @@ targets:
       - name: Check web bundle
         basedOnDependencyAnalysis: false
         script: |
-          if [ ! -f "$SRCROOT/Inlay/Resources/generated/web/read-view/index.html" ] || [ ! -f "$SRCROOT/InlayCore/Sources/InlayCore/Resources/md-render.jsc.js" ]; then
+          if [ ! -f "$SRCROOT/Inlay/Resources/generated/web/read-view/index.html" ] || [ ! -f "$SRCROOT/Inlay/Resources/generated/web/editor/index.html" ] || [ ! -f "$SRCROOT/InlayCore/Sources/InlayCore/Resources/md-render.jsc.js" ]; then
             echo "error: web bundles missing. Run scripts/build-web.sh (or pnpm mac:build) first." >&2
             exit 1
           fi

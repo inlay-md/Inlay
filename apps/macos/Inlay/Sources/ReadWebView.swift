@@ -16,6 +16,8 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
     }
     /// Count of refused popups (window.open), for tests.
     private(set) var refusedPopups = 0
+    /// The page finished loading (first load or a refresh reload): Split sync re-applies its line.
+    var onPageLoaded: (() -> Void)?
 
     init(docId: String) {
         self.docId = docId
@@ -51,6 +53,11 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
         }
     }
 
+    /// Scrolls the rendered document so `line` (1-based source line) sits at the top (Split sync, mode switching).
+    func scrollToSourceLine(_ line: Int) {
+        evaluateJavaScript("window.inlayReadView && window.inlayReadView.scrollToSourceLine(\(line))") { _, _ in }
+    }
+
     func setTheme(_ theme: String) {
         evaluateJavaScript("window.inlayReadView && window.inlayReadView.setTheme(\(Self.jsString(theme)))") { _, _ in }
     }
@@ -80,8 +87,8 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
         let scheme = url.scheme?.lowercased() ?? ""
         if scheme == MDViewSchemeHandler.scheme {
             guard url.host == docId else { return .cancel }
-            let path = url.path
-            if path.isEmpty || path == "/" || path == "/index.html" || path.hasPrefix(MDViewSchemeHandler.reservedPrefix) { return .allow }
+            let path = MDViewSchemeHandler.routePath(of: url)
+            if path == "/" || path == "/index.html" || path.hasPrefix(MDViewSchemeHandler.reservedPrefix) { return .allow }
             // A relative link to another Markdown file opens it as its own document.
             let ext = url.pathExtension.lowercased()
             if isMainFrame, ext == "md" || ext == "markdown" { return .openMarkdown }
@@ -108,6 +115,10 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
             }
             return .cancel
         }
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        onPageLoaded?()
     }
 
     // MARK: WKUIDelegate

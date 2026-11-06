@@ -11,6 +11,12 @@ enum WebBundle {
             .appendingPathComponent("web/read-view", isDirectory: true)
     }
 
+    static func editorRoot(in bundle: Bundle = .main) -> URL? {
+        bundle.resourceURL?
+            .appendingPathComponent(generatedDirectory)
+            .appendingPathComponent("web/editor", isDirectory: true)
+    }
+
     static func thirdPartyNotices(in bundle: Bundle = .main) -> String? {
         guard let url = bundle.resourceURL?
             .appendingPathComponent(generatedDirectory)
