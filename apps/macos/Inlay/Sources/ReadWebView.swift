@@ -54,8 +54,10 @@ final class ReadWebView: WKWebView, WKNavigationDelegate, WKUIDelegate {
     }
 
     /// Scrolls the rendered document so `line` (1-based source line) sits at the top (Split sync, mode switching).
+    /// Scrolls the rendered document to a source line; a request that arrives while the runtime is still
+    /// rendering (a refresh mid-sync) is parked for it to apply as soon as it is up.
     func scrollToSourceLine(_ line: Int) {
-        evaluateJavaScript("window.inlayReadView && window.inlayReadView.scrollToSourceLine(\(line))") { _, _ in }
+        evaluateJavaScript("window.inlayReadView ? window.inlayReadView.scrollToSourceLine(\(line)) : (window.inlayPendingSourceLine = \(line), true)") { _, _ in }
     }
 
     func setTheme(_ theme: String) {

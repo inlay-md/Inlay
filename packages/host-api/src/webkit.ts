@@ -90,6 +90,7 @@ export class WebKitHost implements Host {
       quarantined: raw.quarantined === true,
       baseURL: String(raw.baseURL ?? ''),
       readOnly: raw.readOnly === true,
+      ...(raw.mode === 'wysiwyg' || raw.mode === 'source' ? { mode: raw.mode } : {}),
     };
     this.info = info;
     return { ...info };

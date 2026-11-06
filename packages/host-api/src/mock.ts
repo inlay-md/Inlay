@@ -25,6 +25,7 @@ export interface MockHostOptions {
   quarantined?: boolean;
   baseURL?: string;
   readOnly?: boolean;
+  mode?: Mode;
   /** Files reachable via readFile, keyed by document-relative path. */
   files?: Record<string, Uint8Array | string>;
   settings?: SettingsPatch;
@@ -88,6 +89,7 @@ export class MockHost implements Host {
       quarantined: options.quarantined ?? false,
       baseURL: options.baseURL ?? `http://localhost/docs/${docId}/`,
       readOnly: options.readOnly ?? false,
+      ...(options.mode ? { mode: options.mode } : {}),
     };
     this.settings = resolveSettings(options.settings ?? DEFAULT_SETTINGS);
     for (const [path, data] of Object.entries(options.files ?? {})) {

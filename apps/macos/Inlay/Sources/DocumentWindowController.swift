@@ -1,19 +1,26 @@
 // SPDX-License-Identifier: Apache-2.0
 import AppKit
 
-/// How a document window shows its document. WYSIWYG arrives with M3.
+/// How a document window shows its document. WYSIWYG and Source share the editor webview; the
+/// page switches between them (ADR-0033).
 enum ViewMode: String, CaseIterable {
-    case read, source, split
+    case read, wysiwyg, source, split
 
     static let defaultsKey = "live.inlay.lastViewMode"
 
     var title: String {
         switch self {
         case .read: "Read"
+        case .wysiwyg: "WYSIWYG"
         case .source: "Source"
         case .split: "Split"
         }
     }
+
+    /// The editing mode the editor page shows for this window mode (Split shows Source).
+    var editorMode: String { self == .wysiwyg ? "wysiwyg" : "source" }
+
+    var showsEditor: Bool { self != .read }
 }
 
 /// One window per document: native banners (trust, on-disk conflict) above a split view with
@@ -152,7 +159,10 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
 
     override var document: AnyObject? {
         didSet {
-            if let doc = document as? MarkdownDocument { wire(doc) }
+            if let doc = document as? MarkdownDocument {
+                wire(doc)
+                doc.editorStartMode = mode.editorMode
+            }
             readView.loadDocument()
             editorView.loadEditor()
         }
@@ -178,34 +188,36 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
             var line: Int?
             switch previous {
             case .read: line = await readView.position()?.line
-            case .source, .split: line = await editorView.position()?.line
+            case .wysiwyg, .source, .split: line = await editorView.position()?.line
             }
             applyMode(next)
             UserDefaults.standard.set(next.rawValue, forKey: ViewMode.defaultsKey)
             if let line {
                 syncedLine = line
                 switch (previous, next) {
-                case (.read, .source), (.read, .split):
+                case (.read, .wysiwyg), (.read, .source), (.read, .split):
                     editorView.setCursorSourceLine(line)
                     editorView.scrollToSourceLine(line)
-                case (.source, .read), (.source, .split):
-                    readView.scrollToSourceLine(line)
-                case (.split, .read):
+                case (.wysiwyg, .read), (.wysiwyg, .split), (.source, .read), (.source, .split), (.split, .read):
                     readView.scrollToSourceLine(line)
                 default:
+                    // WYSIWYG ↔ Source: the editor page carries the caret itself (ADR-0033).
                     break
                 }
             }
-            if next != .read { editorView.focusEditor() } else { window?.makeFirstResponder(readView) }
+            if next.showsEditor { editorView.focusEditor() } else { window?.makeFirstResponder(readView) }
         }
     }
 
     private func applyMode(_ next: ViewMode) {
+        let previous = mode
         mode = next
         sourcePane.showsHeader = next == .split
         readPane.showsHeader = next == .split
-        sourceItem.isCollapsed = next == .read
-        readItem.isCollapsed = next == .source
+        sourceItem.isCollapsed = !next.showsEditor
+        readItem.isCollapsed = next == .source || next == .wysiwyg
+        markdownDocument?.editorStartMode = next.editorMode
+        if next.showsEditor && next.editorMode != previous.editorMode { editorView.requestEditorMode(next.editorMode) }
         splitView.syncFraction = next == .split ? splitView.syncFraction : nil
         splitView.centreDividerOnLayout = next == .split
         splitView.needsLayout = true
@@ -216,6 +228,7 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
     static func segmentIndex(of mode: ViewMode) -> Int {
         switch mode {
         case .read: 0
+        case .wysiwyg: 1
         case .source: 2
         case .split: 3
         }
@@ -292,8 +305,6 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
         guard itemIdentifier == Self.modeItem else { return nil }
         let control = NSSegmentedControl(labels: ["Read", "Edit", "Source", "Split"], trackingMode: .selectOne, target: self, action: #selector(modeSegmentChanged(_:)))
         control.segmentStyle = .automatic
-        control.setEnabled(false, forSegment: 1) // WYSIWYG: M3
-        control.setToolTip("WYSIWYG editing arrives in a later release", forSegment: 1)
         control.selectedSegment = Self.segmentIndex(of: mode)
         control.setAccessibilityIdentifier("inlay-mode-control")
         modeControl = control
@@ -307,6 +318,7 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
     @objc private func modeSegmentChanged(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0: setMode(.read)
+        case 1: setMode(.wysiwyg)
         case 2: setMode(.source)
         case 3: setMode(.split)
         default: sender.selectedSegment = Self.segmentIndex(of: mode)
@@ -316,6 +328,7 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
     // MARK: - Menu actions (View menu)
 
     @objc func showReadMode(_ sender: Any?) { setMode(.read) }
+    @objc func showWysiwygMode(_ sender: Any?) { setMode(.wysiwyg) }
     @objc func showSourceMode(_ sender: Any?) { setMode(.source) }
     @objc func showSplitMode(_ sender: Any?) { setMode(.split) }
 
@@ -337,6 +350,9 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
         case #selector(showReadMode(_:)):
             menuItem.state = mode == .read ? .on : .off
             return true
+        case #selector(showWysiwygMode(_:)):
+            menuItem.state = mode == .wysiwyg ? .on : .off
+            return true
         case #selector(showSourceMode(_:)):
             menuItem.state = mode == .source ? .on : .off
             return true
@@ -349,7 +365,7 @@ final class DocumentWindowController: NSWindowController, NSMenuItemValidation, 
         case #selector(trustDocument(_:)):
             return markdownDocument?.isUntrusted ?? false
         case #selector(refreshReadView(_:)):
-            return mode != .source
+            return mode == .read || mode == .split
         default:
             return true
         }

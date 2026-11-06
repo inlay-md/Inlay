@@ -43,6 +43,7 @@ describe('WebKitHost', () => {
             eol: '\r\n',
             baseURL: 'mdview://abc/',
             quarantined: false,
+            mode: 'wysiwyg',
           }
         : undefined,
     );
@@ -57,6 +58,7 @@ describe('WebKitHost', () => {
       quarantined: false,
       baseURL: 'mdview://abc/',
       readOnly: false,
+      mode: 'wysiwyg',
     });
     expect(posted[0]).toEqual({ method: 'openDocument', args: [] });
     expect(host.resolveAssetURL('img/a b.png')).toBe('mdview://abc/img/a%20b.png');

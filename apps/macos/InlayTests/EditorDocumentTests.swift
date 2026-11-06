@@ -16,16 +16,30 @@ final class EditorDocumentTests: XCTestCase {
     }
 
     /// Opens a fixture in a document whose window hosts a real editor webview and waits for the editor.
-    @MainActor private func openInEditor(_ url: URL) async throws -> (MarkdownDocument, EditorWebView) {
+    /// With `wysiwyg` the window starts in WYSIWYG (the page gets `DocumentInfo.mode`, ADR-0033) and the
+    /// wait includes the Milkdown document being up.
+    @MainActor private func openInEditor(_ url: URL, wysiwyg: Bool = false) async throws -> (MarkdownDocument, EditorWebView) {
+        UserDefaults.standard.set(wysiwyg ? ViewMode.wysiwyg.rawValue : ViewMode.source.rawValue, forKey: ViewMode.defaultsKey)
+        addTeardownBlock { UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey) }
         let doc = MarkdownDocument()
         try doc.read(from: url, ofType: MarkdownDocument.markdownType)
         doc.fileURL = url
         doc.makeWindowControllers()
         let controller = try XCTUnwrap(doc.windowControllers.first as? DocumentWindowController)
+        XCTAssertEqual(controller.mode, wysiwyg ? .wysiwyg : .source)
         let editor = controller.editorView
-        let ready = try await TestSupport.poll(editor, "window.inlayEditor && window.inlayWebKitHost ? 'ready' : ''", timeout: 15)
+        let probe = wysiwyg
+            ? "window.inlayEditor && window.inlayWebKitHost && window.inlayEditor.mode === 'wysiwyg' && window.inlayEditor.wysiwygView ? 'ready' : ''"
+            : "window.inlayEditor && window.inlayWebKitHost ? 'ready' : ''"
+        let ready = try await TestSupport.poll(editor, probe, timeout: 20)
         XCTAssertEqual(ready, "ready", "editor did not come up for \(url.lastPathComponent)")
         return (doc, editor)
+    }
+
+    /// Waits until WYSIWYG has verified every block (deferred, ADR-0032).
+    @MainActor private func waitForVerification(_ editor: EditorWebView) async throws {
+        let verified = try await TestSupport.poll(editor, "window.inlayEditor.stats.wysiwyg && window.inlayEditor.stats.wysiwyg.pending === 0 ? 'yes' : ''", timeout: 20)
+        XCTAssertEqual(verified, "yes", "block verification finished")
     }
 
     @MainActor private func save(_ doc: MarkdownDocument, to url: URL, operation: NSDocument.SaveOperationType = .saveToOperation) async throws {
@@ -70,6 +84,54 @@ final class EditorDocumentTests: XCTestCase {
             XCTAssertEqual(try Data(contentsOf: out), original, "bytes differ for \(file.lastPathComponent)")
             XCTAssertFalse(doc.lastSaveUsedMirror, "\(file.lastPathComponent) saved from the mirror")
         }
+    }
+
+    @MainActor func testEveryFixtureSavesByteIdenticalThroughWysiwyg() async throws {
+        var islandFixtures: [String] = []
+        for file in try TestSupport.fixtureFiles() {
+            let original = try Data(contentsOf: file)
+            let (doc, editor) = try await openInEditor(file, wysiwyg: true)
+            defer { doc.close() }
+            if doc.decodable {
+                try await waitForVerification(editor)
+                let live = try await editor.requestContent()
+                XCTAssertEqual(live, doc.text, "WYSIWYG splices the decoded text back: \(file.lastPathComponent)")
+                if let islands = try await editor.evaluateJavaScript("window.inlayEditor.stats.wysiwyg.islands") as? Int, islands > 0 {
+                    islandFixtures.append(file.lastPathComponent)
+                }
+            }
+            let out = FileManager.default.temporaryDirectory.appendingPathComponent("inlay-\(UUID().uuidString).md")
+            defer { try? FileManager.default.removeItem(at: out) }
+            try await save(doc, to: out)
+            XCTAssertEqual(try Data(contentsOf: out), original, "bytes differ for \(file.lastPathComponent)")
+            XCTAssertFalse(doc.lastSaveUsedMirror, "\(file.lastPathComponent) saved from the mirror")
+        }
+        XCTAssertFalse(islandFixtures.contains("gfm-basics.md"), "pure GFM has no islands")
+        XCTAssertTrue(islandFixtures.contains("front-matter.md"), "front matter is an island")
+    }
+
+    @MainActor func testAWysiwygEditChangesOnlyItsBlockAndSavesThroughTheLiveEditor() async throws {
+        let url = try temporaryCopy(of: "gfm-basics.md")
+        let original = try Data(contentsOf: url)
+        let (doc, editor) = try await openInEditor(url, wysiwyg: true)
+        defer { doc.close() }
+        // Type at the start of "Final paragraph." through ProseMirror itself.
+        _ = try await editor.evaluateJavaScript("(() => { const v = window.inlayEditor.wysiwygView; let pos = -1; v.state.doc.descendants((n, p) => { if (pos < 0 && n.isText && n.text.startsWith('Final paragraph')) pos = p; return pos < 0; }); v.dispatch(v.state.tr.insertText('Ẹdited ', pos)); return pos; })()")
+        let edited = try await TestSupport.poll(editor, "window.inlayEditor.isDirty() ? 'yes' : ''")
+        XCTAssertEqual(edited, "yes")
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertTrue(doc.isDocumentEdited, "setDirty(true) reached NSDocument")
+
+        doc.save(nil)
+        let marker = Data("Final paragraph.".utf8)
+        let range = try XCTUnwrap(original.range(of: marker))
+        var expected = original
+        expected.insert(contentsOf: Data("Ẹdited ".utf8), at: range.lowerBound)
+        let saved = try await waitForDisk(url) { $0 == expected }
+        XCTAssertEqual(saved, expected, "only the edited block's bytes differ")
+        XCTAssertEqual(doc.fileData, saved)
+        let clean = try await TestSupport.poll(editor, "window.inlayEditor.isDirty() ? '' : 'clean'")
+        XCTAssertEqual(clean, "clean", "documentSaved made WYSIWYG clean again")
     }
 
     @MainActor func testAnEditChangesOnlyItsBytesAndMarksTheDocumentEdited() async throws {

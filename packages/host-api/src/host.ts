@@ -29,6 +29,8 @@ export interface DocumentInfo {
   baseURL: string;
   /** True when the host cannot write the document back losslessly (e.g. non-UTF-8). */
   readOnly: boolean;
+  /** Editing mode the host wants the editor page to start in (`wysiwyg` or `source`); defaults to source. */
+  mode?: Mode;
 }
 
 export interface HostEvents {

@@ -46,5 +46,7 @@ export interface ReadViewApi {
 declare global {
   interface Window {
     inlayReadView?: ReadViewApi;
+    /** Source line native asked for before the runtime was up (ReadWebView.scrollToSourceLine). */
+    inlayPendingSourceLine?: number;
   }
 }

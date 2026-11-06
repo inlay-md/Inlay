@@ -24,13 +24,24 @@
     "@codemirror/state": "6.5.2",
     "@codemirror/view": "6.38.1",
     "@inlay-md/host-api": "workspace:*",
+    "@inlay-md/md-render": "workspace:*",
     "@lezer/common": "1.2.3",
     "@lezer/highlight": "1.2.1",
-    "@lezer/markdown": "1.4.3"
+    "@lezer/markdown": "1.4.3",
+    "@milkdown/crepe": "7.23.0",
+    "@milkdown/kit": "7.23.0",
+    "katex": "0.19.1",
+    "mdast-util-to-markdown": "2.2.2",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remark-parse": "11.0.0",
+    "remark-stringify": "11.0.0",
+    "unified": "11.0.5"
   },
   "devDependencies": {
     "@inlay-md/fixtures": "workspace:*",
-    "@inlay-md/md-render": "workspace:*",
+    "@types/mdast": "4.0.4",
     "@types/node": "26.6.6"
   }
 }

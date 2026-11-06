@@ -1,0 +1,302 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Crepe theme from the Inlay palette (design/ui/app-wysiwyg.html): Ink on Paper,
+ * brass for the seam between prose and embedded code, verdigris for anything live.
+ * The variables follow the editor page's `data-theme` override and the system scheme.
+ */
+.inlay-wysiwyg {
+  height: 100%;
+  overflow: auto;
+  background: var(--inlay-ed-bg);
+  color: var(--inlay-ed-fg);
+}
+
+.inlay-wysiwyg .milkdown {
+  --crepe-color-background: var(--inlay-ed-bg);
+  --crepe-color-on-background: var(--inlay-ed-fg);
+  --crepe-color-surface: var(--inlay-ed-line);
+  --crepe-color-surface-low: var(--inlay-ed-code-bg);
+  --crepe-color-on-surface: var(--inlay-ed-fg);
+  --crepe-color-on-surface-variant: var(--inlay-ed-muted);
+  --crepe-color-outline: var(--inlay-ed-border);
+  --crepe-color-primary: var(--inlay-ed-verdigris);
+  --crepe-color-secondary: var(--inlay-ed-line);
+  --crepe-color-on-secondary: var(--inlay-ed-fg);
+  --crepe-color-inverse: var(--inlay-ed-fg);
+  --crepe-color-on-inverse: var(--inlay-ed-bg);
+  --crepe-color-inline-code: var(--inlay-ed-string);
+  --crepe-color-error: #b4532a;
+  --crepe-color-hover: var(--inlay-ed-line);
+  --crepe-color-selected: var(--inlay-ed-selection);
+  --crepe-color-inline-area: var(--inlay-ed-code-bg);
+  --crepe-base-font-size: 16px;
+  --crepe-font-title:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  --crepe-font-default:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --crepe-font-code: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  --crepe-shadow-1: 0 1px 3px rgba(20, 26, 34, 0.12);
+  --crepe-shadow-2: 0 2px 8px rgba(20, 26, 34, 0.16);
+  background: var(--inlay-ed-bg);
+  color: var(--inlay-ed-fg);
+  min-height: 100%;
+}
+
+.inlay-wysiwyg .milkdown .editor {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 48px 120px;
+  outline: none;
+  line-height: 1.6;
+}
+
+.inlay-wysiwyg .milkdown .editor a {
+  color: var(--inlay-ed-verdigris);
+}
+
+/* Plain-DOM list items (list-item-view.ts): marker column plus content. */
+.inlay-wysiwyg .milkdown .editor ul,
+.inlay-wysiwyg .milkdown .editor ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.4em 0;
+}
+
+.inlay-wysiwyg .inlay-li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0.15em 0;
+}
+
+.inlay-wysiwyg .inlay-li > .inlay-li-label {
+  flex: 0 0 24px;
+  min-width: 24px;
+  text-align: right;
+  color: var(--inlay-ed-muted);
+  user-select: none;
+  line-height: inherit;
+}
+
+.inlay-wysiwyg .inlay-li[data-list-type="bullet"] > .inlay-li-label {
+  color: var(--inlay-ed-brass);
+}
+
+.inlay-wysiwyg .inlay-li > .inlay-li-checkbox {
+  flex: 0 0 auto;
+  margin: 0.35em 4px 0 6px;
+  accent-color: var(--inlay-ed-verdigris);
+}
+
+.inlay-wysiwyg .inlay-li > .inlay-li-label[hidden],
+.inlay-wysiwyg .inlay-li > .inlay-li-checkbox[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-li > .inlay-li-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inlay-wysiwyg .inlay-li > .inlay-li-content > p {
+  margin: 0;
+}
+
+.inlay-wysiwyg .inlay-li[data-item-type="task"][data-checked="true"] > .inlay-li-content {
+  color: var(--inlay-ed-muted);
+}
+
+/* Raw islands: a brass seam marks the boundary between prose and kept-verbatim source. */
+.inlay-wysiwyg .inlay-island {
+  position: relative;
+  margin: 1em 0;
+  border: 1px solid var(--inlay-ed-border);
+  border-left: 3px solid var(--inlay-ed-brass);
+  border-radius: 6px;
+  background: var(--inlay-ed-bg);
+  font-size: 13px;
+}
+
+.inlay-wysiwyg .inlay-island.ProseMirror-selectednode,
+.inlay-wysiwyg .inlay-math-block.ProseMirror-selectednode,
+.inlay-wysiwyg .inlay-inline-island.ProseMirror-selectednode {
+  outline: 2px solid var(--inlay-ed-verdigris);
+  outline-offset: 1px;
+}
+
+.inlay-wysiwyg .inlay-island-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--inlay-ed-border);
+  background: var(--inlay-ed-line);
+  border-radius: 0 6px 0 0;
+  font-size: 11.5px;
+  color: var(--inlay-ed-muted);
+  user-select: none;
+}
+
+.inlay-wysiwyg .inlay-island-kind {
+  font-weight: 600;
+  color: var(--inlay-ed-brass);
+  letter-spacing: 0.02em;
+}
+
+.inlay-wysiwyg .inlay-island-meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inlay-wysiwyg .inlay-island-toggle,
+.inlay-wysiwyg .inlay-island-read {
+  flex: 0 0 auto;
+  border: 1px solid var(--inlay-ed-border);
+  border-radius: 4px;
+  background: var(--inlay-ed-bg);
+  color: var(--inlay-ed-fg);
+  font: inherit;
+  font-size: 11px;
+  padding: 1px 8px;
+  cursor: pointer;
+}
+
+.inlay-wysiwyg .inlay-island-toggle:hover,
+.inlay-wysiwyg .inlay-island-read:hover {
+  border-color: var(--inlay-ed-verdigris);
+  color: var(--inlay-ed-verdigris);
+}
+
+.inlay-wysiwyg .inlay-island-toggle[hidden],
+.inlay-wysiwyg .inlay-island-read[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-island-body {
+  padding: 10px 14px;
+  cursor: text;
+  overflow: auto;
+}
+
+.inlay-wysiwyg .inlay-island[data-view="preview"] > .inlay-island-body {
+  font-size: 16px;
+  color: var(--inlay-ed-fg);
+}
+
+.inlay-wysiwyg .inlay-island[data-view="preview"] > .inlay-island-body svg {
+  max-width: 100%;
+}
+
+.inlay-wysiwyg .inlay-island-source {
+  margin: 0;
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre;
+  color: var(--inlay-ed-fg);
+}
+
+.inlay-wysiwyg .inlay-in-place {
+  border-top: 1px dashed var(--inlay-ed-border);
+}
+
+.inlay-wysiwyg .inlay-in-place .cm-editor {
+  font-size: 12.5px;
+}
+
+.inlay-wysiwyg .inlay-in-place .cm-editor.cm-focused {
+  outline: none;
+}
+
+.inlay-wysiwyg .inlay-island.inlay-editing {
+  border-left-color: var(--inlay-ed-verdigris);
+}
+
+/* Inline islands: a chip showing the raw tag, edited in a small in-place editor. */
+.inlay-wysiwyg .inlay-inline-island {
+  display: inline;
+  vertical-align: baseline;
+}
+
+.inlay-wysiwyg .inlay-inline-island-chip {
+  padding: 0 4px;
+  border-radius: 3px;
+  background: var(--inlay-ed-code-bg);
+  box-shadow: inset 2px 0 0 var(--inlay-ed-brass);
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  font-size: 0.85em;
+  color: var(--inlay-ed-muted);
+  cursor: text;
+}
+
+.inlay-wysiwyg .inlay-inline-island-chip[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-inline-island .inlay-in-place {
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 12em;
+  max-width: 100%;
+  border: 1px solid var(--inlay-ed-verdigris);
+  border-radius: 4px;
+  background: var(--inlay-ed-bg);
+}
+
+.inlay-wysiwyg .inlay-inline-island .inlay-in-place .cm-editor {
+  font-size: 12px;
+}
+
+/* Math: KaTeX in place, source editor on click. */
+.inlay-wysiwyg .inlay-math-block {
+  margin: 1em 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--inlay-ed-brass);
+  background: var(--inlay-ed-code-bg);
+  border-radius: 6px;
+  cursor: text;
+}
+
+.inlay-wysiwyg .inlay-math-preview {
+  overflow-x: auto;
+}
+
+.inlay-wysiwyg .inlay-math-source {
+  margin: 0;
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  font-size: 12.5px;
+  color: var(--inlay-ed-muted);
+}
+
+.inlay-wysiwyg .inlay-math-preview[hidden] {
+  display: none;
+}
+
+.inlay-wysiwyg .inlay-math-inline {
+  color: var(--inlay-ed-fg);
+}
+
+.inlay-wysiwyg .inlay-definition {
+  margin: 0.5em 0;
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  font-size: 12.5px;
+  color: var(--inlay-ed-muted);
+}
+
+.inlay-wysiwyg .inlay-definition-label {
+  color: var(--inlay-ed-brass);
+}
+
+.inlay-wysiwyg .inlay-link-reference {
+  color: var(--inlay-ed-verdigris);
+  text-decoration: underline dotted;
+}
+
+.inlay-wysiwyg .inlay-image-reference {
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  font-size: 0.85em;
+  color: var(--inlay-ed-muted);
+}

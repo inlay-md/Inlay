@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import AppKit
 
-/// Programmatic menu bar (no storyboard). WYSIWYG stays disabled until M3.
+/// Programmatic menu bar (no storyboard). View → WYSIWYG ⌘1 / Source ⌘2 / Split ⌘3 / Read ⌘4.
 enum MainMenu {
     static func build(target: AnyObject) -> NSMenu {
         let main = NSMenu()
@@ -66,8 +66,7 @@ enum MainMenu {
         main.addItem(submenu(edit, title: "Edit"))
 
         let view = NSMenu(title: "View")
-        let wysiwyg = view.addItem(withTitle: "WYSIWYG", action: nil, keyEquivalent: "1")
-        wysiwyg.isEnabled = false
+        view.addItem(withTitle: "WYSIWYG", action: #selector(DocumentWindowController.showWysiwygMode(_:)), keyEquivalent: "1")
         view.addItem(withTitle: "Source", action: #selector(DocumentWindowController.showSourceMode(_:)), keyEquivalent: "2")
         view.addItem(withTitle: "Split", action: #selector(DocumentWindowController.showSplitMode(_:)), keyEquivalent: "3")
         view.addItem(withTitle: "Read", action: #selector(DocumentWindowController.showReadMode(_:)), keyEquivalent: "4")
