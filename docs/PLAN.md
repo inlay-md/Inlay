@@ -2,7 +2,7 @@
 
 Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
 
-**Status:** M3 built on branch `m3-wysiwyg` (2026-11-06), PR open to `main`. Next: M4 after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
+**Status:** M3 merged into `main` (2026-11-06, #8). Next: M4 on branch `m4-quicklook` after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
 
 ## M0 — Scaffold (lands on `main`)
 - [x] Rename branch to `main`; install XcodeGen (Homebrew)
