@@ -1,12 +1,31 @@
-# Handover: resuming Inlay at the start of M1
+# Handover: Inlay after M1 (Read view)
 
-Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and M1 task list), `docs/DECISIONS.md` (ADR-0001…0018), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
+Read in this order: `CLAUDE.md` (rules and commands), `docs/PLAN.md` (progress and task lists), `docs/DECISIONS.md` (ADR-0001…0024), then `docs/BRIEF.md` when a requirement needs checking. The Phase A plan details (acceptance criteria, risks) are summarized in PLAN.md; the product owner reviews at milestone checkpoints and says "go".
 
-## State on 2026-11-05
+## State on 2026-11-05 (end of M1)
 
-- `main` is at the end of M0, pushed, CI green (Linux web job + macOS Xcode job). No branches besides `main`.
+- `main` holds M0. Branch `m1-read-view` holds M1 in five slices (md-render pipeline, Read view runtime, lazy Shiki/KaTeX/Mermaid, rendered-content fixtures with offline CDN rewriting, Swift trust/network/file watching) and is proposed as a PR to `main`; merge after the product owner's "go".
+- Two license exceptions are **pending the product owner** (ADR-0020): `robust-predicates` (Unlicense, inside d3.min.js) and `elkjs` (EPL-2.0, inside mermaid.min.js). `pnpm licenses:check` passes but prints them until they are accepted (set `"status"` to approved in `scripts/license-policy.json`) or the library stops being vendored.
 - Local toolchain: Node 26, pnpm 12.16, Xcode 27.2, XcodeGen 2.46, Playwright Chromium + WebKit installed.
-- M1 starts on branch `m1-read-view` and ends in a PR to `main` after the product owner's "go".
+- M2 (Source + Split) starts on branch `m2-source-split` after "go".
+
+## How M1 fits together
+
+- `packages/md-render/src/index.ts` — `render(markdown, options)`: remark → rehype pipeline with `data-source-line`, modes `full | static | sanitized`, KaTeX, Mermaid hand-off, pluggable Shiki (`highlight.ts`; `highlight-bundled.ts` is the 40-grammar set statically bundled into the JSC build), CDN rewriting (`vendor.ts`, ADR-0008), asset inlining, `THEME_CSS`. Snapshots per fixture per mode in `src/__snapshots__/`; `jsc-bundle.test.ts` proves browser/JSC parity in a bare VM context (no DOM, no `URL`).
+- `packages/read-view/src/runtime.ts` — reads the embedded `#inlay-source` JSON, renders, replaces the page with `document.open/write/close` (ADR-0001/0022), exposes `window.inlayReadView` (`refresh`, `getPosition`, `scrollToSourceLine`, `setTheme`, `stats`, `ready`), then lazily highlights (`highlight-lazy.ts`, `languages.ts`) and runs Mermaid (`mermaid-lazy.ts`). `page.ts` composes the page; `scroll.ts` maps scroll ↔ source lines; `csp.ts` mirrors the Swift CSP builder.
+- `packages/read-view/fixtures-plugin.ts` — dev/preview routes: `/__fixtures/view/<file>.md` is the shell with the fixture embedded under the app's CSP (`?quarantined=1`, `?allowNetwork=1`, `?theme=dark`); other paths serve document-folder files behind a traversal guard. `scripts/copy-vendor.ts` fills `public/vendor/` (gitignored) before dev/build.
+- `apps/macos/Inlay/Sources`: `MarkdownDocument` (quarantine value, trust/network state, `FileWatcher` + `presentedItemDidChange` → `reloadIfChangedOnDisk`), `DocumentWindowController` (native trust banner, View-menu actions), `ReadWebView` (navigation `policy(for:)`, refresh/theme/position helpers, popup refusal), `TrustStore`, `FileWatcher`, `MDViewSchemeHandler` (per-response nonce).
+- Tests: `pnpm test:unit` (326), `pnpm test:e2e` (44 across Chromium + WebKit: `e2e/read-view.spec.ts`, `e2e/rendered-content.spec.ts`), `pnpm mac:test` (XCTest: scheme handler, documents, Read view in a real WKWebView incl. the security probe, trust/network/watching, InlayCore).
+
+## Gotchas learned in M1
+
+- `pnpm licenses list` needs `-r` to see workspace packages' dependencies; M0's check scanned only the root.
+- JavaScriptCore has no `URL`, `document`, `TextEncoder` or timers: the JSC parity test runs the IIFE in a bare `vm` context and caught the vendor rewriter depending on `URL`.
+- `String.prototype.replace` with a replacement *string* interprets `$$`, `` $` `` and `$'`: embed JSON (or anything from a document) with a replacer function.
+- Playwright locators wait for pending navigations; a form submission that CSP blocks leaves Chromium's frame "navigating" forever, so the security probe test polls with `page.evaluate` instead.
+- WKWebView refuses script-initiated `window.open` by itself when `javaScriptCanOpenWindowsAutomatically` is false; the UI delegate only sees user-initiated popups.
+- `NSFilePresenter` never reports uncoordinated writes; the vnode `DispatchSource` watcher is required (ADR-0024).
+- Biome treats `useLiteralKeys`/`noUselessStringRaw` as infos; run `pnpm exec biome check --write --unsafe .` to apply them.
 
 ## How to run everything
 
@@ -31,16 +50,12 @@ The macOS build needs `scripts/build-web.sh` first (it copies `packages/read-vie
 - `fixtures/md/*.md` + `fixtures/manifest.json` — corpus; rendered-content fixtures are added in M1 (`fixtures/md/assets/` holds images).
 - `e2e/` — Playwright specs; `scripts/` — policy checks and notices generator.
 
-## M1 slices in the order that de-risks most
+## M2 entry points
 
-1. md-render pipeline (remark-parse + gfm + math + frontmatter → remark-rehype allowDangerousHtml → rehype-raw → rehype-stringify) with `data-source-line`, snapshots per fixture, both builds and the JSC parity test. Add `rehype-raw` position injection (ADR-0011).
-2. Read view runtime: embedded source → render → `document.open/write/close` (ADR-0001); verify in WKWebView early (XCTest `ReadWebViewTests` is the harness). Scroll save/restore, theme.
-3. Shiki (lazy in browser, `createHighlighterCoreSync` + JavaScript regex engine in the JSC build), KaTeX, Mermaid lazy-load.
-4. Known-library URL rewriting with `vendorBaseURL` (ADR-0008) and the vendor copy step in `scripts/build-web.sh`; fixtures with real CDN URLs; Playwright `page.route` to assert no CDN traffic.
-5. Swift: quarantine → static + native trust banner (trust store keyed by path + xattr value), "Allow network" toggle, file-change refresh (ADR-0013), `WKUIDelegate` already refuses popups.
-6. Security probe fixture + tests in Playwright and XCTest; performance budget on `perf-10k-lines.md`.
-
-Acceptance for M1 is in `docs/PLAN.md`; keep its checkboxes current and add ADRs for non-obvious choices.
+- Document model and CodeMirror live in a new `packages/editor`; `MockHost.provideContent`/`saveDocument` already model the save path (ADR-0005). The Read view's `inlayReadView.scrollToSourceLine` / `getPosition` are the Split-mode sync hooks (source → read only, ADR-0010).
+- The editor webview gets the `WKScriptMessageHandlerWithReply` bridge (`WebKitHost` adapter in `packages/host-api`); the Read webview must keep having none.
+- `MarkdownDocument.reloadIfChangedOnDisk` is where the unsaved-edits conflict banner goes; `data(ofType:)` must start pulling live content from the editor (ADR-0005).
+- Refresh on edits: `ReadWebView.refreshDocument()` reloads via the runtime; if reload latency is too high for Split mode, revisit ADR-0022 (in-place re-render).
 
 ## Gotchas learned in M0
 

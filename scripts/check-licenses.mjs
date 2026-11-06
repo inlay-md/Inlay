@@ -13,6 +13,7 @@ const fonts = readJson('scripts/bundled-fonts.json').fonts;
 
 const errors = [];
 const notes = [];
+const pending = [];
 
 function exceptionFor(name, license, scope) {
   return policy.exceptions.find(
@@ -21,6 +22,14 @@ function exceptionFor(name, license, scope) {
       e.license.toLowerCase() === String(license).toLowerCase() &&
       (!e.name || e.name === name),
   );
+}
+
+function noteException(name, license, exception) {
+  if (exception.status === 'pending') {
+    pending.push(`PENDING ${name}: ${license} — awaiting the product owner (${exception.reason})`);
+  } else {
+    notes.push(`except  ${name}: ${license} (approved exception)`);
+  }
 }
 
 // 1. Deny-list over the whole tree.
@@ -33,8 +42,9 @@ for (const p of npmPackages({ prod: false })) {
 // 2. Allowlist over shipped npm deps.
 for (const p of npmPackages({ prod: true })) {
   if (isAllowed(p.license, policy.allowlist)) continue;
-  if (exceptionFor(p.name, p.license, 'shipped')) {
-    notes.push(`except  ${p.name}: ${p.license} (approved exception)`);
+  const exception = exceptionFor(p.name, p.license, 'shipped');
+  if (exception) {
+    noteException(p.name, p.license, exception);
     continue;
   }
   errors.push(
@@ -67,6 +77,13 @@ for (const f of fonts) {
 }
 
 for (const n of notes) console.log(`note    ${n}`);
+if (pending.length) {
+  console.log(
+    `\n${pending.length} license exception(s) are PENDING the product owner's decision (scripts/license-policy.json):`,
+  );
+  for (const p of pending) console.log(`  ${p}`);
+  console.log('');
+}
 if (errors.length) {
   console.error(`\nLicense check failed (${errors.length}):`);
   for (const e of errors) console.error(`  ${e}`);

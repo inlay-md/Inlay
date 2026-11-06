@@ -5,17 +5,30 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
+    "vendor": "node scripts/copy-vendor.ts",
+    "predev": "node scripts/copy-vendor.ts",
     "dev": "vite",
+    "prebuild": "node scripts/copy-vendor.ts",
     "build": "vite build",
-    "preview": "vite build && vite preview",
+    "preview": "pnpm run build && vite preview",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@inlay-md/host-api": "workspace:*",
-    "@inlay-md/md-render": "workspace:*"
+    "@inlay-md/md-render": "workspace:*",
+    "@shikijs/core": "4.6.0",
+    "@shikijs/engine-javascript": "4.6.0",
+    "@shikijs/langs": "4.6.0",
+    "@shikijs/themes": "4.6.0",
+    "chart.js": "4.6.1",
+    "d3": "7.9.2",
+    "echarts": "6.1.0",
+    "katex": "0.19.1",
+    "mermaid": "12.3.0"
   },
   "devDependencies": {
     "@inlay-md/fixtures": "workspace:*",
+    "@shikijs/types": "4.6.0",
     "@types/node": "26.6.6"
   }
 }
