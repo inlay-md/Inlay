@@ -22,10 +22,27 @@ final class WindowModesTests: XCTestCase {
         doc.fileURL = url
         doc.makeWindowControllers()
         let controller = try XCTUnwrap(doc.windowControllers.first as? DocumentWindowController)
-        controller.window?.setFrame(NSRect(x: 0, y: 0, width: 1000, height: 700), display: false)
+        let window = try XCTUnwrap(controller.window)
+        // On screen, as in real use. A window that is never ordered in leaves both pages hidden, and
+        // WebKit then suspends requestAnimationFrame and throttles timers: CodeMirror applies scrolls
+        // in rAF and the position report is a debounced timer, so Split sync could stall for tens of
+        // seconds and the follow assertion failed at random on CI.
+        let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1000, height: 700)
+        window.setFrame(NSRect(x: screen.minX, y: screen.minY, width: 1000, height: 700), display: true)
+        window.orderFrontRegardless()
         _ = try await TestSupport.poll(controller.editorView, "window.inlayEditor ? 'ready' : ''", timeout: 15)
         _ = try await TestSupport.poll(controller.readView, "window.inlayReadView ? 'ready' : ''", timeout: 15)
+        // Not asserted (a runner without a usable display would fail every test); reported in failure messages.
+        _ = try await TestSupport.poll(controller.editorView, "document.visibilityState === 'visible' ? 'yes' : ''", timeout: 5)
+        _ = try await TestSupport.poll(controller.readView, "document.visibilityState === 'visible' ? 'yes' : ''", timeout: 5)
         return (doc, controller)
+    }
+
+    /// `document.visibilityState` of both panes, for failure messages.
+    @MainActor private func visibility(_ controller: DocumentWindowController) async -> String {
+        let editor = (try? await controller.editorView.evaluateJavaScript("document.visibilityState") as? String) ?? "?"
+        let read = (try? await controller.readView.evaluateJavaScript("document.visibilityState") as? String) ?? "?"
+        return "editor page \(editor), read page \(read)"
     }
 
     /// Mode switches finish asynchronously (positions are pulled from the webviews first).
@@ -150,11 +167,20 @@ final class WindowModesTests: XCTestCase {
         XCTAssertTrue(doc.text.hasPrefix("# Live heading"), "the mirror followed the editor")
         XCTAssertTrue(doc.isDocumentEdited)
 
-        // Scrolling the editor scrolls the Read pane (source → read).
+        // Scrolling the editor scrolls the Read pane (source → read). Two steps, so a failure says which side stalled.
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.scrollToSourceLine(6000); true")
-        // The Read pane may still be re-rendering the 10k-line edit on a slow CI runner; give it time.
-        let followed = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 5900 ? String(l) : ''; })()", timeout: 30)
-        XCTAssertFalse(followed.isEmpty, "Read pane followed the editor's top line")
+        let editorLine = try await TestSupport.poll(controller.editorView, "(() => { const l = window.inlayEditor.getPosition().line; return l > 5900 ? String(l) : ''; })()", timeout: 15)
+        if editorLine.isEmpty {
+            let pages = await visibility(controller)
+            XCTFail("editor did not scroll to line 6000 (\(pages))")
+            return
+        }
+        let followed = try await TestSupport.poll(controller.readView, "(() => { const l = window.inlayReadView.getPosition().line; return l > 5900 ? String(l) : ''; })()", timeout: 15)
+        if followed.isEmpty {
+            let readLine = (try? await controller.readView.evaluateJavaScript("String(window.inlayReadView.getPosition().line)") as? String) ?? "?"
+            let pages = await visibility(controller)
+            XCTFail("Read pane did not follow the editor's top line \(editorLine): it is at \(readLine), native last synced \(controller.syncedLine) (\(pages))")
+        }
         XCTAssertNotNil(controller.splitView.syncFraction)
         XCTAssertTrue(controller.sourceHeader.detail.hasPrefix("Ln "), controller.sourceHeader.detail)
         UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
