@@ -23,10 +23,10 @@ final class WindowModesTests: XCTestCase {
         doc.makeWindowControllers()
         let controller = try XCTUnwrap(doc.windowControllers.first as? DocumentWindowController)
         let window = try XCTUnwrap(controller.window)
-        // On screen, as in real use. A window that is never ordered in leaves both pages hidden, and
-        // WebKit then suspends requestAnimationFrame and throttles timers: CodeMirror applies scrolls
-        // in rAF and the position report is a debounced timer, so Split sync could stall for tens of
-        // seconds and the follow assertion failed at random on CI.
+        // On screen, as in real use. A window that is never ordered in leaves both pages hidden
+        // (document.visibilityState "hidden"), and WebKit throttles hidden pages: on a busy machine the
+        // Split re-render of the 10k-line edit then missed its 10 s window (2 of 10 runs locally, under
+        // load), and CI failed at random at different steps of the Split test.
         let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1000, height: 700)
         window.setFrame(NSRect(x: screen.minX, y: screen.minY, width: 1000, height: 700), display: true)
         window.orderFrontRegardless()
@@ -157,13 +157,21 @@ final class WindowModesTests: XCTestCase {
 
     @MainActor func testSplitReRendersEditsAndFollowsTheEditor() async throws {
         let (doc, controller) = try await open(try temporaryCopy(of: "perf-10k-lines.md"))
-        defer { doc.close() }
+        // Also on the early returns below: the saved mode must not leak into other tests.
+        defer {
+            doc.close()
+            UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
+        }
         controller.setMode(.split)
         try await settle(controller, mode: .split)
         // An edit at the top reaches the Read pane through the debounced live-content pull.
         _ = try await controller.editorView.evaluateJavaScript("window.inlayEditor.view.dispatch({ changes: { from: 0, insert: '# Live heading\\n\\n' } }); true")
         let heading = try await TestSupport.poll(controller.readView, "document.querySelector('#inlay-root h1') && document.querySelector('#inlay-root h1').textContent === 'Live heading' ? 'yes' : ''", timeout: 10)
-        XCTAssertEqual(heading, "yes")
+        if heading != "yes" {
+            let pages = await visibility(controller)
+            XCTFail("Read pane did not re-render the edit (mirror updated: \(doc.text.hasPrefix("# Live heading")); \(pages))")
+            return
+        }
         XCTAssertTrue(doc.text.hasPrefix("# Live heading"), "the mirror followed the editor")
         XCTAssertTrue(doc.isDocumentEdited)
 
@@ -183,7 +191,6 @@ final class WindowModesTests: XCTestCase {
         }
         XCTAssertNotNil(controller.splitView.syncFraction)
         XCTAssertTrue(controller.sourceHeader.detail.hasPrefix("Ln "), controller.sourceHeader.detail)
-        UserDefaults.standard.removeObject(forKey: ViewMode.defaultsKey)
     }
 
     @MainActor func testConflictBannerAppearsAndItsButtonsResolveIt() async throws {
