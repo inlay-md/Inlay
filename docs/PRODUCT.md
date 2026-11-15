@@ -48,7 +48,7 @@ The first row is the entry point: it is the largest group, it needs the least fr
 
 | Surface | What it is | Status |
 | --- | --- | --- |
-| **Quick Look** | Space in Finder. Tier 1 always: text, inline SVG, local images, math, theme. Tier 2 when "Run scripts in Quick Look" is on: charts, Mermaid, document scripts, no network. Tier 3 otherwise: static page with an "Interactive content: open in Inlay" placeholder. | v1.0 (M4) |
+| **Quick Look** | Space in Finder. Tier 1 always: text, inline SVG, local images, math, theme; proposed (A9) also GitHub alerts, emoji shortcodes, a contents column in wide previews, and Mermaid drawn by Inlay's own renderer while the document's scripts stay off. Tier 2 when "Run scripts in Quick Look" is on: charts, Mermaid, document scripts, no network. Tier 3 otherwise: static page with an "Interactive content: open in Inlay" placeholder. | v1.0 (M4) |
 | **Read** (⌘4) | The document as a real page. Scripts and styles run at page level, isolated. | Built |
 | **Edit**, WYSIWYG (⌘1) | The primary editor. Blocks are edited in place; anything that cannot round-trip is a raw island with its own source editor. | Built |
 | **Source** (⌘2) | The whole file in CodeMirror, line endings shown as they are. | Built |
