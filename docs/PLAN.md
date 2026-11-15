@@ -1,93 +1,195 @@
 # Inlay — plan and progress
 
-Source of truth for scope: `docs/BRIEF.md`. Decisions: `docs/DECISIONS.md`. The approved Phase A plan (milestone acceptance criteria, risks, assumptions) is summarized here; tick boxes as work lands. A fresh session should read `docs/HANDOVER.md` first, then this file and `CLAUDE.md`.
+Task lists and their state. Scope comes from `docs/BRIEF.md` (v1.0, decided) and `docs/ROADMAP.md` (after v1.0, proposed). A fresh session reads `docs/HANDOVER.md` first, then this file and `CLAUDE.md`. Why things are the way they are: `docs/DECISIONS.md` and `docs/ARCHITECTURE.md`. Gates and manual checks: `docs/CHECKLIST.md`. Tests: `docs/TESTING.md`.
 
-**Status:** M0–M3 merged to `main` (M3 in #8, 2026-11-06). Next: M4 on branch `m4-quicklook` after "go" (needs the Team ID); the IME checklists (Source and WYSIWYG) are still to be run by hand.
+Tick a box when the work is merged to `main` with its tests. Finding ids (C1, S3, T4 …) refer to `docs/ARCHITECTURE.md` section 6.
 
-## M0 — Scaffold (lands on `main`)
-- [x] Rename branch to `main`; install XcodeGen (Homebrew)
-- [x] `docs/BRIEF.md` verbatim (with the 2026-11-05 Read view amendment), `CLAUDE.md`, `docs/PLAN.md`, `docs/DECISIONS.md`
-- [ ] Licensing: `LICENSE` (Apache-2.0), `NOTICE`, `TRADEMARKS.md`, `CONTRIBUTING.md` (DCO), `.gitignore`, `.editorconfig`; first commit
-- [x] pnpm workspace: root `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json` (strict), Biome, Vitest workspace, Playwright config
-- [x] `packages/host-api`: `Host` interface, settings schema, `MockHost`, event channel, `isTrustedOrigin`, unit tests
-- [x] Fixtures v1 (Markdown only) + `manifest.json` + manifest/trait tests: GFM, nested lists, tables (alignment, HTML in cells), front matter, footnotes, reference links, HTML comments, directives, mixed EOL, trailing whitespace, Vietnamese/CJK/emoji, BOM, undecodable bytes, 10k-line perf file
-- [x] `packages/md-render` stub with both builds (Vite ESM + esbuild IIFE exposing `render`)
-- [x] `packages/read-view` hello shell; `pnpm dev` with fixture picker; Playwright smoke (Chromium + WebKit)
-- [x] `apps/macos/project.yml`: `Inlay` app (NSDocument, `live.inlay.Inlay`, UTIs, window with WKWebView loading hello page via `mdview://` handler), `InlayQuickLook` stub (`live.inlay.Inlay.QuickLook`), `InlayCore` package (`RenderEngine` over JSC, `PathGuard`), `InlayTests`, `InlayCoreTests`; build phase bundles web output
-- [x] JSC toolchain smoke: IIFE stub → resource → `JSContext` in XCTest
-- [x] Scripts: `check-licenses`, `gen-third-party-notices` (+ freshness check), `check-dco`, `check-spdx`, `build-web`; `THIRD_PARTY_NOTICES.md` bundled and shown in About → Acknowledgements
-- [x] CI: Linux job (lint, typecheck, Vitest, Playwright, licenses, notices, DCO, SPDX); macOS job (`macos-26`, Xcode 26.3, web build, xcodegen, `xcodebuild test`)
-- [x] Quick Look spike: JS runs, sibling files not readable under files.user-selected.read-only, cid attachments work (ADR-0018)
-- [x] Push `main`; CI green (run 41993673157)
-- [x] M0 summary + manual verification steps; wait for "go"
+## Status on 2026-11-12
 
-Done when: `pnpm test` and `xcodebuild test` pass locally and in CI; app opens a `.md` into a window; license/notices/DCO checks run in CI; spike verdict recorded.
+- **Built and merged:** M0 to M3 (M3 in #8, 2026-11-06). Read view, Source, Split and WYSIWYG with raw islands work; byte identity holds for every fixture through the real `NSDocument`.
+- **Reviewed:** the November 2026 review (three code audits and a market check) found the architecture sound and found defects that must be fixed before anyone outside uses the app: two paths to lost or altered content (C1, C9), ways for a document script to send data out (S1 to S3), and an untested release path. They are the new milestone **MH**.
+- **Next:** MH group A, after the product owner's "go". It needs no credentials.
+- **Waiting on the product owner:** the Apple Team ID (M4 App Group, signing), a Developer ID certificate issued from the **G2** authority (the old one expires 2027-02-01), and the decisions listed below.
+- **Never run by hand:** `docs/IME-CHECKLIST.md`, in either mode. It is a release blocker.
 
-## M1 — Read view (branch `m1-read-view`)
-- [x] md-render complete: pipeline, `data-source-line` (incl. raw HTML injection), Shiki (lazy browser / sync JSC), KaTeX, Mermaid hand-off, known-library URL rewriting (`vendorBaseURL`, major-version policy), modes full/sanitized/static, `allowScripts`, `inlineAssets` + `assetLoader`, theme CSS, sanitize schema keeping SVG; snapshots per fixture per mode; JSC parity test (ADR-0020, ADR-0021)
-- [x] Vendor bundle (Chart.js, ECharts, D3, Mermaid, KaTeX + woff2 fonts) copied at build time with version manifest (`packages/read-view/scripts/copy-vendor.ts`); license check + notices (Unlicense allowed, ADR-0026; elkjs/EPL-2.0 approved per package, ADR-0027)
-- [x] read-view runtime: embedded source → render → `document.open/write/close`; ordered scripts; scroll save/restore; `scrollToSourceLine`; `getPosition`; theme; dev view route with the app CSP (ADR-0022)
-- [x] read-view: lazy Shiki grammars (40 ids, one chunk each), Mermaid lazy-load with theme re-render (ADR-0023), KaTeX CSS + woff2 fonts from the vendor bundle
-- [x] Swift: `mdview://` handler (routes, MIME, traversal guard, CSP header with CDN allowlist, per-response nonce), read WKWebView isolation, external links, `.md` links open as documents, quarantine → static + native trust banner (trust store keyed by path + xattr), "Allow network" toggle (per file, remembered), file change → debounced refresh via NSFilePresenter + vnode watcher (ADR-0024, ADR-0025)
-- [x] `isTrustedOrigin` used by all message listeners (none exist yet; a Vitest audit enforces it); runtime audited for `https:`/scheme assumptions by the same test
-- [x] Fixtures: Chart.js/ECharts/D3 via real CDN URLs (+ older-major pin), widget, inline svg, svg img, style block, math, Mermaid, highlighting, local images, web-page-semantics, non-rewritable CDN script, fetch toggle, `../assets` (blocked), security probe, KaTeX auto-render from CDN
-- [x] Tests: Vitest snapshots + rewriter table + JSC parity; Playwright (route-intercepted CDNs, probe, dark mode, perf budget, scroll restore); XCTest app tests (probe via real scheme handler, traversal 403, navigation policy, uncoordinated/atomic refresh, quarantine → trust, network toggle, vendored chart, lazy grammars)
-- Done when: fixtures render in Playwright (Chromium + WebKit) and in the app; probe proves no native/network reach per ADR-0007; charts render offline; quarantine flow works without modifying the file.
+## Order of work
 
-## M2 — Source + Split (branch `m2-source-split`)
-- [x] Document model in `packages/editor`: decode (`bom`, dominant `eol`), `getText()` byte identity for every fixture; mixed-EOL prototype decided first (`lineSeparator` = dominant EOL, ADR-0028); editor↔source line map
-- [x] CodeMirror Source mode page: explicit setup (special chars, search, history, Markdown + nested HTML/code languages, front-matter parser), brand theme, `window.inlayEditor` API (content, positions, dirty), dev server with fixtures, Playwright in Chromium + WebKit (ADR-0029)
-- [x] `WebKitHost` adapter (`{method,args}` reply protocol, `inlayWebKitHost` callbacks, `documentSaved`/`reportPosition`; audited as the only `window.webkit` user)
-- [x] Swift bridge (`EditorBridge`, the one `WKScriptMessageHandlerWithReply`, on `EditorWebView` only; the Read webview still has none, asserted); `/__inlay/editor/` route with a strict CSP in the scheme handler; `SettingsStore`
-- [x] NSDocument: save override pulling live content with the 3 s mirror fallback and warning, `autosavesInPlace`, revert and Versions through `fileChanged`, dirty tracking from the editor, own writes recognised, conflict state with reload / keep (ADR-0030); XCTest: every fixture byte-identical through the live editor, an edit changes only its bytes, autosave / Save As / revert, conflict
-- [x] Window: native conflict banner (Reload from Disk / Keep Editing), mirror-save and editor-crash alerts; File menu with Duplicate / Save As (alternate) / Rename / Move To / Revert To → Browse All Versions; window tabs (`tabbingMode .preferred`) and Open Recent (NSDocumentController)
-- [x] Split mode: editor + Read panes in an `NSSplitView`, debounced re-render through the mirror pull + `refreshDocument()`, source→read scroll sync from `reportPosition`, mode switching carrying the source line both ways (ADR-0031); XCTest for panes, carry-over, Split re-render + follow, conflict banner
-- [x] Menus and shortcuts: View → Source ⌘2 / Split ⌘3 / Read ⌘4 (WYSIWYG ⌘1 disabled until M3), toolbar segmented control, Refresh ⌘R
-- Done when: open→save byte-identical for every fixture via real NSDocument (XCTest); edits confined; all save paths covered; conflict banner; 10k lines < 1 s; manual IME checklist in Source.
-- Status 2026-11-06: byte identity for every fixture through the live editor (`EditorDocumentTests`), edits confined to their bytes, Save / Save As / Save To / autosave / Duplicate / revert covered, conflict banner tested end to end (`WindowModesTests`), 10k lines open in < 1 s (Playwright `editor.spec.ts`) and switch modes in XCTest, `docs/IME-CHECKLIST.md` written (to be run by hand on the release build; not yet recorded as passed).
+1. **MH-A** data safety, then **MH-B** security. No credentials needed.
+2. **M4** Quick Look, starting with the precedence spike on macOS 27.3. Needs the Team ID from task 4.4 on.
+3. **MH-C** tooling and CI, alongside M4.
+4. **M5a** app completeness, **M5b** distribution, then the **0.9 beta**.
+5. **1.0**, then the proposed milestones M6 onward, each on its own "go".
 
-## M3 — WYSIWYG (branch `m3-wysiwyg`)
-- [x] 3a · Crepe and kit added with remark pinned to md-render's versions (pnpm overrides); Inlay schema: `raw_island`/`raw_inline_island`, `math_block`/`math_inline`, `definition`/`link_reference`/`image_reference`, hardbreak and link markers; Milkdown's rewriting plugins removed (ADR-0032)
-- [x] 3a · Loader with per-block round-trip + style sniffing (`exact` / `restyled` / `island`, deferred verification) and block-splice save over the live document; Vitest: every fixture splices back byte for byte, zero islands on pure-GFM fixtures, one edit changes one block's bytes, CRLF edits keep CRLF (ADR-0032)
-- [x] 3a · Editor page hosts Source and WYSIWYG in one webview; `DocumentInfo.mode` start hint + `modeRequested` switches with caret/viewport carried over; `provideContent` from the splice; island ratio in `stats.wysiwyg`; plain-DOM list items, no listener plugin (ADR-0033); Playwright: every fixture byte-identical in WYSIWYG, zero islands on pure GFM, one-block edits, restyled blocks keep bytes until edited, mode switch keeps caret line and dirty state, 10k lines < 1 s in Chromium and WebKit
-- [x] 3a · Island cards: brass seam, kind + line count + "kept byte for byte" header, sanitized static preview for SVG/HTML (md-render `sanitized`, never scripts), Source/Preview toggle, script/style cards with "Open in Read view", bundled-library notice, front matter / comment / directive cards; inline island chips; KaTeX math blocks and inline math; previews render lazily near the viewport
-- [x] 3b · In-place island editing: click or Enter opens a CodeMirror editor inside the card (HTML / YAML / Markdown / LaTeX), every change replaces only the island's source, Escape re-selects the block; Playwright: island and inline-island edits change only their bytes, math edits too
-- [ ] 3b: table row/column handles (Crepe's table feature is off: a Vue app per table cost 1.4 ms each; plain prosemirror-tables editing stays)
-- [x] 3b · Mode switching mapping: caret by UTF-16 index, viewport by source line, between WYSIWYG, Source and Read (ADR-0033); Swift `ViewMode.wysiwyg`, View → WYSIWYG ⌘1, toolbar segment, `editorStartMode` → `DocumentInfo.mode`; XCTest: every fixture byte-identical through WYSIWYG via the real NSDocument, a WYSIWYG edit changes only its block, window mode switches the page
-- [x] 3b · IME: input rules never run during or at the end of a composition (ADR-0034); Playwright CDP composition tests in Chromium (Telex-style, CJK, composed Markdown syntax, undo) in both modes; `docs/IME-CHECKLIST.md` WYSIWYG section for the release build (to be run by hand)
-- [x] 3b · 10k-line performance: deferred block verification, plain-DOM list items, no listener plugin, lazy KaTeX and island previews, Crepe table block off; Source safety net above 50k lines / 5 MB with a one-click switch (ADR-0034)
-- [ ] 3b: optional Mermaid preview toggle in code blocks (Crepe's `renderPreview` hook; vendored Mermaid bundle)
-- Done when: byte-identical for every fixture via WYSIWYG; editing one block changes only its range (automated); islands editable in place; zero islands on pure-GFM fixtures; mode switches keep caret/viewport; composition tests pass; 10k lines < 1 s.
-- Status 2026-11-06: every fixture byte-identical through WYSIWYG via the real NSDocument (`EditorDocumentTests`) and in Playwright; one-block edits confined (Vitest, Playwright, XCTest); islands and inline islands editable in place with edits confined to their bytes; zero islands on every fixture the manifest marks pure GFM; mode switches keep caret line and viewport (Playwright, XCTest); CDP composition tests pass in Chromium (WebKit: manual checklist); 10k lines open in well under 1 s in Chromium and WebKit (best of three readings).
+## Decisions waiting for the product owner
 
-## M4 — Quick Look (branch `m4-quicklook`; needs Team ID)
-- [ ] JSC bundle finalization (polyfills, sync Shiki with conservative target, KaTeX, inlined theme, `assetLoader`, size caps, truncation)
-- [ ] Extension: warm `JSContext`; KaTeX fonts and vendored libs as `cid:` attachments; Tier 1 / Tier 2 (scripts setting, Mermaid, CSP) / Tier 3 placeholder
-- [ ] App Group settings (`group.live.inlay`) with local fallback; settings-ui toggle
-- [ ] Tests: fixture × tier snapshots, parity, asset-loader traversal/size caps, Tier 2 CSP
-- Done when: snapshots pass for all tiers; Finder previews work in light/dark within Space-bar latency.
+Details and exact wording are in `docs/BRIEF-AMENDMENTS.md` (A-numbers) and `docs/MONETIZATION.md` section 11 (D-numbers).
 
-## M5 — Polish & distribution (branch `m5-release`; needs signing credentials)
-- [ ] HTML export (single file) and paginated PDF export
-- [ ] Themes + custom CSS; editor font settings
-- [ ] Preferences window (settings-ui)
-- [ ] Sparkle 2 + appcast; release workflow (sign, notarize, staple, DMG, GitHub Release)
-- [x] App icon set and favicons rendered from `design/icon` (ADR-0020)
-- [ ] About → Acknowledgements polish, first-run defaults
-- Done when: exported HTML works standalone; PDF paginates; notarized DMG installs; Sparkle update succeeds.
+| # | Decision | Blocks |
+| --- | --- | --- |
+| A1 | Remote images load only when the document runs no scripts, unless the user allows network (ADR-0044) | MH-11 |
+| A2 | Add to 1.0: find in Read and WYSIWYG, table handles, an "Open documents in" setting | M5a |
+| A3 | After 1.0: lift the Mac App Store non-goal for a sandboxed edition | M8 |
+| A4 | After 1.0: lift the AI non-goal for an on-device or own-key assistant in Pro | M10 |
+| A5 | Accept the "restyled" reading of the round-trip rule (ADR-0032) | Open since M3 |
+| A6 | Accept the post-1.0 roadmap and the proposed ADRs 0035 to 0054 | M6 onward |
+| D1–D6 | Business model, free line, Pro price, founding-supporter licence, merchant of record, sponsorship | M7; the launch |
+| — | Team ID; G2 Developer ID certificate; Sparkle signing key | M4, M5b |
+| — | Enable GitHub private vulnerability reporting for the repository | `SECURITY.md` |
 
-## Design — applying the brand and UI (cross-cutting; sources in `design/`)
-The brand and UI were designed on the "Inlay Brand & UI" canvas (private link in `design/README.md`); the artboards are exported to `design/ui/*.html` with screenshots in `design/ui/png/`. Tokens: Ink `#141A22`, Paper `#F7F8FA`/`#F4F5F7`, Line `#DDE1E7`, Muted `#5B6673`, Brass `#9A6E1A` (`#E0A83A` on dark), Verdigris `#1F7A7A` (`#5FC9C0` on dark). Brass marks the seam between prose and embedded code; verdigris marks anything live. The Mac app uses the system font (SF Pro, SF Mono); Sora, Inter and JetBrains Mono (all OFL) are for the website and the About window only.
-- [x] Canvas: app icon, logo and wordmark, colour and type, illustration set, app windows (Read, WYSIWYG with raw island, Split on a quarantined file), Quick Look panel, inlay.live landing page
-- [x] App icon in the Xcode asset catalog; web favicons; `pnpm icons` and `pnpm design:render` (ADR-0020)
-- [ ] M1 · Read view theme CSS from the tokens: 680 px measure, type scale (34/22/16), table and figure styles, `live` pill on script-rendered figures; light and dark variants (`design/ui/app-read-view.html`)
-- [ ] M1 · Window chrome: unified toolbar with the Read / Edit / Source / Split segmented control (done in M2; Edit disabled until M3), "Scripts on/off" pill, "Network off/on" toggle, Share; status bar with word and character count, encoding and EOL, sandbox note and "Unchanged on disk"
-- [ ] M1 · Quarantine banner ("This file was downloaded…", **Trust this document**) styled as in `design/ui/app-split-mode.html`; "Scripts off · quarantined" pill state
-- [ ] M1 · Empty state ("Drop a Markdown file, or ⌘O") with the illustration from `design/ui/illustrations.html`
-- [x] M2 · CodeMirror theme from the palette (brass for Markdown syntax, verdigris for tags, `#B4532A` for strings) in `packages/editor/src/theme.ts`; Split divider with the verdigris scroll-sync marker (`SyncSplitView`); cursor position in the native pane header (`PaneHeaderView`)
-- [x] M3 · Raw island card: 3 px brass left seam, header with kind, line count and "kept byte for byte", Source / Preview toggle, bundled-library notice (`wysiwyg/theme.css`, `island-view.ts`); inline formatting toolbar (Crepe Toolbar feature)
-- [ ] M3 · "Block n of m changed · bytes" status item (needs the native status bar from the M1 chrome task; `stats.wysiwyg` and the splice's `changed` count are ready)
-- [ ] M4 · Quick Look header pills ("SVG rendered", "Scripts off") and **Open with Inlay** button; script placeholder card for Tier 3 (`design/ui/quick-look.html`)
-- [ ] M5 · About window with the wordmark in Sora (bundle the OFL font, add it to the license check and notices); template glyph (`design/icon/inlay-template.svg`) for menu bar and toolbar items; outline sidebar if it survives M1 usage
-- [x] Website · inlay.live landing page built from `design/ui/website.html` as a static Astro site with self-hosted fonts and the brand favicons, in the separate `inlay-md/inlay.live` repository (deployed on Vercel from its `main`); it carries a progress section to keep in step with this file
+## Done: M0 to M3
 
+**M0 — Scaffold.** Workspace, `Host` and `MockHost`, fixtures and manifest, md-render stub with both builds, XcodeGen app with the scheme handler, Quick Look spike, policy scripts, CI on Linux and macOS, licensing files (`LICENSE`, `NOTICE`, `TRADEMARKS.md`, `CONTRIBUTING.md`). Evidence: CI green; spike verdict in ADR-0018.
+
+**M1 — Read view.** The full md-render pipeline with source lines, three modes, KaTeX, Shiki, Mermaid, CDN rewriting; the runtime with in-place page replacement and reload-based refresh; the scheme handler with CSP, traversal guard and nonce; isolation, external links, quarantine and trust, "Allow network", file watching. Evidence: snapshots per fixture per mode, JavaScriptCore parity, the security probe in Playwright and in a real `WKWebView`.
+
+**M2 — Source and Split.** Document model with BOM and line endings, CodeMirror with `lineSeparator`, the `WebKitHost` adapter and `EditorBridge`, saving through `NSDocument` with the live pull and the mirror, conflict banner, Split with source-to-read sync, menus. Evidence: `EditorDocumentTests` (every fixture byte-identical through the live editor), `WindowModesTests`.
+
+**M3 — WYSIWYG.** Crepe over the lossless block model (exact, restyled, island), deferred verification, block-splice saving, island cards with in-place editing, mode switching with caret and viewport mapping, the IME guard, the large-document safety net. Evidence: every fixture byte-identical through WYSIWYG in Vitest, Playwright and XCTest; composition tests in Chromium.
+
+Carried over from M0 to M3:
+
+- [ ] Run `docs/IME-CHECKLIST.md` by hand in Source and in WYSIWYG and record it in `docs/CHECKLIST.md` → beta gate (M5b)
+- [ ] Table row and column handles (Crepe's table block is off, ADR-0034) → M5a, if A2 is accepted
+- [ ] Mermaid preview toggle in WYSIWYG code blocks → M6
+- [ ] Product owner: accept or reject the "restyled" tier (A5)
+
+## MH — Hardening (new; before the beta)
+
+Every task that fixes a defect starts with the test that fails without the fix.
+
+### MH-A — Data safety
+
+- [ ] MH-1 · Dirty state (C1, C2; ADR-0045). XCTest: edit, wait for autosave, edit, close, reopen: the second edit is on disk. Then: every content change marks the document edited; `provideContent` returns a token; every successful write, autosave included, emits `documentSaved` with it; the editor moves its baseline only for its own token
+- [ ] MH-2 · Splice gaps (C9; ADR-0052). Vitest: delete a heading between two paragraphs; turn a heading into a paragraph before a single-newline gap; `# H` directly above `---`. Then the neighbour-pair rule and the parse-after-splice check
+- [ ] MH-3 · A block pending verification is verified before its first edit (C10)
+- [ ] MH-4 · Mode switches are queued, read the text after every await, and `ensureWysiwyg` has an in-flight guard (C11). Playwright: type in Source during the first WYSIWYG load
+- [ ] MH-5 · The source embedding escapes every `<` in both embedders; a fixture with `<!--` followed by `<script` (C3)
+- [ ] MH-6 · Property-based round-trip tests with `fast-check` (MIT): generated and mutated Markdown through decode, load, splice and edit-one-block
+- [ ] MH-7 · New and untitled documents open in Edit; native honours `editor.defaultMode` (C4)
+- [ ] MH-8 · `FileWatcher` backs off and watches the parent folder after a delete; the window's closures stop retaining the document; `receivedMethods` is bounded; `setMode` has a timeout; one percent-decoding (C5 to C8)
+- [ ] MH-9 · The IME guard asserts that it found the input-rule plugin (C15); the safety net also applies to a mode request and a reload, counts bytes correctly and reads the setting (C14)
+- [ ] MH-10 · A fixture for block HTML inside a blockquote and a list item, and a decision on how it is shown (C13); table padding and alignment applied from the sniffed style (C12)
+
+### MH-B — Security
+
+- [ ] MH-11 · Egress (S1, S12; ADR-0044 point 1). `img-src`, `media-src` and `font-src` lose `https:` when scripts run and network is not allowed, and always for untrusted documents. **Needs A1**
+- [ ] MH-12 · External opens need a real user event recorded natively; script dialogs become a rate-limited sheet (S2, S6)
+- [ ] MH-13 · The handler refuses hidden paths, serves an allowlist of types, and serves no sibling files when the folder is the home folder or a volume root; probe lines for JSON import and canvas reads (S3)
+- [ ] MH-14 · Quarantine is re-read on every reload from disk and carried to duplicates and untitled copies (S4)
+- [ ] MH-15 · App assets on their own origin; a handler instance per webview bound to document and role; the editor's CSP names only the app host (S5; ADR-0046)
+- [ ] MH-16 · Island previews in a shadow root; the sanitizer schema tightened; a hostile-markup corpus in the fixtures (S11; ADR-0053)
+- [ ] MH-17 · `setSettings` validated natively against the schema (S8); "Allow network" keyed by path and file id until ADR-0041 (S7); test-only quarantine helpers out of the release binary (S10)
+- [ ] MH-18 · One golden file for the CSP and one for the source embedding, asserted by the TypeScript and the Swift tests (S9)
+
+### MH-C — Tooling and CI
+
+- [ ] MH-19 · The licence check fails on an error or an empty list, and runs in the macOS job so Swift packages are covered (T4)
+- [ ] MH-20 · One version in the root `package.json`, written into `project.yml` and md-render and checked in CI; `CHANGELOG.md` kept from now on (T2; ADR-0047)
+- [ ] MH-21 · CI artefacts that exist: Playwright HTML report and `test-results/`, an `xcresult` bundle; `.node-version`; a root `tsconfig.json` covering `e2e/` and the configs; `engines.node` raised to what the scripts need (T6)
+- [ ] MH-22 · `InlayCoreTests` on `macos-14` and `macos-15` runners (T3)
+- [ ] MH-23 · Dependabot for npm and Actions, CodeQL for JavaScript and Swift, `pnpm audit --prod`, Actions pinned by commit (T5)
+- [ ] MH-24 · A separate, serial performance job with stored baselines; wall-clock assertions out of functional tests; fixed sleeps in XCTest replaced by polling
+- [ ] MH-25 · Coverage reported (Vitest v8, Xcode), not gated
+- [ ] MH-26 · Preview builds get their own output folder or a lock; the Xcode pre-build step checks freshness, not only existence
+- [ ] MH-27 · `CODE_OF_CONDUCT.md`, issue and pull-request templates; `FUNDING.yml` after D6
+- [x] `SECURITY.md`, `docs/TESTING.md`, `docs/CHECKLIST.md` (this review)
+
+### MH-D — Performance (may trail into 1.1)
+
+- [ ] MH-28 · WYSIWYG work per typing pause: a serialization cache per node, the top block from `posAtCoords`, no quadratic scan (P5)
+- [ ] MH-29 · The scheme handler reads off the main thread and answers Range requests; the line count is cached (P3, P4)
+- [ ] MH-30 · Read scroll restore re-applies after late layout; the scroll listener is throttled (P6)
+
+**Done when:** every *to prove* in `docs/ARCHITECTURE.md` section 6 has a test; groups A and B are merged; the CI changes of group C are live.
+
+## M4 — Quick Look (branch `m4-quicklook`; Team ID from 4.4)
+
+- [ ] 4.0 · Precedence spike: on the macOS 27.3 beta, does the stub extension still win over the system's Markdown preview? Record the verdict in ADR-0050 before building the tiers
+- [ ] 4.1 · JavaScriptCore bundle finalized (polyfills, sync Shiki with a conservative target, KaTeX, inlined theme, size caps, truncation); `RenderEngine.RenderOptions` gains the asset loader
+- [ ] 4.2 · Extension: warm `JSContext`; strict decoding like the app; KaTeX fonts and vendored libraries as `cid:` attachments; Tier 1, Tier 2 (scripts setting, Mermaid) and Tier 3 (placeholder); a CSP `<meta>` in every tier
+- [ ] 4.3 · Sibling images: try the scoped read-only exception; fall back to a placeholder (ADR-0018)
+- [ ] 4.4 · App Group settings (`group.live.inlay`) with the local fallback; the settings toggle
+- [ ] 4.5 · Tests: fixture × tier snapshots through `RenderEngine`, a test target for the provider, asset-loader traversal and size caps, the Tier 2 CSP; run on macOS 14 and 15
+- [ ] 4.6 · Design: header pills ("SVG rendered", "Scripts off"), **Open with Inlay**, the Tier 3 placeholder card (`design/ui/quick-look.html`)
+- [ ] 4.7 · First-launch registration and a troubleshooting page (conflicting extensions, `pluginkit`, `mdls`)
+
+**Done when (brief):** snapshots pass for all tiers; Finder previews work in light and dark within Space-bar latency.
+
+## M5 — Polish and distribution
+
+### M5a — App completeness (branch `m5-app`)
+
+- [ ] `packages/settings-ui` and the Preferences window (General, Appearance, Editing, Security); **Settings…** wired
+- [ ] Themes, custom CSS, editor font settings; theme wired from native to both webviews; the Read view theme from the design tokens (680 px measure, 34/22/16 scale, table and figure styles, the `live` pill)
+- [ ] HTML export, single file
+- [ ] PDF export, paginated; **Print…** and **Page Setup…** on the same path
+- [ ] Window chrome: Scripts and Network pills in the toolbar, status bar (words, characters, encoding, line ending, "n of m blocks changed", "Unchanged on disk"), empty state, the quarantine banner as designed
+- [ ] About window with the wordmark (bundle Sora under OFL, add it to the licence check and notices); template glyph for toolbar items
+- [ ] Help menu: a user guide written in Markdown and opened in Inlay; a welcome document on first launch
+- [ ] Accessibility: names and states on the mode control, banners, island cards and task checkboxes; a VoiceOver pass (`docs/CHECKLIST.md` 5.6)
+- [ ] `os.Logger` in the shell; a crash handler for the Read pane; window restoration; drag a file onto the window or the Dock icon
+- [ ] If A2 is accepted: find (⌘F) in Read and WYSIWYG; table row and column handles; "Open documents in"
+
+### M5b — Distribution (branch `m5-release`; needs signing credentials)
+
+- [ ] A Release configuration in `project.yml`; `release.yml` triggered by a tag (ADR-0047)
+- [ ] Developer ID (G2) signing with hardened runtime, notarization, stapling, a signed disk image
+- [ ] Sparkle 2 with a beta and a stable appcast; Sparkle covered by the licence check and the notices
+- [ ] Download on inlay.live; Homebrew cask
+- [ ] The release checklist run on macOS 14 and the current macOS; the IME checklist run and recorded
+- [x] App icon set and favicons rendered from `design/icon` (ADR-0019)
+
+**Done when (brief):** exported HTML works standalone; PDF paginates; the notarized disk image installs; a Sparkle update succeeds. **Then:** 0.9 beta to outside testers, and 1.0 when the beta exit in `docs/ROADMAP.md` is met.
+
+## After 1.0 (proposed; scope in `docs/ROADMAP.md`; each needs its own "go")
+
+### M6 — 1.1 Navigate
+
+- [ ] md-render metadata: `headings` (text, depth, source line, id), word and character counts; heading ids (`rehype-slug`)
+- [ ] Outline sidebar; in-document links; status bar counts
+- [ ] Incremental refresh of the Read view (ADR-0036); follow mode; jump from Read to Source (ADR-0037)
+- [ ] Zoom and column width; front matter as a property table
+- [ ] Focus, typewriter and Zen modes; one Escape chain; shortcuts matched by key code
+- [ ] Auto-pair, smart punctuation (off by default), spellcheck controls, Vim keys in Source, Writing Tools check
+- [ ] Image block in WYSIWYG; Mermaid preview toggle; Peek for script islands
+- [ ] `Host.writeAsset`; image paste and drop; HTML paste as Markdown; clean-up for pasted AI output; copy as rich text
+- [ ] GitHub alerts, emoji shortcodes, highlight and sub/superscript, `\ce{}`; fixtures and parity for each
+- [ ] Localization: English and Vietnamese (ADR-0043); opt-in diagnostics (ADR-0042)
+- [ ] Editor chrome off Crepe, first pieces (ADR-0035)
+
+**Done when:** typing in Split never redraws an unchanged chart; the outline works in all four modes; every new syntax is in the round-trip and rendering suites.
+
+### M7 — 1.2 Produce, and Inlay Pro (needs D1 to D5)
+
+- [ ] Extension points (ADR-0039); `Host` requests in both directions (ADR-0054)
+- [ ] Free: `inlay` command, starter snippets, templates, image and diagram viewer
+- [ ] Pro: Present; export suite (PDF with outline and page furniture, frozen HTML, DOCX, chart and diagram images); snippet gallery; batch export and Shortcuts
+- [ ] Private Pro repository and build; offline licence (ADR-0040); checkout and licence signing; trial
+
+### M8 — 1.3 Trust (needs A3)
+
+- [ ] Permissions popover; trust by file identity and by folder; managed preferences (ADR-0041)
+- [ ] One file-access layer; the sandboxed configuration passes every suite (ADR-0038)
+- [ ] Mac App Store and Setapp builds; team licences
+- [ ] Quick Look extras; legacy encodings and line-ending conversion
+
+### M9 — 2.0 Workspace
+
+- [ ] Folder window, quick open, Changes view, command palette, heading folding, right-to-left text
+- [ ] Pro: cross-file search and replace, wikilinks and backlinks (opt-in per folder), Git awareness, more diagram engines
+
+### M10 — 2.x Share and assist (needs A4; Publish behind its gate)
+
+- [ ] Assistant on device or on the user's key; MCP server; Publish only if the gate in `docs/MONETIZATION.md` section 7 is met
+
+### M11 — 3.0 Everywhere
+
+- [ ] Tauri shell for Windows and Linux; iPhone and iPad viewer (own brief)
+
+## Design track
+
+Sources are in `design/`: the artboards in `design/ui/*.html` with screenshots in `design/ui/png/`, the icon masters in `design/icon/`. Tokens: Ink `#141A22`, Paper `#F7F8FA` / `#F4F5F7`, Line `#DDE1E7`, Muted `#5B6673`, Brass `#9A6E1A` (`#E0A83A` on dark), Verdigris `#1F7A7A` (`#5FC9C0` on dark). Brass marks the seam between prose and embedded code; verdigris marks anything live. The Mac app uses the system fonts; Sora, Inter and JetBrains Mono (all OFL) are for the website and the About window.
+
+Done: the canvas and artboards; the app icon and favicons (`pnpm icons`, `pnpm design:render`, ADR-0019); the CodeMirror theme, the Split divider with the sync marker and the pane header (M2); the raw island card and the inline formatting toolbar (M3); the inlay.live landing page (separate repository `inlay-md/inlay.live`, which carries a progress section to keep in step with this file).
+
+Open, now filed under their milestones: the Read view theme, window chrome, quarantine banner, empty state and "n of m blocks changed" (M5a); Quick Look pills and **Open with Inlay** (M4); the About window and template glyph (M5a); the outline sidebar (M6).
