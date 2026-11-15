@@ -93,6 +93,7 @@ Run on a build made with `pnpm mac:build` (debug) for milestone checks, and on t
 - [ ] Select a fixture in Finder, press Space: Tier 1 renders (inline SVG, local images, KaTeX, theme) in light and in dark.
 - [ ] Settings → "Run scripts in Quick Look" on: charts and Mermaid render (Tier 2). Off: the script placeholder appears (Tier 3).
 - [ ] A large file previews within Space-bar latency and shows the truncation note.
+- [ ] If A9 is built: all five GitHub alerts show their icon, colour and title in light and dark; `:tada:` renders as an emoji but not inside code; widening the preview shows the contents column and its links jump; with scripts off a Mermaid diagram renders while a `<script>` in the same file does not run.
 - [ ] **Open with Inlay** opens the document in the app.
 
 ### 5.6 Accessibility and appearance

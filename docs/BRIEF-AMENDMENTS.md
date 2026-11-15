@@ -14,6 +14,7 @@ Raised by the November 2026 review. None is in force.
 | A6 | The roadmap after v1 and ADR-0035 to ADR-0054 | Adds post-v1 scope | M6 onward | Proposed |
 | A7 | A business section | Adds to the brief | The launch; M7 | Proposed |
 | A8 | Corrections of fact | Housekeeping | — | Proposed |
+| A9 | Quick Look parity: alerts, emoji, outline, Mermaid without document scripts | Adds v1 scope; changes a tier rule | M4 (4.8 to 4.11) | Proposed |
 
 ## A1 — Remote images only when the document runs no scripts
 
@@ -78,3 +79,18 @@ ADR-0045, ADR-0052 and the non-policy parts of ADR-0044 fix defects and need no 
 - **Licence rule.** The brief says MIT/BSD/Apache-2.0/ISC. Since then the product owner accepted the Unlicense (ADR-0026), EPL-2.0 for the vendored Mermaid bundle only (ADR-0027) and OFL for font files (ADR-0015). The brief could say so.
 - **Milestones.** The brief invites refinement of the milestones. The plan now inserts a hardening milestone (MH) before the beta, starts M4 with a precedence spike on macOS 27.3 (ADR-0050) and runs M5 as two tracks. No brief change is needed; noted for the record.
 - **Developer ID.** "Developer ID signing + notarization (I'll provide credentials)": the certificate should be issued from the G2 authority; the original one expires on 2027-02-01.
+
+## A9 — Quick Look parity with paid previewers
+
+**The brief today:** "GFM (tables, task lists, footnotes), front matter, KaTeX math, Mermaid, syntax highlighting". Quick Look Tier 1 is sanitized SVG, inlined images, pre-rendered KaTeX and the theme; "Tier 2 (setting 'Run scripts in Quick Look', default off): raw HTML and document scripts included; Mermaid runs".
+
+**What prompted it:** paid Quick Look previewers (Looq Markdown, compared in November 2026) show GitHub alerts, emoji shortcodes, Mermaid diagrams and a contents sidebar out of the box. With the brief as written, a default Inlay preview would show an alert as a blockquote starting with `[!NOTE]`, a shortcode as text and a Mermaid diagram as a code block.
+
+**Proposed:**
+1. Add **GitHub alerts** and **emoji shortcodes** to the required syntax, rendered on every surface. Both are render-only: the file keeps `> [!NOTE]` and `:tada:`.
+2. Add an **outline** to Quick Look: static HTML and CSS, shown beside the document in wide previews.
+3. Change the tier rule for Mermaid: "Tier 1 may run Inlay's own bundled renderers (Mermaid), admitted by a nonce; scripts from the document run only in Tier 2." The setting keeps its meaning: it governs the document's code, not Inlay's.
+
+**Why 3 is safe enough to propose:** the code that runs is the same vendored, licence-checked bundle the app ships; Mermaid runs with `securityLevel: 'strict'`; the CSP still blocks every inline and document script, handlers and the network. The cost is a larger attack surface than a script-free Tier 1 (a bug in Mermaid's parser would be reachable from a preview), which is why it is a product decision. If rejected, Tier 1 keeps showing the diagram source and 1 and 2 still stand.
+
+**Already planned, now earlier:** alerts, shortcodes and heading ids were roadmap items for 1.1; the Quick Look outline was 1.3. The app's outline sidebar, the alert picker and emoji autocomplete stay in 1.1 and build on this.
