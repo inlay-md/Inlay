@@ -32,6 +32,7 @@ Details and exact wording are in `docs/BRIEF-AMENDMENTS.md` (A-numbers) and `doc
 | A4 | After 1.0: lift the AI non-goal for an on-device or own-key assistant in Pro | M10 |
 | A5 | Accept the "restyled" reading of the round-trip rule (ADR-0032) | Open since M3 |
 | A6 | Accept the post-1.0 roadmap and the proposed ADRs 0035 to 0054 | M6 onward |
+| A9 | Add to 1.0: GitHub alerts, emoji shortcodes, an outline in Quick Look, and Mermaid in Quick Look through Inlay's own renderer with document scripts still off | M4 tasks 4.8 to 4.11 |
 | D1–D6 | Business model, free line, Pro price, founding-supporter licence, merchant of record, sponsorship | M7; the launch |
 | — | Team ID; G2 Developer ID certificate; Sparkle signing key | M4, M5b |
 | — | Enable GitHub private vulnerability reporting for the repository | `SECURITY.md` |
@@ -110,8 +111,15 @@ Every task that fixes a defect starts with the test that fails without the fix.
 - [ ] 4.3 · Sibling images: try the scoped read-only exception; fall back to a placeholder (ADR-0018)
 - [ ] 4.4 · App Group settings (`group.live.inlay`) with the local fallback; the settings toggle
 - [ ] 4.5 · Tests: fixture × tier snapshots through `RenderEngine`, a test target for the provider, asset-loader traversal and size caps, the Tier 2 CSP; run on macOS 14 and 15
-- [ ] 4.6 · Design: header pills ("SVG rendered", "Scripts off"), **Open with Inlay**, the Tier 3 placeholder card (`design/ui/quick-look.html`)
+- [ ] 4.6 · Design: header pills ("SVG rendered", "3 diagrams", "Scripts off"), **Open with Inlay**, the Tier 3 placeholder card (`design/ui/quick-look.html`); the system's share button is left in place
 - [ ] 4.7 · First-launch registration and a troubleshooting page (conflicting extensions, `pluginkit`, `mdls`)
+
+If A9 is accepted (parity with paid Quick Look previewers; each needs fixtures, snapshots in all three modes and JavaScriptCore parity):
+
+- [ ] 4.8 · GitHub alerts in md-render: five types, icon and title, light and dark theme CSS; still a blockquote in the syntax tree, so the round-trip suites are unchanged and no fixture gains an island; unknown types render as plain blockquotes. Fixture `github-alerts.md` (all five, nested content, an alert inside a list, CRLF)
+- [ ] 4.9 · Emoji shortcodes, render only (`remark-gemoji`, MIT; licence check and notices); not inside code spans, code blocks or raw HTML. Fixture `emoji-shortcodes.md`
+- [ ] 4.10 · `RenderMeta.headings` (text, depth, source line, id) and GitHub-style heading ids; Quick Look outline as static HTML and CSS: a column in wide previews, a `<details>` menu in narrow ones, hidden for documents with fewer than three headings. Duplicate and non-Latin headings (Vietnamese, CJK) get stable ids
+- [ ] 4.11 · Mermaid in Tier 1: the bundled renderer as a `cid:` attachment admitted by a per-preview CSP nonce; document scripts, inline handlers and network stay blocked; source block on failure; a cap on diagram count and size. Test: a document script beside a Mermaid block does not run in Tier 1
 
 **Done when (brief):** snapshots pass for all tiers; Finder previews work in light and dark within Space-bar latency.
 
@@ -145,15 +153,15 @@ Every task that fixes a defect starts with the test that fails without the fix.
 
 ### M6 — 1.1 Navigate
 
-- [ ] md-render metadata: `headings` (text, depth, source line, id), word and character counts; heading ids (`rehype-slug`)
-- [ ] Outline sidebar; in-document links; status bar counts
+- [ ] md-render metadata: word and character counts (`headings` and heading ids arrive in 4.10 if A9 is accepted, otherwise here)
+- [ ] Outline sidebar with current-heading tracking and a filter; in-document links; status bar counts
 - [ ] Incremental refresh of the Read view (ADR-0036); follow mode; jump from Read to Source (ADR-0037)
 - [ ] Zoom and column width; front matter as a property table
 - [ ] Focus, typewriter and Zen modes; one Escape chain; shortcuts matched by key code
 - [ ] Auto-pair, smart punctuation (off by default), spellcheck controls, Vim keys in Source, Writing Tools check
 - [ ] Image block in WYSIWYG; Mermaid preview toggle; Peek for script islands
 - [ ] `Host.writeAsset`; image paste and drop; HTML paste as Markdown; clean-up for pasted AI output; copy as rich text
-- [ ] GitHub alerts, emoji shortcodes, highlight and sub/superscript, `\ce{}`; fixtures and parity for each
+- [ ] Alert-type picker in WYSIWYG and emoji autocomplete (rendering arrives in 4.8 and 4.9 if A9 is accepted, otherwise here); highlight and sub/superscript, `\ce{}`; fixtures and parity for each
 - [ ] Localization: English and Vietnamese (ADR-0043); opt-in diagnostics (ADR-0042)
 - [ ] Editor chrome off Crepe, first pieces (ADR-0035)
 

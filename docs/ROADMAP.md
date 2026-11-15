@@ -53,6 +53,13 @@ Proposed additions to 1.0 (small, and their absence would be the first thing a r
 - "Open documents in" setting honoured by the app. **S**
 - Table row and column handles in WYSIWYG (open since M3). **M**
 
+Proposed additions to 1.0 so that Quick Look matches what paid previewers already show (amendment A9; compared with Looq Markdown, November 2026):
+- **GitHub alerts** (`> [!NOTE]`, TIP, IMPORTANT, WARNING, CAUTION) in every surface: a coloured rule, an icon and a title per type, light and dark, from one md-render step. They stay blockquotes in the file, so WYSIWYG keeps editing them and nothing becomes an island. Unknown types fall back to a plain blockquote. **S**
+- **Emoji shortcodes** (`:tada:`), render only (`remark-gemoji`, MIT); the source keeps the shortcode, and shortcodes inside code are left alone. **S**
+- **Outline in Quick Look:** a contents column beside the document when the preview is wide, collapsed to a menu when it is narrow. Static HTML and CSS anchors, so it works in Tier 1 with scripts off. Needs heading ids and a `headings` list from md-render, which the app's outline (1.1) then reuses. **S**
+- **Mermaid in Quick Look without turning document scripts on:** Tier 1 may run Inlay's own bundled renderer, admitted by a CSP nonce, while every script from the document stays blocked. Diagrams then render for everyone, not only for people who enabled Tier 2. Falls back to the source block if the diagram fails or the preview is too large. **M**
+- Quick Look header: what was rendered ("3 diagrams", "Scripts off") and **Open with Inlay**; the system's own share button stays. **S**
+
 **Exit:** the brief's acceptance criteria for M4 and M5; the release checklist passes on macOS 14 and the current macOS; a Homebrew cask exists.
 
 ## 1.1: Navigate
@@ -60,8 +67,8 @@ Proposed additions to 1.0 (small, and their absence would be the first thing a r
 **Goal:** make long and live documents comfortable. This release is free and is what turns a viewer people try into the one they keep.
 
 Reading and navigating
-- Outline sidebar with click-to-jump and current-heading tracking, built from a `headings` list in md-render's metadata so one outline serves every mode. **M**
-- Heading anchors and in-document links (`rehype-slug`, MIT). **S**
+- Outline sidebar in the app with click-to-jump and current-heading tracking in every mode, on the `headings` list md-render gains for Quick Look in 1.0. Beyond a static contents list: the current heading follows scrolling, the sidebar filters as you type, and it docks left or right. **M**
+- In-document links (`[text](#heading)`) jump in Read and WYSIWYG, using the same GitHub-style ids. **S**
 - **Incremental refresh of the Read view** (ADR-0036): a prose edit patches the changed blocks instead of reloading the page, so charts stop redrawing and widgets keep their state while typing in Split. A reload still happens when a script or style block changes. **M**
 - **Follow mode:** keep the view at the end of a file that another program is appending to, for reports an agent is still writing. **S**
 - Jump from Read to Source: double-click a block in Read to edit it (ADR-0037). **S**
@@ -86,8 +93,8 @@ Paste and images
 - Copy as rich text or HTML. **S**
 
 Syntax (opt-in where it is not GitHub's; one parser, fixtures, JavaScriptCore parity)
-- GitHub alerts (`> [!NOTE]` and friends). **S**
-- Emoji shortcodes, render only. **S**
+- GitHub alerts, beyond the rendering that ships in 1.0: an alert-type picker on blockquotes in WYSIWYG and an Insert entry, writing only the `[!TYPE]` marker; titles localized in the display, never in the file. **S**
+- Emoji shortcodes, beyond rendering: `:` autocomplete in both editors, off during composition. **S**
 - Highlight, subscript, superscript; one documented rule for the single-tilde conflict. **S**
 - Chemistry (`\ce{}`) through KaTeX's mhchem. **S**
 
@@ -127,7 +134,7 @@ Pro
 - Managed preferences for organizations: force scripts off, pin the CDN list, disable "Allow network". **S**
 - One file-access layer in Swift with security-scoped bookmarks, so the app can run inside the App Sandbox (ADR-0038, amends ADR-0012). **L**
 - Mac App Store edition from the same code; Setapp build. **M**, needs a brief change.
-- More Quick Look: outline in wide previews, "Show source", more file types (`.mdown`, `.qmd`, `.rmd`, TextBundle). **M**
+- More Quick Look: "Show source", more file types (`.mdown`, `.qmd`, `.rmd`, TextBundle). **M**
 - Legacy encodings (Shift-JIS, GB18030, Windows-1258) and explicit line-ending conversion. **M**
 
 **Exit:** the sandboxed build passes the same test suites as the direct build; an administrator can lock scripts off with a configuration profile.
@@ -201,4 +208,5 @@ Kept from the comparison with other apps; each still has to pass the four rules 
 | [Moraya](https://users.rust-lang.org/t/an-extremely-elegant-open-source-ai-markdown-editor-tauri-svelte/138163) | Tauri + Svelte + Milkdown, AI-first | Visual, Source and Split with block-level scroll anchoring, assistant panel, MCP, keys in the Keychain |
 | [MDHero](https://mdhero.app/blogs/building-native-viewer-8mb/) (MIT) | Tauri viewer with Quick Look | Viewer first, find, print to PDF, paste clean-up for AI output, 400 ms first paint |
 | [Typora](https://typora.io/) | Commercial WYSIWYG editor | Seamless live preview, outline and file tree, focus and typewriter, table editing, image handling, Pandoc export, PDF bookmarks |
+| Looq Markdown (commercial Quick Look previewer; known only from a screenshot of its product page) | Quick Look for Markdown | GitHub alerts with icons and colours, KaTeX, Mermaid, emoji shortcodes, a contents sidebar, an "Open with" button in the preview header |
 | [QLMarkdown](https://github.com/sbarex/QLMarkdown) (GPL-3, read only) | Quick Look extension, settings app and CLI | GitHub alerts, heading anchors, outline in wide previews, front matter as a table, extra file types, Shortcuts actions |
