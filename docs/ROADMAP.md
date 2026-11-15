@@ -1,162 +1,204 @@
-# Inlay: roadmap ideas after v1 (draft)
+# Inlay — roadmap
 
-**Status:** draft for the product owner, 2026-11-06. This is not part of the brief; nothing here is scheduled until the product owner picks it. `docs/BRIEF.md` still defines v1 and `docs/PLAN.md` tracks M4–M5.
+Where the product goes, release by release, with the business track beside it. `docs/BRIEF.md` defines v1.0 and is decided. Everything after v1.0 is a **proposal** for the product owner: it is ordered and sized so that a "go" on a release is enough to start, and `docs/BRIEF-AMENDMENTS.md` lists the brief changes each release would need. The product itself is described in `docs/PRODUCT.md`, the business model in `docs/MONETIZATION.md`, and the task lists in `docs/PLAN.md`.
 
-Ideas come from studying other Markdown apps (list below). Each one has been checked against Inlay's rules, and where an idea pushes against one, the note says how. Every item has to keep these rules:
+Dates are targets, not commitments. Code has moved fast (M0 to M3 in days); the pace is set by what only the product owner can do: the Apple Team ID and signing credentials, manual checks on real hardware, and product decisions.
 
-- **The file on disk is sacred.** View features (folding, focus mode, outline) never touch bytes. Features that write (image paste, smart punctuation) change only the bytes the user asked for, through the block splice.
-- **One parser.** New syntax goes into md-render and the editor's pinned remark together, with fixtures, and must round-trip or become an island.
-- **Host boundary and Read view isolation.** Anything that needs native help goes through `Host`. The Read view keeps zero message handlers, so features that need a file save (for example "export this diagram") run from the editor webview or native code, never from document-page script.
-- **Licences.** MIT/BSD/Apache-2.0/ISC for shipped code, plus the approved exceptions: Unlicense (ADR-0026), EPL-2.0 for the vendored Mermaid bundle only (ADR-0027), and OFL for font files. GPL tools such as Pandoc may only be *called* if the user installed them, and that needs a product-owner decision first.
+Size: **S** is a slice or two, **M** a few days of slices, **L** a milestone of its own.
 
-Size: **S** ≈ a slice or two, **M** ≈ a few days of slices, **L** ≈ a milestone of its own.
+## At a glance
 
-## Apps studied
+| Release | Theme | Target | What a user gets | Business track |
+| --- | --- | --- | --- | --- |
+| **0.9 beta** | Prove it on other Macs | December 2026 | Signed, notarized build of everything on `main` plus Quick Look | Website download, feedback channel, sponsorship opened |
+| **1.0** | Faithful | Q1 2027 | The brief: full rendering, WYSIWYG with raw islands, byte-exact saving, Quick Look, export, themes, updates | Free. Public launch. "Free for good" pledge published |
+| **1.1** | Navigate | Q2 2027 | Outline, find everywhere, live preview that does not flicker, image paste, GitHub syntax, focus modes, Vietnamese localization | Free. Grow the audience; measure what people use it for |
+| **1.2** | Produce | Q3 2027 | Present, export suite, snippet gallery, command line and Shortcuts | **Inlay Pro** launches: paid licence for the official build |
+| **1.3** | Trust | Q4 2027 | Permissions popover, folder trust, managed policies, sandboxed build | Mac App Store edition, Setapp, team licences |
+| **2.0** | Workspace | H1 2028 | Folder window, quick open, search, Changes view, Git awareness, command palette | Pro grows (cross-file tools); price reviewed |
+| **2.x** | Share and assist | 2028 | Optional publishing service; on-device or bring-your-own-key assistant | Subscription for the hosted service, only if validated |
+| **3.0** | Everywhere | later | Windows and Linux through Tauri; iPhone and iPad viewer | Cross-platform licence |
 
-| App | What it is | What stood out |
-|---|---|---|
-| [MarkText](https://marktext.me/) (MIT) | Electron WYSIWYG editor | Render in place, `/` quick insert, 33 CSS themes, focus/typewriter, image copy-to-folder with `${filename}` templates, image/diagram viewer with PNG/SVG export, heading folding, folder search, CLI export |
-| [CrabPad](https://dev.to/ukash/i-built-a-markdown-editor-with-tauri-heres-what-i-learned-4f5l) | Tauri + React editor | Command palette, Zen mode, outline panel, workspace search, admonitions and `:::` containers, recordable keybindings; lessons on `e.code` vs `e.key` and an Escape priority chain |
-| [FlyMD](https://www.flymd.app/) ([README](https://github.com/flyhunterl/flymd); non-commercial licence, ideas only) | Tauri + Milkdown "knowledge work platform" | Library search with full-text and semantic modes, WebDAV sync, S3/R2 image upload, blog publishing, AI assistant, plugin marketplace, backlinks and graph view, Git panel, templates, published perf budgets (≤ 300 ms cold start, ≤ 50 MB RAM) |
-| [MDX Editor](https://dev.to/maqi1520/created-a-markdown-desktop-app-with-tauri-h8d) | Tauri editor with React components in Markdown | Folder document tree, format-on-save, 10+ document and code themes, WeChat-style formatted copy |
-| [Moraya](https://users.rust-lang.org/t/an-extremely-elegant-open-source-ai-markdown-editor-tauri-svelte/138163) ([summary](https://www.sourcepulse.org/projects/28106930)) | Tauri + Svelte + Milkdown, AI-first | Visual / Source / Split with block-level scroll anchoring, AI chat panel, MCP, API keys in the Keychain, local models, plugin API |
-| [MDHero](https://mdhero.app/blogs/building-native-viewer-8mb/) (MIT) | Tauri viewer with Quick Look | Viewer-first (opens rendered on double-click), find, print to PDF, LLM paste cleanup (escaped `\n`), lazy Shiki/Mermaid, 400 ms first paint, 45 MB idle |
-| [Typora](https://typora.io/) ([support docs](https://support.typora.io/)) | Commercial WYSIWYG editor | Seamless live preview, outline + file tree, focus/typewriter, table drag/resize, image copy and upload (PicGo), Pandoc export, PDF bookmarks, `[TOC]`, heading numbering via CSS, word count and reading time, smart punctuation, snippets, RTL |
-| [QLMarkdown](https://github.com/sbarex/QLMarkdown) (GPL-3, read only) | Quick Look extension + settings app + CLI | GitHub alerts, wikilinks, hashtags, heading anchors, emoji, TOC sidebar in wide previews, front matter as a table, extra file types (`.qmd`, `.rmd`, `.mdx`, TextBundle), Shortcuts actions, a CLI converter |
+## 0.9 beta: prove it on other Macs
 
-## Already planned, so not repeated below
+**Goal:** real users on real Macs before the public launch, because the two promises (isolation, byte identity) and input methods can only be proven broadly in the field.
 
-Quick Look tiers (M4); HTML/PDF export, themes and custom CSS, preferences window, Sparkle (M5); the outline sidebar, native status bar with word count, and "Block n of m changed" (design track); table row/column handles and the Mermaid preview in WYSIWYG code blocks (M3 follow-ups). Several items below extend these.
+- M4 Quick Look, tiers 1 to 3, with the App Group settings, starting with a test of whether a third-party extension still takes precedence over the system's own Markdown preview on macOS 27.3 (ADR-0050). **L**, in the brief.
+- Hardening pass from the November 2026 audit (`docs/ARCHITECTURE.md` section 6, `docs/PLAN.md` MH). **M**
+- Signing, notarization and a disk image; Sparkle wired to a beta appcast. **M**, in the brief (M5).
+- The manual checklists run and recorded for the first time (`docs/CHECKLIST.md`), the IME checklist above all.
+- A welcome document that opens on first launch and shows a live chart, an island and the trust banner. **S**
 
-## Near term (v1.x): fits the brief as written
+**Exit:** ten outside testers have opened their own files; no report of a changed byte or an escaped script; the IME checklist passes on macOS 14 and the current macOS.
 
-### Navigation and reading
+## 1.0: Faithful
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| Outline sidebar with click-to-jump and current-heading tracking | Typora, MarkText, CrabPad, FlyMD, Moraya | Already a tentative M5 item. Add a `headings` list (text, depth, source line) to md-render's `RenderMeta` and build the outline natively from it, so one outline serves Read, Source and WYSIWYG. Dock left or right; hover preview when collapsed (MarkText). | M |
-| Find in every mode | MDHero, MarkText | Source has CodeMirror search. Add a find bar in WYSIWYG (a ProseMirror search plugin) and a native find bar for the Read view over WKWebView's find API. Replace stays editor-only. | M |
-| Heading folding (view only) | MarkText | Folding changes the view, never the saved text. ProseMirror decorations in WYSIWYG, CodeMirror `foldService` in Source. | S |
-| Heading anchors and in-document links | Typora, QLMarkdown | GitHub-style slugs (`rehype-slug`, MIT) in md-render; `[link](#heading)` jumps in Read and WYSIWYG. Also lets the outline and export bookmarks share IDs. | S |
-| `[TOC]` placeholder | Typora | Render-only: the source line stays `[TOC]`. Decide whether to support it at all, since GitHub doesn't. | S |
-| Word count, reading time, selection count | Typora | Part of the planned status bar; computed in the web core from the live document. | S |
-| Open in Read mode by default for viewer use | MDHero | `editor.defaultMode` already accepts `read`; expose it in Preferences and offer "remember mode per document". | S |
-| Zoom and writing-column width | Typora, FlyMD | ⌘+ / ⌘− / ⌘0 and a measure setting (the design uses a 680 px column). | S |
+**Goal:** everything the brief promises, finished to the standard of a Mac app someone would make their default for `.md`.
 
-### Writing comfort
+In the brief (M5):
+- HTML export (single file) and paginated PDF export. **M**
+- Themes, custom CSS, editor font settings. **M**
+- Preferences window on the web `settings-ui` package. **M**
+- Sparkle updates on the stable appcast; release workflow. **M**
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| Focus mode (dim all but the current block or sentence) | Typora, MarkText, FlyMD | Decorations only. Works in WYSIWYG and Source. | S |
-| Typewriter mode (caret line stays centred) | Typora, MarkText | Scroll-margin logic in both editors; must not fight IME candidate windows. | S |
-| Zen / full-screen writing | CrabPad | Native full-screen plus hidden toolbar and outline, persisted. Define the Escape priority chain first (island editor → find bar → Zen), as CrabPad learned. | S |
-| Auto-pair brackets, quotes and Markdown symbols | Typora, MarkText | CodeMirror `closeBrackets`; a ProseMirror input rule in WYSIWYG. Must stay off during composition (ADR-0034). Off by default for `*` and `_`. | S |
-| Smart punctuation (curly quotes, dashes) | Typora, QLMarkdown | Only on newly typed text, never on existing bytes. Off by default; Vietnamese and CJK users need to opt in knowingly. | S |
-| Table editing: drag to reorder rows/columns, resize, insert dialog | Typora, MarkText | Extends the open M3 table-handles task. Reordering rewrites only the table block. | M |
-| Image block in WYSIWYG (resize handles, alignment, alt text) | MarkText, Typora | Crepe's ImageBlock is off because it rewrites alt text (ADR-0032). Ours writes only the image node's bytes, keeping `<img width>` when the user resizes. | M |
-| Spellcheck and grammar controls | Typora, MarkText | WebKit gives macOS spellcheck in contenteditable for free; skip it in code, math and islands, and add a menu toggle. | S |
-| Vim keybindings in Source mode | CrabPad (planned) | `@replit/codemirror-vim` (MIT), opt-in. | S |
+Needed to finish what is already there (the design track in PLAN):
+- Window chrome: permission pills (Scripts, Network), status bar (words, encoding, line ending, "n of m blocks changed"), empty state. **M**
+- Read view theme from the design tokens, light and dark. **S**
+- Print from the rendered document. The menu item exists and does nothing useful today. **S**
+- About window, Help menu with a user guide written in Markdown and opened in Inlay. **S**
+- Quick Look onboarding: first launch registers the extension; a troubleshooting page for conflicting extensions. **S**
 
-### Images and paste
+Proposed additions to 1.0 (small, and their absence would be the first thing a reviewer notices):
+- Find (⌘F) in Read and WYSIWYG; Source already has it. **M**
+- "Open documents in" setting honoured by the app. **S**
+- Table row and column handles in WYSIWYG (open since M3). **M**
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| Paste or drop an image → copy into an assets folder next to the document | MarkText, Typora, FlyMD | New `Host.writeAsset(name, bytes)`; Swift writes under the document folder through `PathGuard`; path template such as `assets/${filename}/`; inserts a relative link. Untitled documents hold the image until the first save. Only the new block's bytes change. | M |
-| Paste rich text or HTML as Markdown | MarkText, Typora | `rehype-remark` (MIT) on the pasted HTML, then the editor's own serializer. Plain-text paste with ⇧⌘V. | M |
-| LLM paste cleanup | MDHero | Detect literal `\n`, escaped Markdown and stray code fences in pasted AI output; offer a one-click fix. A small, timely differentiator. | S |
-| Copy as rich text / HTML | MDX Editor (WeChat formatting), FlyMD | Copy the rendered selection with inline styles for Mail, Notes, Slack or a blog editor. Runs from the editor, not the Read view. | S |
-| Image and diagram viewer (zoom, pan, fit) | MarkText | Cmd-click an image or Mermaid diagram. Export as PNG/SVG goes through a native save panel, never from the Read page itself. | M |
+**Exit:** the brief's acceptance criteria for M4 and M5; the release checklist passes on macOS 14 and the current macOS; a Homebrew cask exists.
 
-### Markdown syntax extensions (opt-in, one parser)
+## 1.1: Navigate
 
-Each extension needs fixtures, md-render + JSC parity, and the editor's round-trip check. Syntax the editor can't edit losslessly becomes an island, as today.
+**Goal:** make long and live documents comfortable. This release is free and is what turns a viewer people try into the one they keep.
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| GitHub alerts (`> [!NOTE]`, TIP, IMPORTANT, WARNING, CAUTION) | QLMarkdown, CrabPad | Highest value: GitHub renders them and AI tools write them. They are still blockquotes, so WYSIWYG keeps editing them; md-render adds the styling. | S |
-| Highlight `==text==`, sub `~x~`, sup `^x^` | Typora, QLMarkdown, CrabPad | Conflicts with GFM single-tilde strikethrough; pick one rule and document it. | S |
-| Emoji shortcodes (`:tada:`) | Typora, QLMarkdown, CrabPad | Render-only (`remark-gemoji`, MIT); the source keeps the shortcode. Autocomplete is optional; macOS already has ⌃⌘Space. | S |
-| Admonitions via directives (`:::note`) | CrabPad, QLMarkdown (MkDocs) | Directives are islands today; `remark-directive` (MIT) could render a known set. | M |
-| Definition lists, abbreviations | CrabPad, QLMarkdown | Low demand; render-only. | S |
-| Front matter shown as a table in Read view and Quick Look | QLMarkdown | Currently a card in WYSIWYG; a tidy property table helps viewer use. | S |
-| Chemistry (`\ce{}`) and equation numbering | Typora | KaTeX's mhchem extension (MIT) ships in the KaTeX package; load it in md-render and the JSC bundle. KaTeX numbers only `\tag{}` equations, so automatic numbering needs our own counter in md-render. | S |
+Reading and navigating
+- Outline sidebar with click-to-jump and current-heading tracking, built from a `headings` list in md-render's metadata so one outline serves every mode. **M**
+- Heading anchors and in-document links (`rehype-slug`, MIT). **S**
+- **Incremental refresh of the Read view** (ADR-0036): a prose edit patches the changed blocks instead of reloading the page, so charts stop redrawing and widgets keep their state while typing in Split. A reload still happens when a script or style block changes. **M**
+- **Follow mode:** keep the view at the end of a file that another program is appending to, for reports an agent is still writing. **S**
+- Jump from Read to Source: double-click a block in Read to edit it (ADR-0037). **S**
+- Zoom (⌘+, ⌘−, ⌘0) and writing-column width. **S**
+- Word count, reading time and selection count in the status bar. **S**
+- Front matter shown as a property table in Read and Quick Look. **S**
 
-### Export, sharing and automation
+Writing comfort
+- Focus mode, typewriter mode, Zen (full screen with chrome hidden). **S** each
+- Auto-pair brackets and quotes; smart punctuation, off by default. Never during composition. **S**
+- Spellcheck controls; skip code, math and islands. **S**
+- Image block in WYSIWYG: resize, alignment, alt text, writing only the image's bytes. **M**
+- Mermaid preview toggle in code blocks (open since M3). **S**
+- **Peek:** run one script island in a small isolated popover without leaving the editor. **M**
+- Vim keys in Source (`@replit/codemirror-vim`, MIT), opt-in. **S**
+- Apple Writing Tools in WYSIWYG, checked to arrive as ordinary transactions. **S**
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| PDF bookmarks from headings, page breaks, print CSS | Typora, FlyMD | Extends M5 PDF export: add a PDFKit outline after WKWebView renders, and support a page-break marker. | S |
-| Command-line tool (`inlay file.md`, `inlay export --pdf/--html`) | MarkText, QLMarkdown, Typora | A small Swift CLI in the app bundle that runs the same md-render bundle in JSC. Fits automation and CI docs pipelines. | M |
-| Shortcuts / App Intents ("Render Markdown to HTML", "Export as PDF") | QLMarkdown | Native, Mac-only polish on the same render path as the CLI. | S |
-| Templates for new documents | FlyMD | A templates folder; File → New from Template. | S |
-| Homebrew cask | MarkText, QLMarkdown, CrabPad | One-line install once notarized builds exist (M5). | S |
+Paste and images
+- Paste or drop an image: copied into an assets folder beside the document through a new `Host.writeAsset`, linked relatively. **M**
+- Paste rich text or HTML as Markdown (`rehype-remark`, MIT); plain paste with ⇧⌘V. **M**
+- Clean-up for pasted AI output: literal `\n`, escaped Markdown, stray fences. **S**
+- Copy as rich text or HTML. **S**
 
-### Quick Look extras (after M4)
+Syntax (opt-in where it is not GitHub's; one parser, fixtures, JavaScriptCore parity)
+- GitHub alerts (`> [!NOTE]` and friends). **S**
+- Emoji shortcodes, render only. **S**
+- Highlight, subscript, superscript; one documented rule for the single-tilde conflict. **S**
+- Chemistry (`\ce{}`) through KaTeX's mhchem. **S**
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| TOC sidebar when the preview window is wide | QLMarkdown | Static HTML/CSS, so it works in Tier 1. | S |
-| "Show source" toggle | QLMarkdown | Highlighted raw Markdown in the preview. | S |
-| More file types: `.mdown`, `.qmd`, `.rmd`, `.mdx` (JSX shown as code), TextBundle / `.textpack` | QLMarkdown | TextBundle is the Mac interchange format (Bear, Ulysses, iA Writer) and keeps images in the bundle. Claim UTIs carefully; add a troubleshooting note on `mdls` and conflicting Quick Look extensions. | M |
+Platform
+- Localization: English and Vietnamese (ADR-0043). **M**
+- Opt-in diagnostics through MetricKit; nothing sent without a click (ADR-0042). **S**
+- Performance budgets for cold start and idle memory checked in the macOS CI job. **S**
 
-### macOS integration
+**Exit:** typing in Split never redraws an unchanged chart; the outline works in all four modes; every new syntax has fixtures in the round-trip and rendering suites.
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| Apple Writing Tools in WYSIWYG | macOS | macOS 15+. Set the WKWebView's Writing Tools behaviour and check that rewrites arrive as ordinary ProseMirror transactions, so the block splice still confines changes. A system feature that needs no AI work of ours. | S |
-| Services menu ("New Inlay note with selection") and Share | macOS | Small native additions. | S |
-| Custom keyboard shortcuts | CrabPad | macOS already lets users rebind menu items (System Settings → Keyboard); only web-only commands would need our own UI. Low priority. | S |
+## 1.2: Produce
 
-## Later (v2): larger features that fit the brief but need design
+**Goal:** turn documents into deliverables. This is where Inlay Pro starts (see `docs/MONETIZATION.md`); everything shipped before stays free.
 
-| Feature | Seen in | Notes for Inlay | Size |
-|---|---|---|---|
-| Folder workspace: file tree sidebar, Quick Open (⌘P), search in folder with regex | Typora, MarkText, CrabPad, FlyMD, MDX Editor | The most requested capability in this set. A new window type beside NSDocument windows; the app isn't sandboxed (ADR-0012), so folder access is simple. Respect `.gitignore` and size limits as MarkText does. | L |
-| Wikilinks `[[Page]]`, backlinks, hashtags, graph view | QLMarkdown, FlyMD | Needs the workspace first. Wikilinks are not CommonMark or GFM, so make it a per-workspace opt-in. | L |
-| "Changes since last save" view | MDX Editor (diff highlighting), FlyMD (Git) | **Inlay-specific advantage:** the block model already knows which blocks changed (`stats.wysiwyg`, the splice's `changed` count). Show changed blocks in a gutter and as a diff against the saved bytes, which other editors can't show exactly. | M |
-| Git awareness (status, diff, commit) | FlyMD | Builds on the changes view; Inlay's minimal byte changes make Git diffs clean. Keep it read-only first. | M |
-| Command palette (⇧⌘P) | CrabPad, FlyMD, MarkText | macOS Help-menu search already covers menu commands; a palette pays off once the workspace adds many commands. | M |
-| More diagram and notation engines: Vega / Vega-Lite (BSD-3), flowchart.js (MIT), abcjs music (MIT), Graphviz | MarkText, Typora | Vendored and lazy-loaded like Mermaid. Graphviz WASM bundles carry EPL code, which needs a per-package decision like ADR-0027. **Not** PlantUML through a public server: it sends document content over the network. | M each |
-| Export to DOCX, EPUB, LaTeX | Typora (Pandoc), FlyMD (DOCX) | Option A: call a user-installed `pandoc` (GPL, never bundled); product owner to decide. Option B: a permissive DOCX writer such as `docx` (MIT) from the mdast. | M–L |
-| Image upload to S3/R2 or a user command | Typora (PicGo), FlyMD, MarkText | Needs credentials in the Keychain and network access, so product-owner input. The custom-command variant (run the user's own script) is simplest. | M |
-| Legacy encodings (Shift-JIS, GB18030, Windows-1258) and explicit EOL conversion | MarkText | Inlay keeps BOM and EOL today. Opening non-UTF-8 files means re-encoding only changed blocks, which the byte model has to allow for. "Convert line endings" is an explicit whole-file action. | M |
-| Right-to-left text | Typora | `dir="auto"` per block in Read and WYSIWYG; caret behaviour needs testing. | M |
+Free in this release
+- Internal extension points: commands, exporters, panes, snippet providers (ADR-0039). Pro is built on them, and they are the future plugin interface. **M**
+- `inlay` command: `inlay file.md` opens a window; `inlay -` reads standard input. **S**
+- Starter snippets in an Insert menu: chart, Mermaid diagram, table, callout. **S**
+- Templates for new documents. **S**
+- Image and diagram viewer: zoom, pan, fit. **M**
 
-## Needs a brief change (v1 non-goals today)
+Pro
+- **Present:** the document as slides, split at `---` or headings, with live charts, speaker notes from HTML comments, and export to PDF. **L**
+- **Export suite:** PDF with outline, page breaks, headers and footers; frozen HTML (scripts run once, output captured, scripts removed); DOCX from the syntax tree (`docx`, MIT); diagram or chart to PNG or SVG. **L**
+- **Snippet gallery:** a library of tuned charts, widgets and layouts with a live preview and a small form for the data. Each inserts plain HTML. **M**
+- **Automation:** `inlay export --pdf|--html|--docx`, Shortcuts and App Intents ("Render Markdown", "Export as PDF"). **M**
+- Offline licence activation (ADR-0040): a signed licence file, checked on the Mac, no account and no call home. **M**
 
-| Area | Seen in | What an Inlay version could look like |
-|---|---|---|
-| AI assistant | Moraya, FlyMD | Selection-scoped rewrites shown as proposals and applied through the block splice, so untouched bytes stay; Apple's on-device Foundation Models (macOS 26) as the private default, user-supplied API keys in the Keychain as an option, network off unless allowed. An "explain this embedded script" action fits Inlay's live-HTML focus. |
-| Plugin system | FlyMD, Moraya, CrabPad (planned) | Start with custom renderers for fenced code languages, sandboxed like document scripts. MDHero left plugins out on purpose to stay small. |
-| Sync and collaboration | FlyMD (WebDAV, live collaboration) | iCloud Drive and Dropbox already work through NSDocument and the conflict banner. Anything further is a product decision. |
-| Windows/Linux (Tauri) | MarkText, CrabPad, FlyMD, MDHero, Moraya | Already "later" in the brief; the Host boundary is ready for it. |
-| iPhone/iPad viewer with Quick Look | FlyMD (Android beta) | The web core and JSC bundle would carry over; it would need its own brief. |
-| Blog publishing (WordPress, Ghost, Hugo front matter) | FlyMD | Needs network and credentials. |
+**Exit:** a deck presented from a Markdown file with a live chart; a 50-page PDF with a working outline; a licence activates with the network off.
+
+## 1.3: Trust
+
+**Goal:** make Inlay's safety visible and manageable, and open the store channels that need the sandbox.
+
+- Permissions popover in the toolbar: scripts, network, remote images, and where the trust came from (ADR-0041). **M**
+- Trust that follows a file when it is renamed or moved; trust a folder once. **M**
+- Managed preferences for organizations: force scripts off, pin the CDN list, disable "Allow network". **S**
+- One file-access layer in Swift with security-scoped bookmarks, so the app can run inside the App Sandbox (ADR-0038, amends ADR-0012). **L**
+- Mac App Store edition from the same code; Setapp build. **M**, needs a brief change.
+- More Quick Look: outline in wide previews, "Show source", more file types (`.mdown`, `.qmd`, `.rmd`, TextBundle). **M**
+- Legacy encodings (Shift-JIS, GB18030, Windows-1258) and explicit line-ending conversion. **M**
+
+**Exit:** the sandboxed build passes the same test suites as the direct build; an administrator can lock scripts off with a configuration profile.
+
+## 2.0: Workspace
+
+**Goal:** from one file to a folder of them, without becoming a note database.
+
+Free
+- Folder window: file tree, Quick Open (⇧⌘O; ⌘P stays Print), recent folders; respects `.gitignore` and size limits. **L**
+- **Changes view:** changed blocks against the saved bytes, in a gutter and as a diff. Only Inlay can show this exactly, because the block model already tracks it. **M**
+- Command palette (⇧⌘P). **M**
+- Heading folding, view only. **S**
+- Right-to-left text. **M**
+
+Pro
+- Search and replace across a folder, with regular expressions. **M**
+- Wikilinks, backlinks and hashtags as a per-folder opt-in. **L**
+- Git awareness: status, diff against HEAD, read-only first. **M**
+- More diagram engines, vendored and lazy like Mermaid: Vega-Lite (BSD-3), abcjs (MIT). Graphviz needs a per-package licence decision. **M** each
+
+**Exit:** a 5,000-file folder opens and searches without blocking the window; the Changes view matches `git diff` on the saved file.
+
+## 2.x: Share and assist
+
+Both need a brief change, and the first needs proof of demand before any server is built.
+
+- **Assistant:** rewrites scoped to the selection, shown as a proposal and applied through the block splice so untouched bytes stay; Apple's on-device models as the private default, the user's own API key in the Keychain as an option; "explain this embedded script" for the cautious reader. Pro. **L**
+- **Publish:** a hosted, sandboxed copy of a document behind a share link, on a separate domain. A subscription. Hosting other people's scripts invites abuse, so this is built only if the waiting list and the export numbers justify it (`docs/MONETIZATION.md` section 7). **L**
+- An MCP server so an agent can ask Inlay to open, render or export a document. **M**
+
+## 3.0: Everywhere
+
+- Windows and Linux through a Tauri shell on the same web core. The `Host` boundary exists for this; the cost is a second shell, a second scheme mapping (`http://mdview.localhost`) and re-proving isolation on WebView2 and WebKitGTK. **L**
+- iPhone and iPad viewer with Quick Look, on the web core and the JavaScriptCore bundle. Needs its own brief. **L**
+
+## Backlog, not scheduled
+
+Kept from the comparison with other apps; each still has to pass the four rules (bytes, one parser, isolation, licences).
+
+| Idea | Note | Size |
+| --- | --- | --- |
+| `[TOC]` placeholder | Render only; GitHub does not support it, so decide whether to at all | S |
+| Admonitions through directives (`:::note`) | Directives are islands today; `remark-directive` (MIT) could render a known set | M |
+| Definition lists, abbreviations | Low demand, render only | S |
+| Equation numbering | KaTeX numbers only `\tag{}`; needs our own counter | S |
+| Export to EPUB or LaTeX | A user-installed Pandoc (GPL, never bundled) needs a product-owner decision | M |
+| Image upload to S3, R2 or a user command | Credentials and network; the user-command variant is simplest | M |
+| Services menu and Share extension | Small native additions | S |
+| Custom keyboard shortcuts | macOS already rebinds menu items; only web-only commands need UI | S |
+| Blog publishing (WordPress, Ghost, Hugo) | Network and credentials | M |
 
 ## Not recommended
 
-- **Desktop sticky notes, TODO push reminders, AI novel engine, social-media copywriting** (FlyMD): outside a Markdown editor's job.
-- **Portable mode** (FlyMD, MarkText): not a macOS convention.
-- **React components inside Markdown** (MDX Editor): Inlay already runs real HTML/JS; JSX would add a compiler and a second syntax.
-- **Regex preprocessing instead of the AST** (CrabPad's lesson): breaks the one-parser rule and source mapping.
-- **Format-on-save** (MDX Editor, Prettier): rewrites bytes the user didn't touch. At most an explicit "Reformat document" command.
+- **Format on save.** It rewrites bytes the user did not touch. At most an explicit "Reformat document".
+- **React components or JSX in Markdown.** Inlay already runs real HTML and JavaScript; JSX adds a compiler and a second syntax.
+- **PlantUML through a public server.** It sends document content over the network.
+- **Regular-expression preprocessing of Markdown.** It breaks the one-parser rule and source mapping.
+- **Sticky notes, reminders, a note database, social features.** Outside a Markdown editor's job.
+- **Portable mode.** Not a macOS convention.
+- **Real-time collaboration and our own sync.** iCloud Drive, Dropbox and Git already move files; the conflict banner handles the result.
 
-## Engineering lessons worth adopting
+## Appendix: apps studied (November 2026)
 
-- **Publish performance budgets.** MDHero (400 ms first paint, 45 MB idle) and FlyMD (≤ 300 ms cold start) use numbers as marketing. Inlay checks the 10k-line open; add a cold-start-to-rendered check and an idle-memory check to the macOS CI job.
-- **Shortcuts by `e.code`, not `e.key`, where Option is involved** (CrabPad). Option changes `e.key` on macOS, and Vietnamese/Telex keyboard layouts make this worse.
-- **One Escape priority chain** (CrabPad), defined before focus mode, find bars and a palette arrive.
-- **Settings in files, not webview storage** (CrabPad). Inlay already does this through `Host` and `SettingsStore`.
-- **Lazy-load heavy libraries** (MDHero). Inlay already lazy-loads Shiki, Mermaid and KaTeX; keep that rule for any new diagram engine.
-- **Quick Look onboarding** (QLMarkdown, MDHero). First launch registers the extension; ship a short troubleshooting page (System Settings → Login Items & Extensions → Quick Look, `mdls` for UTI conflicts).
-
-## Suggested first picks
-
-If the product owner wants a short v1.1 list, these give the most for the least risk, and most extend work already planned:
-
-1. Outline sidebar + find in every mode + status bar word count
-2. Image paste/drop into an assets folder
-3. GitHub alerts and heading anchors
-4. Focus and typewriter modes
-5. LLM paste cleanup and Copy as rich text
-6. Apple Writing Tools check, and a Homebrew cask after M5
+| App | What it is | What stood out |
+| --- | --- | --- |
+| [MarkText](https://marktext.me/) (MIT) | Electron WYSIWYG editor | Render in place, `/` quick insert, themes, focus and typewriter modes, image copy-to-folder templates, image and diagram viewer with export, heading folding, folder search |
+| [CrabPad](https://dev.to/ukash/i-built-a-markdown-editor-with-tauri-heres-what-i-learned-4f5l) | Tauri + React editor | Command palette, Zen mode, outline, workspace search, admonitions; lessons on `e.code` against `e.key` and one Escape priority chain |
+| [FlyMD](https://www.flymd.app/) (non-commercial licence, ideas only) | Tauri + Milkdown platform | Library search, WebDAV sync, image upload, publishing, assistant, plugins, backlinks and graph, Git panel, published performance budgets |
+| [MDX Editor](https://dev.to/maqi1520/created-a-markdown-desktop-app-with-tauri-h8d) | Tauri editor with React components | Folder tree, format-on-save, themes, formatted copy |
+| [Moraya](https://users.rust-lang.org/t/an-extremely-elegant-open-source-ai-markdown-editor-tauri-svelte/138163) | Tauri + Svelte + Milkdown, AI-first | Visual, Source and Split with block-level scroll anchoring, assistant panel, MCP, keys in the Keychain |
+| [MDHero](https://mdhero.app/blogs/building-native-viewer-8mb/) (MIT) | Tauri viewer with Quick Look | Viewer first, find, print to PDF, paste clean-up for AI output, 400 ms first paint |
+| [Typora](https://typora.io/) | Commercial WYSIWYG editor | Seamless live preview, outline and file tree, focus and typewriter, table editing, image handling, Pandoc export, PDF bookmarks |
+| [QLMarkdown](https://github.com/sbarex/QLMarkdown) (GPL-3, read only) | Quick Look extension, settings app and CLI | GitHub alerts, heading anchors, outline in wide previews, front matter as a table, extra file types, Shortcuts actions |

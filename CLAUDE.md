@@ -2,28 +2,28 @@
 
 Inlay is a macOS-first Markdown editor: a thin Swift/AppKit NSDocument shell hosting a TypeScript web core in WKWebViews. The Read view renders embedded SVG/HTML/CSS/JS fully; WYSIWYG (Milkdown Crepe + raw islands) is the primary editor; CodeMirror 6 provides Source mode; a Quick Look extension renders through a JavaScriptCore bundle.
 
-`docs/BRIEF.md` is the source of truth (never edit it; propose changes to the product owner). `docs/PLAN.md` tracks milestone progress with checkboxes; keep it current. `docs/DECISIONS.md` holds short ADR entries for every non-obvious choice.
+`docs/BRIEF.md` is the source of truth (never edit it; propose changes to the product owner in `docs/BRIEF-AMENDMENTS.md`). Start a session with `docs/HANDOVER.md`. `docs/PLAN.md` tracks progress with checkboxes; keep it current. `docs/DECISIONS.md` holds short ADR entries for every non-obvious choice; entries tagged **proposed** are not in force until the product owner accepts them.
 
 ## Repo map
 - `packages/md-render` — unified/remark → rehype → HTML. Browser ESM build + JavaScriptCore IIFE (`render(markdown, options) → {html, meta}`). Used by Read view, Quick Look, export.
 - `packages/editor` — document model (block offsets, splice save), CodeMirror Source mode, Crepe + raw islands, editor page.
 - `packages/read-view` — Read view shell page + runtime (render, page replacement, scroll restore, theme, Mermaid lazy-load).
 - `packages/host-api` — `Host` interface, settings schema, `MockHost` (browser/tests), `WebKitHost` adapter (the only code touching `window.webkit`), `isTrustedOrigin`.
-- `packages/settings-ui` — settings page (web, so it ports).
+- `packages/settings-ui` — settings page (web, so it ports). Planned for M5; does not exist yet.
 - `fixtures/` — golden Markdown corpus + `manifest.json`; every fixture is in the round-trip and rendering tests.
 - `apps/macos/` — `project.yml` (XcodeGen) → `Inlay` app, `InlayQuickLook` extension, `InlayCore` Swift package, XCTest targets.
-- `scripts/` — license check, third-party notices, DCO check, web build, vendor copy, icon rendering.
+- `scripts/` — license check, third-party notices, DCO check, SPDX check, web build, icon and artboard rendering (the vendor copy lives in `packages/read-view/scripts/`).
 - `design/` — brand assets: SVG icon masters and rendered web favicons (`design/icon/README.md`).
-- `docs/` — BRIEF.md, PLAN.md, DECISIONS.md.
+- `docs/` — BRIEF.md (v1 scope), BRIEF-AMENDMENTS.md (proposed changes to it), PRODUCT.md (what the app is and does), ARCHITECTURE.md (how it is built; the November 2026 review), ROADMAP.md (releases), MONETIZATION.md (business proposal), PLAN.md (tasks), TESTING.md (strategy, inventory, gaps), CHECKLIST.md (gates and manual checks), IME-CHECKLIST.md, DECISIONS.md, HANDOVER.md. One fact lives in one file (ADR-0048).
 
 ## Commands
 - `pnpm install` then `pnpm exec playwright install chromium webkit` (once).
 - `pnpm build` — all web bundles into `packages/*/dist` (Vite) and the JSC IIFE (esbuild).
-- `pnpm dev` — Read view against `MockHost` with a fixture picker.
+- `pnpm dev` — Read view against `MockHost` with a fixture picker; `pnpm dev:editor` — the editor page.
 - `pnpm test` — `pnpm test:unit` (Vitest) + `pnpm test:e2e` (Playwright, Chromium + WebKit).
 - `pnpm check` — Biome lint/format, typecheck, SPDX headers, license check, notices freshness.
 - `pnpm notices` — regenerate `THIRD_PARTY_NOTICES.md` after dependency changes.
-- `pnpm icons` — re-render the app icon set and web favicons from the SVG masters in `design/icon/` (run after editing them).
+- `pnpm icons` — re-render the app icon set and web favicons from the SVG masters in `design/icon/` (run after editing them); `pnpm design:render` — re-render the artboard screenshots.
 - `pnpm mac:generate` — `xcodegen generate` in `apps/macos` (run after editing `project.yml`).
 - `pnpm mac:build` / `pnpm mac:test` — `xcodebuild` build / test of scheme `Inlay` (runs `pnpm build` first).
 - CI: `.github/workflows/ci.yml` (Linux: web checks + tests; macOS: Xcode build + tests). CI must be green on `main`.
@@ -44,3 +44,4 @@ Inlay is a macOS-first Markdown editor: a thin Swift/AppKit NSDocument shell hos
 - Before every `git push`: run the `caveman-review` skill and the `security-review` skill on the pending changes, fix every finding that applies (note in the PR or commit the ones deliberately left), re-run `pnpm check` and `pnpm test`, then push.
 - Stop and ask the product owner for: credentials/signing, product decisions not in the brief, contradictions with the brief, non-allowlisted licenses, destructive git operations. If the same approach fails twice, re-plan instead of pushing through.
 - End each milestone with a summary, what's left, and manual verification steps; then wait for "go".
+- A defect fix starts with the test that fails without it. Gates before a commit, a push, a milestone and a release are in `docs/CHECKLIST.md`.
